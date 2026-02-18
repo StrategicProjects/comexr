@@ -22,10 +22,7 @@ Services (MDIC).
 
 ```r
 # From GitHub
-remotes::install_github("your-username/comex")
-
-# Or from a local .zip
-remotes::install_local("comex.zip")
+remotes::install_github("StrategicProjects/comex")
 ```
 
 ## Quick start
