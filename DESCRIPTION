@@ -1,0 +1,35 @@
+Package: comex
+Title: R Client for the Brazilian Foreign Trade Statistics API ('ComexStat')
+Version: 0.2.0
+Authors@R: c(
+    person("Andre", "Leite", email = "leite@castlab.org", role = c("aut", "cre")),
+    person("Marcos", "Wasilew", email = "marcos.wasilew@gmail.com", role = "aut"),
+    person("Hugo", "Vasconcelos", email = "hugo.vasconcelos@ufpe.br", role = "aut"),
+    person("Carlos", "Amorin", email = "carlos.agaf@ufpe.br", role = "aut"),
+    person("Diogo", "Bezerra", email = "diogo.bezerra@ufpe.br", role = "aut"))
+Description: An 'R' interface to the 'ComexStat' API from the Brazilian Ministry of
+    Development, Industry, Trade and Services (MDIC). Provides access to detailed
+    export and import data, including general trade statistics (1997 - present),
+    city-level data, historical data (1989 - 1996), and auxiliary tables with product
+    codes (NCM, NBM, HS), countries, economic classifications (CGCE, SITC, ISIC),
+    and other categories. Uses only 'httr2' for HTTP requests and 'cli' for
+    console messages. No headless browser required.
+License: MIT + file LICENSE
+URL: https://github.com/StrategicProjects/comex
+BugReports: https://github.com/StrategicProjects/comex/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
+Imports:
+    httr2 (>= 1.0.0),
+    cli (>= 3.6.0)
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    tibble
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Language: en-US

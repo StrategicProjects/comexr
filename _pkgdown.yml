@@ -1,0 +1,108 @@
+url: https://monitoramento.sepe.pe.gov.br/comex/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#1a5276"
+    border-radius: 0.25rem
+    btn-border-radius: 0.25rem
+
+home:
+  title: "comex — R Client for ComexStat API"
+  description: >
+    Access Brazilian foreign trade statistics from the ComexStat API
+    maintained by the Ministry of Development, Industry, Trade and Services
+    (MDIC). Query export/import data, city-level trade, historical records,
+    and lookup tables for products, countries, and classifications.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [search, github]
+  components:
+    intro:
+      text: Get Started
+      href: articles/getting-started.html
+    articles:
+      text: Articles
+      menu:
+        - text: Getting Started
+          href: articles/getting-started.html
+        - text: Querying Trade Data
+          href: articles/querying-trade-data.html
+        - text: Auxiliary Tables & Lookups
+          href: articles/auxiliary-tables.html
+    github:
+      icon: fa-github
+      href: https://github.com/StrategicProjects/comex
+      aria-label: GitHub
+
+articles:
+  - title: Guides
+    navbar: ~
+    contents:
+      - getting-started
+      - querying-trade-data
+      - auxiliary-tables
+
+reference:
+  - title: "Trade Data Queries"
+    desc: >
+      Functions to query export/import statistics. These are the main
+      workhorse functions that hit the POST endpoints.
+    contents:
+      - comex_query
+      - comex_export
+      - comex_import
+      - comex_query_city
+      - comex_historical
+
+  - title: "Metadata Discovery"
+    desc: >
+      Discover available filters, details, metrics, date ranges, and
+      last update timestamps for each data type.
+    contents:
+      - comex_last_update
+      - comex_available_years
+      - comex_filters
+      - comex_filter_values
+      - comex_details
+      - comex_metrics
+
+  - title: "Geography Tables"
+    desc: >
+      Lookup tables for countries, economic blocs, states, cities,
+      transport modes, and customs units.
+    contents:
+      - comex_countries
+      - comex_country_detail
+      - comex_blocs
+      - comex_states
+      - comex_state_detail
+      - comex_cities
+      - comex_city_detail
+      - comex_transport_modes
+      - comex_transport_mode_detail
+      - comex_customs_units
+      - comex_customs_unit_detail
+
+  - title: "Product Tables"
+    desc: >
+      Nomenclature tables: NCM (Mercosur), NBM (historical), and
+      Harmonized System (HS).
+    contents:
+      - comex_ncm
+      - comex_ncm_detail
+      - comex_nbm
+      - comex_nbm_detail
+      - comex_hs
+
+  - title: "Classification Tables"
+    desc: >
+      Economic classification tables: CGCE (BEC), SITC (CUCI), and
+      ISIC codes.
+    contents:
+      - comex_cgce
+      - comex_sitc
+      - comex_isic
