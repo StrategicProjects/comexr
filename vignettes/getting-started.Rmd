@@ -39,7 +39,7 @@ require a headless browser or any external software.
 
 ```{r install}
 # Install from GitHub:
-remotes::install_github("StrategicProjects/comex")
+remotes::install_github("StrategicProjects/comexr")
 ```
 
 ## Quick start

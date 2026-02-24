@@ -6,11 +6,8 @@ knitr::opts_chunk$set(
 )
 
 ## ----install------------------------------------------------------------------
-# # From a local .zip:
-# remotes::install_local("comex.zip")
-# 
-# # Or from GitHub (when published):
-# # remotes::install_github("your-username/comex")
+# # Install from GitHub:
+# remotes::install_github("StrategicProjects/comexr")
 
 ## ----discover-----------------------------------------------------------------
 # library(comex)

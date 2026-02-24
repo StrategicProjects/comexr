@@ -1,5 +1,5 @@
-Package: comex
-Title: R Client for the Brazilian Foreign Trade Statistics API ('ComexStat')
+Package: comexr
+Title: 'R' Client for the Brazilian Foreign Trade Statistics API ('ComexStat')
 Version: 0.2.0
 Authors@R: c(
     person("Andre", "Leite", email = "leite@castlab.org", role = c("aut", "cre")),
@@ -15,8 +15,8 @@ Description: An 'R' interface to the 'ComexStat' API from the Brazilian Ministry
     and other categories. Uses only 'httr2' for HTTP requests and 'cli' for
     console messages. No headless browser required.
 License: MIT + file LICENSE
-URL: https://github.com/StrategicProjects/comex
-BugReports: https://github.com/StrategicProjects/comex/issues
+URL: https://github.com/StrategicProjects/comexr
+BugReports: https://github.com/StrategicProjects/comexr/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

@@ -1,9 +1,12 @@
 
-# comex <img src="man/figures/logo.svg" align="right" height="139" alt="comex logo" />
+# comexr <img src="man/figures/logo.svg" align="right" height="139" alt="comex logo" />
 
 <!-- badges: start -->
-[![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen)](https://github.com/your-username/comex)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen)](https://github.com/StrategicProjects/comexr)
+![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/comexr)  
+![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/comexr)
+  ![License](https://img.shields.io/badge/license-MIT-darkviolet.svg) 
+![](https://img.shields.io/badge/devel%20version-0.2.0-blue.svg)
 <!-- badges: end -->
 
 R client for the [ComexStat API](https://comexstat.mdic.gov.br/) — Brazilian
@@ -28,7 +31,7 @@ remotes::install_github("StrategicProjects/comex")
 ## Quick start
 
 ```r
-library(comex)
+library(comexr)
 
 # Top export destinations in January 2024
 exports <- comex_export(

@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The comex package provides three query endpoints, each covering a
+The comexr package provides three query endpoints, each covering a
 different time period and level of geographic detail:
 
 | Function | Endpoint | Period | Geography |
@@ -32,7 +32,7 @@ Convenience wrappers `comex_export()` and `comex_import()` call
 ### Exports by country
 
 ```{r exports_country}
-library(comex)
+library(comexr)
 
 exports <- comex_export(
   start_period = "2024-01",

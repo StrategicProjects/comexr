@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 )
 
 ## ----exports_country----------------------------------------------------------
-# library(comex)
+# library(comexr)
 # 
 # exports <- comex_export(
 #   start_period = "2024-01",

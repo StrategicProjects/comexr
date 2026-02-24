@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 )
 
 ## ----countries----------------------------------------------------------------
-# library(comex)
+# library(comexr)
 # 
 # # Full list (281 entries)
 # countries <- comex_countries()

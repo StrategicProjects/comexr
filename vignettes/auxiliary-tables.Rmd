@@ -24,7 +24,7 @@ query results with human-readable labels.
 ### Countries
 
 ```{r countries}
-library(comex)
+library(comexr)
 
 # Full list (281 entries)
 countries <- comex_countries()

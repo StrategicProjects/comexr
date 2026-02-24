@@ -2,7 +2,8 @@
 % Please edit documentation in R/comex-package.R
 \docType{package}
 \name{comex-package}
-\alias{comex}
+\alias{comexr}
+\alias{comexr-package}
 \alias{comex-package}
 \title{comex: R Client for the ComexStat API}
 \description{

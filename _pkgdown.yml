@@ -9,7 +9,7 @@ template:
     btn-border-radius: 0.25rem
 
 home:
-  title: "comex — R Client for ComexStat API"
+  title: "comexr — R Client for ComexStat API"
   description: >
     Access Brazilian foreign trade statistics from the ComexStat API
     maintained by the Ministry of Development, Industry, Trade and Services
