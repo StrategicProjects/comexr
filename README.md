@@ -6,7 +6,7 @@
 ![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/comexr)  
 ![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/comexr)
   ![License](https://img.shields.io/badge/license-MIT-darkviolet.svg) 
-![](https://img.shields.io/badge/devel%20version-0.2.0-blue.svg)
+![](https://img.shields.io/badge/dev%20version-0.2.0-blue.svg)
 <!-- badges: end -->
 
 R client for the [ComexStat API](https://comexstat.mdic.gov.br/) — Brazilian
