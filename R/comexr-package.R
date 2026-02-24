@@ -1,7 +1,7 @@
-#' comex: R Client for the ComexStat API
+#' comexr: R Client for the ComexStat API
 #'
 #' @description
-#' The `comex` package provides a complete R interface to the ComexStat API
+#' The `comexr` package provides a complete R interface to the ComexStat API
 #' from the Brazilian Ministry of Development, Industry, Trade and Services
 #' (MDIC).
 #'
@@ -53,7 +53,7 @@
 #' - `cli` for formatted console messages
 #'
 #' @docType package
-#' @name comex-package
+#' @name comexr-package
 #' @keywords internal
 "_PACKAGE"
 
