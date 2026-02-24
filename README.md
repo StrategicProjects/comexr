@@ -25,7 +25,7 @@ Services (MDIC).
 
 ```r
 # From GitHub
-remotes::install_github("StrategicProjects/comex")
+remotes::install_github("StrategicProjects/comexr")
 ```
 
 ## Quick start
