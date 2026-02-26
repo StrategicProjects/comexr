@@ -3,8 +3,8 @@
 ### Guides
 
 - [Getting Started with
-  comex](https://monitoramento.sepe.pe.gov.br/comex/articles/getting-started.md):
+  comex](https://strategicprojects.github.io/comexr/articles/getting-started.md):
 - [Querying Trade
-  Data](https://monitoramento.sepe.pe.gov.br/comex/articles/querying-trade-data.md):
+  Data](https://strategicprojects.github.io/comexr/articles/querying-trade-data.md):
 - [Auxiliary Tables &
-  Lookups](https://monitoramento.sepe.pe.gov.br/comex/articles/auxiliary-tables.md):
+  Lookups](https://strategicprojects.github.io/comexr/articles/auxiliary-tables.md):

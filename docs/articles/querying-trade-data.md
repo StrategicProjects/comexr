@@ -5,16 +5,16 @@ different time period and level of geographic detail:
 
 | Function | Endpoint | Period | Geography |
 |----|----|----|----|
-| [`comex_query()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_query.md) | POST /general | 1997–present | National |
-| [`comex_query_city()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_query_city.md) | POST /cities | 1997–present | Municipal |
-| [`comex_historical()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_historical.md) | POST /historical-data/ | 1989–1996 | National |
+| [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md) | POST /general | 1997–present | National |
+| [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md) | POST /cities | 1997–present | Municipal |
+| [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md) | POST /historical-data/ | 1989–1996 | National |
 
 Convenience wrappers
-[`comex_export()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_export.md)
+[`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md)
 and
-[`comex_import()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_import.md)
+[`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md)
 call
-[`comex_query()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_query.md)
+[`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md)
 with the flow pre-set.
 
 ## Basic queries
@@ -36,7 +36,7 @@ exports <- comex_export(
 ```
 
 By default,
-[`comex_export()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_export.md)
+[`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md)
 returns FOB value (US\$) and net weight (kg). Each row is a combination
 of the requested detail fields and the year.
 
@@ -122,7 +122,7 @@ sp_veg <- comex_export(
 ## The generic `comex_query()`
 
 For full control, use
-[`comex_query()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_query.md)
+[`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md)
 which lets you specify flow, metrics, and all options:
 
 ``` r
@@ -266,10 +266,10 @@ china_monthly <- comex_export(
 ## Tips and best practices
 
 1.  **Start with discovery.** Use
-    [`comex_details()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_details.md),
-    [`comex_filters()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_filters.md),
+    [`comex_details()`](https://strategicprojects.github.io/comexr/reference/comex_details.md),
+    [`comex_filters()`](https://strategicprojects.github.io/comexr/reference/comex_filters.md),
     and
-    [`comex_metrics()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_metrics.md)
+    [`comex_metrics()`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md)
     before building complex queries.
 
 2.  **Use filters to reduce response size.** The API has a limit of
@@ -277,9 +277,9 @@ china_monthly <- comex_export(
     filters or reduce the date range.
 
 3.  **Filter codes are integers.** Use
-    [`comex_countries()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_countries.md),
-    [`comex_states()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_states.md),
-    [`comex_filter_values()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_filter_values.md)
+    [`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md),
+    [`comex_states()`](https://strategicprojects.github.io/comexr/reference/comex_states.md),
+    [`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md)
     to find the numeric codes.
 
 4.  **The `details` parameter accepts user-friendly names.** Write

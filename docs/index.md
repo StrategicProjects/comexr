@@ -20,7 +20,7 @@ Industry, Trade and Services (MDIC).
 ``` r
 
 # From GitHub
-remotes::install_github("StrategicProjects/comex")
+remotes::install_github("StrategicProjects/comexr")
 ```
 
 ## Quick start
@@ -82,19 +82,19 @@ comex_blocs(language = "pt")
 
 | Category | Functions |
 |----|----|
-| **Queries** | [`comex_query()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_query.md), [`comex_export()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_export.md), [`comex_import()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_import.md), [`comex_query_city()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_query_city.md), [`comex_historical()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_historical.md) |
-| **Metadata** | [`comex_last_update()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_last_update.md), [`comex_available_years()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_available_years.md), [`comex_filters()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_filters.md), [`comex_filter_values()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_filter_values.md), [`comex_details()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_details.md), [`comex_metrics()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_metrics.md) |
-| **Geography** | [`comex_countries()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_countries.md), [`comex_country_detail()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_country_detail.md), [`comex_blocs()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_blocs.md), [`comex_states()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_states.md), [`comex_state_detail()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_state_detail.md), [`comex_cities()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_cities.md), [`comex_city_detail()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_city_detail.md), [`comex_transport_modes()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_transport_modes.md), [`comex_transport_mode_detail()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_transport_mode_detail.md), [`comex_customs_units()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_customs_units.md), [`comex_customs_unit_detail()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_customs_unit_detail.md) |
-| **Products** | [`comex_ncm()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_ncm.md), [`comex_ncm_detail()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_ncm_detail.md), [`comex_nbm()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_nbm.md), [`comex_nbm_detail()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_nbm_detail.md), [`comex_hs()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_hs.md) |
-| **Classifications** | [`comex_cgce()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_cgce.md), [`comex_sitc()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_sitc.md), [`comex_isic()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_isic.md) |
+| **Queries** | [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md), [`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md), [`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md), [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md), [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md) |
+| **Metadata** | [`comex_last_update()`](https://strategicprojects.github.io/comexr/reference/comex_last_update.md), [`comex_available_years()`](https://strategicprojects.github.io/comexr/reference/comex_available_years.md), [`comex_filters()`](https://strategicprojects.github.io/comexr/reference/comex_filters.md), [`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md), [`comex_details()`](https://strategicprojects.github.io/comexr/reference/comex_details.md), [`comex_metrics()`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md) |
+| **Geography** | [`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md), [`comex_country_detail()`](https://strategicprojects.github.io/comexr/reference/comex_country_detail.md), [`comex_blocs()`](https://strategicprojects.github.io/comexr/reference/comex_blocs.md), [`comex_states()`](https://strategicprojects.github.io/comexr/reference/comex_states.md), [`comex_state_detail()`](https://strategicprojects.github.io/comexr/reference/comex_state_detail.md), [`comex_cities()`](https://strategicprojects.github.io/comexr/reference/comex_cities.md), [`comex_city_detail()`](https://strategicprojects.github.io/comexr/reference/comex_city_detail.md), [`comex_transport_modes()`](https://strategicprojects.github.io/comexr/reference/comex_transport_modes.md), [`comex_transport_mode_detail()`](https://strategicprojects.github.io/comexr/reference/comex_transport_mode_detail.md), [`comex_customs_units()`](https://strategicprojects.github.io/comexr/reference/comex_customs_units.md), [`comex_customs_unit_detail()`](https://strategicprojects.github.io/comexr/reference/comex_customs_unit_detail.md) |
+| **Products** | [`comex_ncm()`](https://strategicprojects.github.io/comexr/reference/comex_ncm.md), [`comex_ncm_detail()`](https://strategicprojects.github.io/comexr/reference/comex_ncm_detail.md), [`comex_nbm()`](https://strategicprojects.github.io/comexr/reference/comex_nbm.md), [`comex_nbm_detail()`](https://strategicprojects.github.io/comexr/reference/comex_nbm_detail.md), [`comex_hs()`](https://strategicprojects.github.io/comexr/reference/comex_hs.md) |
+| **Classifications** | [`comex_cgce()`](https://strategicprojects.github.io/comexr/reference/comex_cgce.md), [`comex_sitc()`](https://strategicprojects.github.io/comexr/reference/comex_sitc.md), [`comex_isic()`](https://strategicprojects.github.io/comexr/reference/comex_isic.md) |
 
 ## Documentation
 
-- [`vignette("getting-started")`](https://monitoramento.sepe.pe.gov.br/comex/articles/getting-started.md)
+- [`vignette("getting-started")`](https://strategicprojects.github.io/comexr/articles/getting-started.md)
   — overview and first steps
-- [`vignette("querying-trade-data")`](https://monitoramento.sepe.pe.gov.br/comex/articles/querying-trade-data.md)
+- [`vignette("querying-trade-data")`](https://strategicprojects.github.io/comexr/articles/querying-trade-data.md)
   — advanced query patterns
-- [`vignette("auxiliary-tables")`](https://monitoramento.sepe.pe.gov.br/comex/articles/auxiliary-tables.md)
+- [`vignette("auxiliary-tables")`](https://strategicprojects.github.io/comexr/articles/auxiliary-tables.md)
   — browsing product codes and classifications
 
 ## API Reference

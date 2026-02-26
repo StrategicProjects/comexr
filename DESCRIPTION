@@ -15,7 +15,7 @@ Description: An 'R' interface to the 'ComexStat' API from the Brazilian Ministry
     and other categories. Uses only 'httr2' for HTTP requests and 'cli' for
     console messages. No headless browser required.
 License: MIT + file LICENSE
-URL: https://github.com/StrategicProjects/comexr
+URL: https://strategicprojects.github.io/comexr/, https://github.com/StrategicProjects/comexr
 BugReports: https://github.com/StrategicProjects/comexr/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

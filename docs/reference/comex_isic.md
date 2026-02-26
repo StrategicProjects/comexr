@@ -55,7 +55,7 @@ queries (e.g. `"isic_section"`, `"isic_division"`). This convenience
 function queries `/tables/product-categories`, which may return ISIC
 data alongside CUCI/SITC classifications. You can also look up ISIC
 values using
-[`comex_filter_values()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_filter_values.md)
+[`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md)
 with filter names like `"isicSection"`.
 
 ## Examples

@@ -13,7 +13,7 @@ comex_filter_values(filter, type = "general", language = "en", verbose = FALSE)
 - filter:
 
   Filter name as returned by
-  [`comex_filters()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_filters.md)
+  [`comex_filters()`](https://strategicprojects.github.io/comexr/reference/comex_filters.md)
   (e.g. `"country"`, `"state"`, `"ncm"`, `"economicBlock"`).
 
 - type:

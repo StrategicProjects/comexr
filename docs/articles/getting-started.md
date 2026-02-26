@@ -69,9 +69,9 @@ comex_details("general")
 ### 2. Run a simple export query
 
 The easiest way to query is with
-[`comex_export()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_export.md)
+[`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md)
 and
-[`comex_import()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_import.md):
+[`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md):
 
 ``` r
 
@@ -107,8 +107,8 @@ exports_filtered <- comex_export(
 ```
 
 Filter codes come from the auxiliary tables — use
-[`comex_countries()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_countries.md),
-[`comex_states()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_states.md),
+[`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md),
+[`comex_states()`](https://strategicprojects.github.io/comexr/reference/comex_states.md),
 etc. to look them up.
 
 ### 4. Look up auxiliary tables
@@ -183,10 +183,10 @@ comex_blocs(language = "en")
 ## Next steps
 
 - See
-  [`vignette("querying-trade-data")`](https://monitoramento.sepe.pe.gov.br/comex/articles/querying-trade-data.md)
+  [`vignette("querying-trade-data")`](https://strategicprojects.github.io/comexr/articles/querying-trade-data.md)
   for advanced query patterns including monthly breakdowns, multiple
   metrics, CIF values, and working with city and historical endpoints.
 - See
-  [`vignette("auxiliary-tables")`](https://monitoramento.sepe.pe.gov.br/comex/articles/auxiliary-tables.md)
+  [`vignette("auxiliary-tables")`](https://strategicprojects.github.io/comexr/articles/auxiliary-tables.md)
   for a tour of all lookup tables (NCM, HS, countries, blocs,
   classifications).

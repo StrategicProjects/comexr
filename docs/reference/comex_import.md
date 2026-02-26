@@ -1,7 +1,7 @@
 # Query imports
 
 Shortcut for
-[`comex_query()`](https://monitoramento.sepe.pe.gov.br/comex/reference/comex_query.md)
+[`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md)
 with `flow = "import"`.
 
 ## Usage
