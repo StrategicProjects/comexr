@@ -82,6 +82,7 @@ The package uses \strong{only two dependencies}:
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://strategicprojects.github.io/comexr/}
   \item \url{https://github.com/StrategicProjects/comexr}
   \item Report bugs at \url{https://github.com/StrategicProjects/comexr/issues}
 }
