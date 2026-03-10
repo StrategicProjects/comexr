@@ -1,63 +1,59 @@
-# comexr ![comex logo](reference/figures/logo.svg)
+# comexr
 
-R client for the [ComexStat API](https://comexstat.mdic.gov.br/) —
-Brazilian foreign trade statistics from the Ministry of Development,
-Industry, Trade and Services (MDIC).
+The **comexr** package provides a complete R interface to the [ComexStat
+API](https://comexstat.mdic.gov.br/) from the Brazilian Ministry of
+Development, Industry, Trade and Services (MDIC). It allows programmatic
+access to detailed Brazilian export and import data.
 
 ## Features
 
-- **30 functions** covering all 38 API endpoints
+- **30 functions** covering all API endpoints
 - **General trade data** (1997–present), **city-level** data, and
   **historical** records (1989–1996)
 - **Auxiliary tables**: countries, economic blocs, NCM/NBM/HS product
   codes, CGCE/SITC/ISIC classifications, states, cities, transport
   modes, customs units
+- **Only 2 dependencies**: `httr2` + `cli`
 - **Multilingual**: Portuguese, English, Spanish
-- User-friendly parameter names mapped automatically to API names
+- **SSL auto-fallback**: handles ICP-Brasil certificate issues
+  transparently
 
 ## Installation
 
 ``` r
 
-# From GitHub
+# Install from GitHub
+# install.packages("remotes")
 remotes::install_github("StrategicProjects/comexr")
 ```
 
-## Quick start
+## Quick Start
 
 ``` r
 
 library(comexr)
 
-# Top export destinations in January 2024
+# Exports by country in January 2024 (monthly detail by default)
 exports <- comex_export(
   start_period = "2024-01",
-  end_period   = "2024-01",
-  details      = "country"
+  end_period = "2024-01",
+  details = "country"
 )
-exports
-#> # A tibble: 219 × 4
-#>    year  country          metricFOB    metricKG
-#>    <chr> <chr>                <dbl>       <dbl>
-#>  1 2024  China           7812623070 19868234567
-#>  2 2024  United States   3254810234  2547891234
-#>  ...
 
 # Imports with CIF value
 imports <- comex_import(
   start_period = "2024-01",
-  end_period   = "2024-01",
-  details      = "country",
-  metric_cif   = TRUE
+  end_period = "2024-12",
+  details = "country",
+  metric_cif = TRUE
 )
 
 # Filter: exports to China (160), grouped by HS4
 soy <- comex_export(
   start_period = "2024-01",
-  end_period   = "2024-12",
-  details      = c("country", "hs4"),
-  filters      = list(country = 160),
-  month_detail = TRUE
+  end_period = "2024-12",
+  details = c("country", "hs4"),
+  filters = list(country = 160)
 )
 ```
 
@@ -72,46 +68,83 @@ comex_details("general")
 comex_filters("general")
 
 # Look up country codes
-comex_countries(search = "China")
+countries <- comex_countries()
+countries[grepl("China", countries$text, ignore.case = TRUE), ]
 
 # Economic blocs in Portuguese
 comex_blocs(language = "pt")
 ```
 
-## Function overview
+## API Coverage
 
-| Category | Functions |
+### Query Functions
+
+| Function | Description |
 |----|----|
-| **Queries** | [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md), [`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md), [`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md), [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md), [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md) |
-| **Metadata** | [`comex_last_update()`](https://strategicprojects.github.io/comexr/reference/comex_last_update.md), [`comex_available_years()`](https://strategicprojects.github.io/comexr/reference/comex_available_years.md), [`comex_filters()`](https://strategicprojects.github.io/comexr/reference/comex_filters.md), [`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md), [`comex_details()`](https://strategicprojects.github.io/comexr/reference/comex_details.md), [`comex_metrics()`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md) |
-| **Geography** | [`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md), [`comex_country_detail()`](https://strategicprojects.github.io/comexr/reference/comex_country_detail.md), [`comex_blocs()`](https://strategicprojects.github.io/comexr/reference/comex_blocs.md), [`comex_states()`](https://strategicprojects.github.io/comexr/reference/comex_states.md), [`comex_state_detail()`](https://strategicprojects.github.io/comexr/reference/comex_state_detail.md), [`comex_cities()`](https://strategicprojects.github.io/comexr/reference/comex_cities.md), [`comex_city_detail()`](https://strategicprojects.github.io/comexr/reference/comex_city_detail.md), [`comex_transport_modes()`](https://strategicprojects.github.io/comexr/reference/comex_transport_modes.md), [`comex_transport_mode_detail()`](https://strategicprojects.github.io/comexr/reference/comex_transport_mode_detail.md), [`comex_customs_units()`](https://strategicprojects.github.io/comexr/reference/comex_customs_units.md), [`comex_customs_unit_detail()`](https://strategicprojects.github.io/comexr/reference/comex_customs_unit_detail.md) |
-| **Products** | [`comex_ncm()`](https://strategicprojects.github.io/comexr/reference/comex_ncm.md), [`comex_ncm_detail()`](https://strategicprojects.github.io/comexr/reference/comex_ncm_detail.md), [`comex_nbm()`](https://strategicprojects.github.io/comexr/reference/comex_nbm.md), [`comex_nbm_detail()`](https://strategicprojects.github.io/comexr/reference/comex_nbm_detail.md), [`comex_hs()`](https://strategicprojects.github.io/comexr/reference/comex_hs.md) |
-| **Classifications** | [`comex_cgce()`](https://strategicprojects.github.io/comexr/reference/comex_cgce.md), [`comex_sitc()`](https://strategicprojects.github.io/comexr/reference/comex_sitc.md), [`comex_isic()`](https://strategicprojects.github.io/comexr/reference/comex_isic.md) |
+| [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md) | General foreign trade query |
+| [`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md) | Shortcut for export queries |
+| [`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md) | Shortcut for import queries |
+| [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md) | City-level data query |
+| [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md) | Historical data (1989-1996) |
 
-## Documentation
+### Metadata Functions
 
-- [`vignette("getting-started")`](https://strategicprojects.github.io/comexr/articles/getting-started.md)
-  — overview and first steps
-- [`vignette("querying-trade-data")`](https://strategicprojects.github.io/comexr/articles/querying-trade-data.md)
-  — advanced query patterns
-- [`vignette("auxiliary-tables")`](https://strategicprojects.github.io/comexr/articles/auxiliary-tables.md)
-  — browsing product codes and classifications
+| Function | Description |
+|----|----|
+| [`comex_last_update()`](https://strategicprojects.github.io/comexr/reference/comex_last_update.md) | Last data update date |
+| [`comex_available_years()`](https://strategicprojects.github.io/comexr/reference/comex_available_years.md) | Available years for queries |
+| [`comex_filters()`](https://strategicprojects.github.io/comexr/reference/comex_filters.md) | Available filters |
+| [`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md) | Values for a specific filter |
+| [`comex_details()`](https://strategicprojects.github.io/comexr/reference/comex_details.md) | Available detail/grouping fields |
+| [`comex_metrics()`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md) | Available metrics |
 
-## API Reference
+### Auxiliary Tables
 
-This package wraps the official ComexStat API documented at
-<https://api-comexstat.mdic.gov.br/docs>.
+| Function | Description |
+|----|----|
+| [`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md) / [`comex_country_detail()`](https://strategicprojects.github.io/comexr/reference/comex_country_detail.md) | Countries |
+| [`comex_blocs()`](https://strategicprojects.github.io/comexr/reference/comex_blocs.md) | Economic blocs |
+| [`comex_states()`](https://strategicprojects.github.io/comexr/reference/comex_states.md) / [`comex_state_detail()`](https://strategicprojects.github.io/comexr/reference/comex_state_detail.md) | Brazilian states |
+| [`comex_cities()`](https://strategicprojects.github.io/comexr/reference/comex_cities.md) / [`comex_city_detail()`](https://strategicprojects.github.io/comexr/reference/comex_city_detail.md) | Brazilian cities |
+| [`comex_transport_modes()`](https://strategicprojects.github.io/comexr/reference/comex_transport_modes.md) / [`comex_transport_mode_detail()`](https://strategicprojects.github.io/comexr/reference/comex_transport_mode_detail.md) | Transport modes |
+| [`comex_customs_units()`](https://strategicprojects.github.io/comexr/reference/comex_customs_units.md) / [`comex_customs_unit_detail()`](https://strategicprojects.github.io/comexr/reference/comex_customs_unit_detail.md) | Customs units |
+| [`comex_ncm()`](https://strategicprojects.github.io/comexr/reference/comex_ncm.md) / [`comex_ncm_detail()`](https://strategicprojects.github.io/comexr/reference/comex_ncm_detail.md) | NCM codes |
+| [`comex_nbm()`](https://strategicprojects.github.io/comexr/reference/comex_nbm.md) / [`comex_nbm_detail()`](https://strategicprojects.github.io/comexr/reference/comex_nbm_detail.md) | NBM codes (historical) |
+| [`comex_hs()`](https://strategicprojects.github.io/comexr/reference/comex_hs.md) | Harmonized System |
+| [`comex_cgce()`](https://strategicprojects.github.io/comexr/reference/comex_cgce.md) | CGCE (BEC) classification |
+| [`comex_sitc()`](https://strategicprojects.github.io/comexr/reference/comex_sitc.md) | SITC classification |
+| [`comex_isic()`](https://strategicprojects.github.io/comexr/reference/comex_isic.md) | ISIC classification |
+
+## SSL Certificate Issues
+
+On some systems the API’s ICP-Brasil certificate chain is not
+recognized. The package handles this automatically — on the first
+failure it retries without SSL verification and issues a warning. To
+suppress:
+
+``` r
+
+options(comex.ssl_verifypeer = FALSE)
+```
+
+## References
+
+- [ComexStat](https://comexstat.mdic.gov.br/) — Brazilian foreign trade
+  statistics
+- [ComexStat API Docs](https://api-comexstat.mdic.gov.br/docs) —
+  Official API documentation
+- [MDIC](https://www.gov.br/mdic/) — Ministry of Development, Industry,
+  Trade and Services
 
 ## License
 
-MIT
+MIT © comexr authors
 
 # Package index
 
-## Trade Data Queries
+## Main Query Functions
 
-Functions to query export/import statistics. These are the main
-workhorse functions that hit the POST endpoints.
+Functions to query foreign trade data
 
 - [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md)
   : Query general foreign trade data
@@ -124,10 +157,9 @@ workhorse functions that hit the POST endpoints.
 - [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md)
   : Query historical foreign trade data (1989-1996)
 
-## Metadata Discovery
+## API Metadata
 
-Discover available filters, details, metrics, date ranges, and last
-update timestamps for each data type.
+Functions to get API information
 
 - [`comex_last_update()`](https://strategicprojects.github.io/comexr/reference/comex_last_update.md)
   : Get last data update date
@@ -142,10 +174,9 @@ update timestamps for each data type.
 - [`comex_metrics()`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md)
   : Get available metrics
 
-## Geography Tables
+## Auxiliary Tables - Geography
 
-Lookup tables for countries, economic blocs, states, cities, transport
-modes, and customs units.
+Functions to query geographic tables
 
 - [`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md)
   : Get countries table
@@ -170,10 +201,9 @@ modes, and customs units.
 - [`comex_customs_unit_detail()`](https://strategicprojects.github.io/comexr/reference/comex_customs_unit_detail.md)
   : Get customs unit details
 
-## Product Tables
+## Auxiliary Tables - Products
 
-Nomenclature tables: NCM (Mercosur), NBM (historical), and Harmonized
-System (HS).
+Functions to query product classification tables
 
 - [`comex_ncm()`](https://strategicprojects.github.io/comexr/reference/comex_ncm.md)
   : Get NCM (Mercosur Common Nomenclature) table
@@ -186,9 +216,9 @@ System (HS).
 - [`comex_hs()`](https://strategicprojects.github.io/comexr/reference/comex_hs.md)
   : Get Harmonized System (HS) tables
 
-## Classification Tables
+## Auxiliary Tables - Economic Classifications
 
-Economic classification tables: CGCE (BEC), SITC (CUCI), and ISIC codes.
+Functions to query economic classification tables
 
 - [`comex_cgce()`](https://strategicprojects.github.io/comexr/reference/comex_cgce.md)
   : Get CGCE (Classification by Broad Economic Categories) table

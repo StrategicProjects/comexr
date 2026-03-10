@@ -4,24 +4,42 @@
 \alias{comex_ncm}
 \title{Get NCM (Mercosur Common Nomenclature) table}
 \usage{
-comex_ncm(language = "en", verbose = FALSE)
+comex_ncm(
+  language = "en",
+  search = NULL,
+  add = NULL,
+  page = NULL,
+  per_page = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
+\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{search}{Optional search term to filter results (e.g. \code{"animal"}).}
+
+\item{add}{Optional related table to include in results. Options:
+\code{"sh"}, \code{"cuci"}, \code{"cgce"}.}
+
+\item{page}{Page number for pagination. Default: \code{NULL} (all results).}
+
+\item{per_page}{Number of results per page. Default: \code{NULL}.}
+
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A tibble with NCM codes and descriptions
+A data.frame with NCM codes and descriptions.
 }
 \description{
 Returns the NCM codes table with descriptions. NCM is the product
 classification used by Mercosur countries, based on the Harmonized
-System (HS).
+System (HS) with 8 digits.
 }
 \examples{
 \dontrun{
-comex_ncm()
+ncm <- comex_ncm()
+comex_ncm(search = "animal", per_page = 10)
+comex_ncm(add = "cuci")
 }
 
 }

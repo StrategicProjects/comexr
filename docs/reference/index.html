@@ -15,8 +15,13 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/comexr.html">Get started</a></li>
-<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with comex</a></li>
+    <li><a class="dropdown-item" href="../articles/querying-trade-data.html">Querying Trade Data</a></li>
+    <li><a class="dropdown-item" href="../articles/auxiliary-tables.html">Auxiliary Tables &amp; Lookups</a></li>
+  </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
@@ -73,37 +78,14 @@
           <code><a href="comex_query_city.html">comex_query_city()</a></code>
 
         </dt>
-        <dd>Query foreign trade data by city</dd>
+        <dd>Query city-level foreign trade data</dd>
 
         <dt>
 
           <code><a href="comex_historical.html">comex_historical()</a></code>
 
         </dt>
-        <dd>Query historical foreign trade data</dd>
-      </dl></div><div class="section level2">
-      <h2 id="session-management">Session Management<a class="anchor" aria-label="anchor" href="#session-management"></a></h2>
-
-      <div class="section-desc"><p>Functions to manage browser session for API access</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="comex_init.html">comex_init()</a></code>
-
-        </dt>
-        <dd>Initialize session for API calls</dd>
-
-        <dt>
-
-          <code><a href="comex_close.html">comex_close()</a></code>
-
-        </dt>
-        <dd>Close browser session</dd>
+        <dd>Query historical foreign trade data (1989-1996)</dd>
       </dl></div><div class="section level2">
       <h2 id="api-metadata">API Metadata<a class="anchor" aria-label="anchor" href="#api-metadata"></a></h2>
 
@@ -133,7 +115,7 @@
           <code><a href="comex_filters.html">comex_filters()</a></code>
 
         </dt>
-        <dd>Get list of available filters</dd>
+        <dd>Get available filters</dd>
 
         <dt>
 
@@ -147,14 +129,14 @@
           <code><a href="comex_details.html">comex_details()</a></code>
 
         </dt>
-        <dd>Get list of available details</dd>
+        <dd>Get available detail/grouping fields</dd>
 
         <dt>
 
           <code><a href="comex_metrics.html">comex_metrics()</a></code>
 
         </dt>
-        <dd>Get list of available metrics</dd>
+        <dd>Get available metrics</dd>
       </dl></div><div class="section level2">
       <h2 id="auxiliary-tables-geography">Auxiliary Tables - Geography<a class="anchor" aria-label="anchor" href="#auxiliary-tables-geography"></a></h2>
 
@@ -191,7 +173,7 @@
           <code><a href="comex_states.html">comex_states()</a></code>
 
         </dt>
-        <dd>Get Brazilian states table</dd>
+        <dd>Get Brazilian states (UF) table</dd>
 
         <dt>
 
@@ -300,21 +282,21 @@
           <code><a href="comex_cgce.html">comex_cgce()</a></code>
 
         </dt>
-        <dd>Get CGCE (Classification by Broad Economic Categories) tables</dd>
+        <dd>Get CGCE (Classification by Broad Economic Categories) table</dd>
 
         <dt>
 
           <code><a href="comex_sitc.html">comex_sitc()</a></code>
 
         </dt>
-        <dd>Get SITC (Standard International Trade Classification) tables</dd>
+        <dd>Get SITC/CUCI (Standard International Trade Classification) table</dd>
 
         <dt>
 
           <code><a href="comex_isic.html">comex_isic()</a></code>
 
         </dt>
-        <dd>Get ISIC (International Standard Industrial Classification) tables</dd>
+        <dd>Get ISIC (International Standard Industrial Classification) table</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

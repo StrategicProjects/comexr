@@ -2,28 +2,28 @@
 % Please edit documentation in R/tables.R
 \name{comex_metrics}
 \alias{comex_metrics}
-\title{Get list of available metrics}
+\title{Get available metrics}
 \usage{
 comex_metrics(type = "general", language = "en", verbose = FALSE)
 }
 \arguments{
-\item{type}{Data type: "general", "city", or "historical"}
+\item{type}{Data type: \code{"general"}, \code{"city"}, or \code{"historical"}.}
 
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
+\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A tibble with available metrics
+A data.frame with available metrics and their descriptions.
 }
 \description{
-Returns the list of available metrics for API queries.
+Returns the list of metrics (values) available for API queries.
 }
 \examples{
 \dontrun{
 comex_metrics()
-comex_metrics(type = "city")
-comex_metrics(type = "historical")
+comex_metrics("city")
+comex_metrics("historical")
 }
 
 }

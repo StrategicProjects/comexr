@@ -4,15 +4,15 @@
 \alias{comex_countries}
 \title{Get countries table}
 \usage{
-comex_countries(language = "en", verbose = FALSE)
+comex_countries(search = NULL, verbose = FALSE)
 }
 \arguments{
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
+\item{search}{Optional search term to filter results (e.g. \code{"br"}).}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A tibble with country codes and names
+A data.frame with country codes and names.
 }
 \description{
 Returns the countries table with codes and names.
@@ -20,6 +20,7 @@ Returns the countries table with codes and names.
 \examples{
 \dontrun{
 comex_countries()
+comex_countries(search = "bra")
 }
 
 }

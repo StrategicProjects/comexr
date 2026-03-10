@@ -1,210 +1,120 @@
-# Economic Classification Tables
+# =========================================================================
+# Economic classification auxiliary tables
+# (GET /tables/classifications, /tables/product-categories)
+# =========================================================================
 
-# =============================================================================
-# CGCE - CLASSIFICATION BY BROAD ECONOMIC CATEGORIES
-# =============================================================================
+# ---- CGCE - Classification by Broad Economic Categories -----------------
 
-#' Get CGCE (Classification by Broad Economic Categories) tables
+#' Get CGCE (Classification by Broad Economic Categories) table
 #'
-#' @description
-#' Returns tables from the Classification by Broad Economic Categories.
-#' Use the \code{level} parameter to specify the desired aggregation level.
+#' Returns the CGCE classification table from the `/tables/classifications`
+#' endpoint. CGCE groups products by use or economic purpose (e.g. capital
+#' goods, intermediate goods, consumer goods).
 #'
-#' @param level Aggregation level (optional). If NULL, returns all levels.
-#'   Options: "n1", "n2", "n3"
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with CGCE codes and descriptions
-#'
-#' @details
-#' CGCE groups products by use or economic purpose. It is used for
-#' foreign trade analysis by economic category.
-#'
-#' \itemize{
-#'   \item \strong{n1}: First level (most aggregated)
-#'   \item \strong{n2}: Second level
-#'   \item \strong{n3}: Third level (most detailed)
-#' }
+#' @param language Language: `"pt"`, `"en"`, or `"es"`. Default: `"en"`.
+#' @param search Optional search term to filter results.
+#' @param add Optional related table to include (e.g. `"ncm"`).
+#' @param page Page number for pagination. Default: `NULL` (all results).
+#' @param per_page Number of results per page. Default: `NULL`.
+#' @param verbose Logical. Show progress messages. Default: `FALSE`.
+#' @return A data.frame with CGCE codes and descriptions.
 #'
 #' @examples
 #' \dontrun{
-#' # All CGCE levels
+#' # All CGCE classifications
 #' comex_cgce()
 #'
-#' # CGCE level 1
-#' comex_cgce(level = "n1")
-#'
-#' # CGCE level 3 (most detailed)
-#' comex_cgce(level = "n3")
+#' # Search within CGCE
+#' comex_cgce(search = "110")
 #' }
 #'
 #' @export
-comex_cgce <- function(level = NULL, language = "en", verbose = FALSE) {
-  if (!is.null(level)) {
-    valid_levels <- c("n1", "n2", "n3")
-
-    if (!level %in% valid_levels) {
-      cli::cli_abort(c(
-        "x" = "Invalid level: {level}",
-        "i" = "Valid values: {paste(valid_levels, collapse = ', ')}"
-      ))
-    }
-
-    # Map level to API type
-    api_type <- switch(level,
-      n1 = "cgceN1",
-      n2 = "cgceN2",
-      n3 = "cgceN3"
-    )
-
-    endpoint <- paste0("/tables/classifications?type=", api_type, "&language=", language)
-  } else {
-    endpoint <- paste0("/tables/classifications?language=", language)
-  }
-
-  data <- execute_get(endpoint, verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_cgce <- function(language = "en", search = NULL, add = NULL,
+                       page = NULL, per_page = NULL, verbose = FALSE) {
+  data <- comex_get("/tables/classifications",
+                    query = list(language = language, search = search,
+                                 add = add, page = page,
+                                 perPage = per_page),
+                    verbose = verbose)
+  response_to_df(data)
 }
 
-# =============================================================================
-# SITC - STANDARD INTERNATIONAL TRADE CLASSIFICATION
-# =============================================================================
+# ---- SITC / CUCI - Standard International Trade Classification ----------
 
-#' Get SITC (Standard International Trade Classification) tables
+#' Get SITC/CUCI (Standard International Trade Classification) table
 #'
-#' @description
-#' Returns SITC tables. Use the \code{level} parameter to
-#' specify the desired aggregation level.
+#' Returns the CUCI (Classificacao Uniforme para o Comercio Internacional)
+#' table from the `/tables/product-categories` endpoint. CUCI is the
+#' Portuguese name for SITC (Standard International Trade Classification).
 #'
-#' @param level Aggregation level (optional). If NULL, returns all levels.
-#'   Options: "section", "chapter", "position", "subposition", "item"
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with SITC codes and descriptions
-#'
-#' @details
-#' SITC (Standard International Trade Classification) is a UN
-#' classification for international trade statistics.
-#'
-#' \itemize{
-#'   \item \strong{section}: Section - 1 digit (10 sections)
-#'   \item \strong{chapter}: Chapter/Division - 2 digits
-#'   \item \strong{position}: Group/Position - 3 digits
-#'   \item \strong{subposition}: Subgroup - 4 digits
-#'   \item \strong{item}: Item - 5 digits (most detailed)
-#' }
+#' @param language Language: `"pt"`, `"en"`, or `"es"`. Default: `"en"`.
+#' @param search Optional search term to filter results.
+#' @param add Optional related table to include (e.g. `"ncm"`).
+#' @param page Page number for pagination. Default: `NULL`.
+#' @param per_page Number of results per page. Default: `NULL`.
+#' @param verbose Logical. Show progress messages. Default: `FALSE`.
+#' @return A data.frame with CUCI/SITC codes and descriptions.
 #'
 #' @examples
 #' \dontrun{
-#' # All SITC levels
+#' # All CUCI/SITC classifications
 #' comex_sitc()
 #'
-#' # SITC sections
-#' comex_sitc(level = "section")
-#'
-#' # SITC items (most detailed)
-#' comex_sitc(level = "item")
+#' # Search for products
+#' comex_sitc(search = "carne")
 #' }
 #'
 #' @export
-comex_sitc <- function(level = NULL, language = "en", verbose = FALSE) {
-  if (!is.null(level)) {
-    valid_levels <- c("section", "chapter", "position", "subposition", "item")
-
-    if (!level %in% valid_levels) {
-      cli::cli_abort(c(
-        "x" = "Invalid level: {level}",
-        "i" = "Valid values: {paste(valid_levels, collapse = ', ')}"
-      ))
-    }
-
-    # Map level to API type
-    api_type <- switch(level,
-      section = "cuciSection",
-      chapter = "cuciChapter",
-      position = "cuciPosition",
-      subposition = "cuciSubposition",
-      item = "cuciItem"
-    )
-
-    endpoint <- paste0("/tables/product-categories?type=", api_type, "&language=", language)
-  } else {
-    endpoint <- paste0("/tables/product-categories?language=", language)
-  }
-
-  data <- execute_get(endpoint, verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_sitc <- function(language = "en", search = NULL, add = NULL,
+                       page = NULL, per_page = NULL, verbose = FALSE) {
+  data <- comex_get("/tables/product-categories",
+                    query = list(language = language, search = search,
+                                 add = add, page = page,
+                                 perPage = per_page),
+                    verbose = verbose)
+  response_to_df(data)
 }
 
-# =============================================================================
-# ISIC - INTERNATIONAL STANDARD INDUSTRIAL CLASSIFICATION
-# =============================================================================
+# ---- ISIC - International Standard Industrial Classification ------------
 
-#' Get ISIC (International Standard Industrial Classification) tables
+#' Get ISIC (International Standard Industrial Classification) table
 #'
-#' @description
-#' Returns ISIC tables. Use the \code{level} parameter to
-#' specify the desired aggregation level.
+#' Queries the `/tables/product-categories` endpoint to retrieve ISIC
+#' classification data. ISIC is an international classification of economic
+#' activities developed by the United Nations.
 #'
-#' @param level Aggregation level (optional). If NULL, returns all levels.
-#'   Options: "section", "division", "group", "class"
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
+#' @note
+#' The OpenAPI specification does not define a dedicated ISIC table endpoint.
+#' ISIC codes are available as detail/grouping fields in trade queries
+#' (e.g. `"isic_section"`, `"isic_division"`). This convenience function
+#' queries `/tables/product-categories`, which may return ISIC data
+#' alongside CUCI/SITC classifications. You can also look up ISIC values
+#' using [comex_filter_values()] with filter names like `"isicSection"`.
 #'
-#' @return A tibble with ISIC codes and descriptions
-#'
-#' @details
-#' ISIC is an international classification of economic activities
-#' developed by the UN. It is used to classify productive units
-#' of goods and services.
-#'
-#' \itemize{
-#'   \item \strong{section}: Section - 1 letter (21 sections: A-U)
-#'   \item \strong{division}: Division - 2 digits
-#'   \item \strong{group}: Group - 3 digits
-#'   \item \strong{class}: Class - 4 digits (most detailed)
-#' }
+#' @param language Language: `"pt"`, `"en"`, or `"es"`. Default: `"en"`.
+#' @param search Optional search term to filter results.
+#' @param add Optional related table to include (e.g. `"ncm"`).
+#' @param page Page number for pagination. Default: `NULL`.
+#' @param per_page Number of results per page. Default: `NULL`.
+#' @param verbose Logical. Show progress messages. Default: `FALSE`.
+#' @return A data.frame with classification codes and descriptions.
 #'
 #' @examples
 #' \dontrun{
-#' # All ISIC levels
+#' # Browse product categories (includes ISIC)
 #' comex_isic()
 #'
-#' # ISIC sections
-#' comex_isic(level = "section")
-#'
-#' # ISIC classes (most detailed)
-#' comex_isic(level = "class")
+#' # Alternatively, look up ISIC values via filters:
+#' comex_filter_values("isicSection")
 #' }
 #'
 #' @export
-comex_isic <- function(level = NULL, language = "en", verbose = FALSE) {
-  if (!is.null(level)) {
-    valid_levels <- c("section", "division", "group", "class")
-
-    if (!level %in% valid_levels) {
-      cli::cli_abort(c(
-        "x" = "Invalid level: {level}",
-        "i" = "Valid values: {paste(valid_levels, collapse = ', ')}"
-      ))
-    }
-
-    # Map level to API type
-    api_type <- switch(level,
-      section = "isicSection",
-      division = "isicDivision",
-      group = "isicGroup",
-      class = "isicClass"
-    )
-
-    endpoint <- paste0("/tables/product-categories?type=", api_type, "&language=", language)
-  } else {
-    # ISIC uses the same product-categories endpoint, filtering by type
-    endpoint <- paste0("/tables/product-categories?type=isicSection&language=", language)
-  }
-
-  data <- execute_get(endpoint, verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_isic <- function(language = "en", search = NULL, add = NULL,
+                       page = NULL, per_page = NULL, verbose = FALSE) {
+  data <- comex_get("/tables/product-categories",
+                    query = list(language = language, search = search,
+                                 add = add, page = page,
+                                 perPage = per_page),
+                    verbose = verbose)
+  response_to_df(data)
 }

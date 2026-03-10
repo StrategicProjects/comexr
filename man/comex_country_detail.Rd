@@ -4,20 +4,18 @@
 \alias{comex_country_detail}
 \title{Get country details}
 \usage{
-comex_country_detail(id, language = "en", verbose = FALSE)
+comex_country_detail(id, verbose = FALSE)
 }
 \arguments{
-\item{id}{Country code}
+\item{id}{Country code (e.g. \code{105} for Brazil).}
 
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
-
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Default: \code{FALSE}.}
 }
 \value{
-A list with country details
+A list with country details.
 }
 \description{
-Returns details for a specific country.
+Returns details for a specific country by its code.
 }
 \examples{
 \dontrun{

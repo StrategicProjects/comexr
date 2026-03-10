@@ -7,12 +7,13 @@
 comex_last_update(type = "general", verbose = FALSE)
 }
 \arguments{
-\item{type}{Data type: "general", "city", or "historical"}
+\item{type}{Data type: \code{"general"}, \code{"city"}, or \code{"historical"}.
+Default: \code{"general"}.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A list with last update information
+A list with last update information.
 }
 \description{
 Returns the date of the last data update in the API.
@@ -20,8 +21,8 @@ Returns the date of the last data update in the API.
 \examples{
 \dontrun{
 comex_last_update()
-comex_last_update(type = "city")
-comex_last_update(type = "historical")
+comex_last_update("city")
+comex_last_update("historical")
 }
 
 }

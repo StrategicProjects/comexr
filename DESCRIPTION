@@ -29,15 +29,12 @@ Depends:
     R (>= 4.1.0)
 Imports:
     httr2 (>= 1.0.0),
-    cli (>= 3.6.0),
-    jsonlite,
-    httr2
+    cli (>= 3.6.0)
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    tibble,
-    rvest (>= 1.0.0)
+    tibble
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US

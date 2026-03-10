@@ -2,28 +2,28 @@
 % Please edit documentation in R/tables.R
 \name{comex_filters}
 \alias{comex_filters}
-\title{Get list of available filters}
+\title{Get available filters}
 \usage{
 comex_filters(type = "general", language = "en", verbose = FALSE)
 }
 \arguments{
-\item{type}{Data type: "general", "city", or "historical"}
+\item{type}{Data type: \code{"general"}, \code{"city"}, or \code{"historical"}.}
 
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
+\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A tibble with available filters
+A data.frame with available filters.
 }
 \description{
-Returns the list of available filters for API queries.
+Returns the list of filter types available for API queries.
 }
 \examples{
 \dontrun{
 comex_filters()
-comex_filters(type = "city")
-comex_filters(type = "historical")
+comex_filters("city")
+comex_filters("historical")
 }
 
 }

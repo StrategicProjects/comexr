@@ -7,11 +7,16 @@
 <url><loc>https://strategicprojects.github.io/comexr/articles/querying-trade-data.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/authors.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/index.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/news/index.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/build_details.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/build_filters.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/build_metrics.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_available_years.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_blocs.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_cgce.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_cities.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_city_detail.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/comex_close.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_countries.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_country_detail.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_customs_unit_detail.html</loc></url>
@@ -23,6 +28,7 @@
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_historical.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_hs.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_import.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/comex_init.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_isic.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_last_update.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_metrics.html</loc></url>
@@ -38,6 +44,14 @@
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_transport_mode_detail.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comex_transport_modes.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/comexr-package.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/convert_flow.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/ensure_session.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/execute_get.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/execute_post.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/extract_api_data.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/get_api_name.html</loc></url>
 <url><loc>https://strategicprojects.github.io/comexr/reference/index.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/response_to_tibble.html</loc></url>
+<url><loc>https://strategicprojects.github.io/comexr/reference/validate_period.html</loc></url>
 </urlset>
 

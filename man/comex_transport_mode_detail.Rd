@@ -4,24 +4,22 @@
 \alias{comex_transport_mode_detail}
 \title{Get transport mode details}
 \usage{
-comex_transport_mode_detail(mode_id, language = "en", verbose = FALSE)
+comex_transport_mode_detail(mode_id, verbose = FALSE)
 }
 \arguments{
-\item{mode_id}{Transport mode code}
+\item{mode_id}{Transport mode code (e.g. \code{5} for maritime).}
 
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
-
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Default: \code{FALSE}.}
 }
 \value{
-A list with transport mode details
+A list with transport mode details.
 }
 \description{
 Returns details for a specific transport mode.
 }
 \examples{
 \dontrun{
-comex_transport_mode_detail(1)  # Maritime
+comex_transport_mode_detail(5)
 }
 
 }

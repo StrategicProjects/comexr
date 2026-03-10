@@ -99,6 +99,8 @@ The package uses **only two dependencies**:
 
 Useful links:
 
+- <https://strategicprojects.github.io/comexr/>
+
 - <https://github.com/StrategicProjects/comexr>
 
 - Report bugs at <https://github.com/StrategicProjects/comexr/issues>

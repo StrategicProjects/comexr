@@ -19,8 +19,13 @@ data (1989-1996)."><meta property="og:image" content="https://strategicprojects.
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/comexr.html">Get started</a></li>
-<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with comex</a></li>
+    <li><a class="dropdown-item" href="../articles/querying-trade-data.html">Querying Trade Data</a></li>
+    <li><a class="dropdown-item" href="../articles/auxiliary-tables.html">Auxiliary Tables &amp; Lookups</a></li>
+  </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
@@ -51,7 +56,14 @@ data (1989-1996).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">comex_nbm</span><span class="op">(</span>language <span class="op">=</span> <span class="st">"en"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">comex_nbm</span><span class="op">(</span></span>
+<span>  language <span class="op">=</span> <span class="st">"en"</span>,</span>
+<span>  search <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  page <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  per_page <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,22 +71,40 @@ data (1989-1996).</p>
 
 
 <dl><dt id="arg-language">language<a class="anchor" aria-label="anchor" href="#arg-language"></a></dt>
-<dd><p>Language: "pt", "en", or "es". Default: "en"</p></dd>
+<dd><p>Language: <code>"pt"</code>, <code>"en"</code>, or <code>"es"</code>. Default: <code>"en"</code>.</p></dd>
+
+
+<dt id="arg-search">search<a class="anchor" aria-label="anchor" href="#arg-search"></a></dt>
+<dd><p>Optional search term to filter results.</p></dd>
+
+
+<dt id="arg-add">add<a class="anchor" aria-label="anchor" href="#arg-add"></a></dt>
+<dd><p>Optional related table to include (e.g. <code>"ncm"</code>).</p></dd>
+
+
+<dt id="arg-page">page<a class="anchor" aria-label="anchor" href="#arg-page"></a></dt>
+<dd><p>Page number for pagination. Default: <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-per-page">per_page<a class="anchor" aria-label="anchor" href="#arg-per-page"></a></dt>
+<dd><p>Number of results per page. Default: <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>Logical. If TRUE, display progress messages. Default: FALSE</p></dd>
+<dd><p>Logical. Default: <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A tibble with NBM codes and descriptions</p>
+    <p>A data.frame with NBM codes and descriptions.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">comex_nbm</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">comex_nbm</span><span class="op">(</span>search <span class="op">=</span> <span class="st">"encomendas"</span>, per_page <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">comex_nbm</span><span class="op">(</span>add <span class="op">=</span> <span class="st">"ncm"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

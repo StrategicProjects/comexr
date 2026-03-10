@@ -2,47 +2,45 @@
 % Please edit documentation in R/tables_classifications.R
 \name{comex_sitc}
 \alias{comex_sitc}
-\title{Get SITC (Standard International Trade Classification) tables}
+\title{Get SITC/CUCI (Standard International Trade Classification) table}
 \usage{
-comex_sitc(level = NULL, language = "en", verbose = FALSE)
+comex_sitc(
+  language = "en",
+  search = NULL,
+  add = NULL,
+  page = NULL,
+  per_page = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
-\item{level}{Aggregation level (optional). If NULL, returns all levels.
-Options: "section", "chapter", "position", "subposition", "item"}
+\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
 
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
+\item{search}{Optional search term to filter results.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{add}{Optional related table to include (e.g. \code{"ncm"}).}
+
+\item{page}{Page number for pagination. Default: \code{NULL}.}
+
+\item{per_page}{Number of results per page. Default: \code{NULL}.}
+
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A tibble with SITC codes and descriptions
+A data.frame with CUCI/SITC codes and descriptions.
 }
 \description{
-Returns SITC tables. Use the \code{level} parameter to
-specify the desired aggregation level.
-}
-\details{
-SITC (Standard International Trade Classification) is a UN
-classification for international trade statistics.
-
-\itemize{
-\item \strong{section}: Section - 1 digit (10 sections)
-\item \strong{chapter}: Chapter/Division - 2 digits
-\item \strong{position}: Group/Position - 3 digits
-\item \strong{subposition}: Subgroup - 4 digits
-\item \strong{item}: Item - 5 digits (most detailed)
-}
+Returns the CUCI (Classificacao Uniforme para o Comercio Internacional)
+table from the \verb{/tables/product-categories} endpoint. CUCI is the
+Portuguese name for SITC (Standard International Trade Classification).
 }
 \examples{
 \dontrun{
-# All SITC levels
+# All CUCI/SITC classifications
 comex_sitc()
 
-# SITC sections
-comex_sitc(level = "section")
-
-# SITC items (most detailed)
-comex_sitc(level = "item")
+# Search for products
+comex_sitc(search = "carne")
 }
 
 }

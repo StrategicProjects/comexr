@@ -14,13 +14,9 @@ comex_historical(
   end_period,
   details = NULL,
   filters = NULL,
-  month_detail = FALSE,
+  month_detail = TRUE,
   metric_fob = TRUE,
   metric_kg = TRUE,
-  metric_statistic = FALSE,
-  metric_freight = FALSE,
-  metric_insurance = FALSE,
-  metric_cif = FALSE,
   language = "en",
   verbose = TRUE
 )
@@ -43,7 +39,7 @@ comex_historical(
 - details:
 
   Character vector of detail/grouping fields. Options: `"country"`,
-  `"state"`, `"ncm"` (actually NBM for this period).
+  `"state"`, `"nbm"`.
 
 - filters:
 
@@ -51,7 +47,7 @@ comex_historical(
 
 - month_detail:
 
-  Logical. If `TRUE`, break down by month. Default: `FALSE`.
+  Logical. If `TRUE`, break down by month. Default: `TRUE`.
 
 - metric_fob:
 
@@ -60,22 +56,6 @@ comex_historical(
 - metric_kg:
 
   Logical. Include net weight (kg). Default: `TRUE`.
-
-- metric_statistic:
-
-  Logical. Include statistical quantity. Default: `FALSE`.
-
-- metric_freight:
-
-  Logical. Include freight value (US\$). Default: `FALSE`.
-
-- metric_insurance:
-
-  Logical. Include insurance value (US\$). Default: `FALSE`.
-
-- metric_cif:
-
-  Logical. Include CIF value (US\$). Default: `FALSE`.
 
 - language:
 
@@ -95,12 +75,12 @@ Historical data differs from general data:
 
 - Available period: **1989 to 1996** only
 
-- Limited details: `"country"`, `"state"`, `"ncm"`
+- Limited details: `"country"`, `"state"`, `"nbm"`
 
 - Product classification is **NBM** (not NCM)
 
-- All six metrics are available (FOB, KG, Statistic, Freight, Insurance,
-  CIF)
+- Only **FOB and KG** metrics are available (no statistic, freight,
+  insurance, or CIF)
 
 ## Examples
 
@@ -112,15 +92,6 @@ comex_historical(
   start_period = "1995-01",
   end_period = "1996-12",
   details = "country"
-)
-
-# Historical imports with CIF value
-comex_historical(
-  flow = "import",
-  start_period = "1990-01",
-  end_period = "1992-12",
-  details = c("ncm", "country"),
-  metric_cif = TRUE
 )
 } # }
 ```

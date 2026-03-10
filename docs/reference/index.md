@@ -1,9 +1,8 @@
 # Package index
 
-## Trade Data Queries
+## Main Query Functions
 
-Functions to query export/import statistics. These are the main
-workhorse functions that hit the POST endpoints.
+Functions to query foreign trade data
 
 - [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md)
   : Query general foreign trade data
@@ -16,10 +15,9 @@ workhorse functions that hit the POST endpoints.
 - [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md)
   : Query historical foreign trade data (1989-1996)
 
-## Metadata Discovery
+## API Metadata
 
-Discover available filters, details, metrics, date ranges, and last
-update timestamps for each data type.
+Functions to get API information
 
 - [`comex_last_update()`](https://strategicprojects.github.io/comexr/reference/comex_last_update.md)
   : Get last data update date
@@ -34,10 +32,9 @@ update timestamps for each data type.
 - [`comex_metrics()`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md)
   : Get available metrics
 
-## Geography Tables
+## Auxiliary Tables - Geography
 
-Lookup tables for countries, economic blocs, states, cities, transport
-modes, and customs units.
+Functions to query geographic tables
 
 - [`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md)
   : Get countries table
@@ -62,10 +59,9 @@ modes, and customs units.
 - [`comex_customs_unit_detail()`](https://strategicprojects.github.io/comexr/reference/comex_customs_unit_detail.md)
   : Get customs unit details
 
-## Product Tables
+## Auxiliary Tables - Products
 
-Nomenclature tables: NCM (Mercosur), NBM (historical), and Harmonized
-System (HS).
+Functions to query product classification tables
 
 - [`comex_ncm()`](https://strategicprojects.github.io/comexr/reference/comex_ncm.md)
   : Get NCM (Mercosur Common Nomenclature) table
@@ -78,9 +74,9 @@ System (HS).
 - [`comex_hs()`](https://strategicprojects.github.io/comexr/reference/comex_hs.md)
   : Get Harmonized System (HS) tables
 
-## Classification Tables
+## Auxiliary Tables - Economic Classifications
 
-Economic classification tables: CGCE (BEC), SITC (CUCI), and ISIC codes.
+Functions to query economic classification tables
 
 - [`comex_cgce()`](https://strategicprojects.github.io/comexr/reference/comex_cgce.md)
   : Get CGCE (Classification by Broad Economic Categories) table

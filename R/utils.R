@@ -1,536 +1,446 @@
-# Internal Utility Functions
+# =========================================================================
+# Internal utility functions
+# =========================================================================
 
-# =============================================================================
-# SESSION MANAGEMENT USING RVEST
-# =============================================================================
+# -------------------------------------------------------------------------
+# HTTP helpers
+# -------------------------------------------------------------------------
 
-# Global environment for session
-.comex_env <- new.env(parent = emptyenv())
-.comex_env$session <- NULL
-.comex_env$chrome <- NULL
-.comex_env$ready <- FALSE
-
-#' Initialize session for API calls
-#' 
-#' @description
-#' Starts a browser session using rvest's read_html_live() and solves 
-#' the Cloudflare challenge. All API calls will be made via this session.
-#' 
-#' @param force If TRUE, close existing session and create new one. Default: FALSE
-#' @return Invisibly returns TRUE on success
-#' 
-#' @details
-#' This function uses \code{rvest::read_html_live()} which internally uses
-#' chromote to create a headless Chrome session. The session navigates to
-#' the API domain to solve Cloudflare's JavaScript challenge.
-#' 
-#' The session stays open and is reused for all subsequent API calls.
-#' Call \code{comex_close()} when done to free resources.
-#' 
-#' @note
-#' Requires the \code{rvest} package (>= 1.0.0) and Chrome/Chromium browser.
-#' 
-#' @examples
-#' \dontrun{
-#' # Initialize session (called automatically on first API call)
-#' comex_init()
-#' 
-#' # Make API calls
-#' years <- comex_available_years()
-#' 
-#' # Close when done
-#' comex_close()
-#' }
-#' 
-#' @export
-comex_init <- function(force = FALSE) {
-  
-  # Check if already initialized
-  if (!force && .comex_env$ready) {
-    cli::cli_alert_info("Session already active")
-    return(invisible(TRUE))
+#' Apply SSL options to request
+#' @noRd
+comex_req_options <- function(req) {
+  if (isFALSE(getOption("comex.ssl_verifypeer", TRUE))) {
+    return(req |> httr2::req_options(ssl_verifypeer = 0))
   }
-  
-  # Close existing session if forcing
-  if (force) {
-    comex_close()
-  }
-  
-  # Check for rvest
-  if (!requireNamespace("rvest", quietly = TRUE)) {
-    cli::cli_abort(c(
-      "x" = "Package 'rvest' is required",
-      "i" = "Install with: install.packages('rvest')"
-    ))
-  }
-  
-  cli::cli_alert_info("Initializing session...")
-  cli::cli_alert_info("Solving Cloudflare challenge (may take 10-15s)...")
-  
-  tryCatch({
-    # Use read_html_live to create session on API domain
-    .comex_env$session <- rvest::read_html_live(
-      "https://api-comexstat.mdic.gov.br/general/dates/years?language=pt"
-    )
-    
-    # Access the internal ChromoteSession
-    .comex_env$chrome <- .comex_env$session$session
-    
-    # Check if it worked by looking at page content
-    content <- .comex_env$session |> 
-      rvest::html_elements("body") |> 
-      rvest::html_text() |>
-      paste(collapse = "")  # Ensure single string
-    
-    if (grepl("minYear|min|success", content)) {
-      .comex_env$ready <- TRUE
-      cli::cli_alert_success("Session ready!")
-      invisible(TRUE)
-    } else {
-      cli::cli_abort(c(
-        "x" = "Failed to pass Cloudflare challenge",
-        "i" = "Content: {substr(content, 1, 200)}"
-      ))
-    }
-    
-  }, error = function(e) {
-    .comex_env$session <- NULL
-    .comex_env$chrome <- NULL
-    .comex_env$ready <- FALSE
-    cli::cli_abort(c(
-      "x" = "Failed to initialize session",
-      "i" = "Error: {e$message}",
-      "i" = "Make sure Chrome/Chromium is installed"
-    ))
-  })
+  req
 }
 
-#' Close browser session
-#' 
-#' @description
-#' Closes the browser session and frees resources.
-#' 
-#' @return Invisibly returns TRUE
-#' 
-#' @examples
-#' \dontrun{
-#' comex_close()
-#' }
-#' 
-#' @export
-comex_close <- function() {
-  .comex_env$session <- NULL
-  .comex_env$chrome <- NULL
-  .comex_env$ready <- FALSE
-  cli::cli_alert_info("Session closed")
-  invisible(TRUE)
-}
-
-#' Check if session is ready
-#' @keywords internal
-ensure_session <- function() {
-  if (!.comex_env$ready || is.null(.comex_env$chrome)) {
-    comex_init()
-  }
-}
-
-#' Execute GET request via browser
-#' @keywords internal
-execute_get <- function(endpoint, verbose = TRUE) {
-  ensure_session()
-  
-  if (verbose) {
-    cli::cli_progress_step("Querying API...")
-  }
-  
-  js_code <- sprintf('
-    (async () => {
-      try {
-        const response = await fetch("%s", {
-          method: "GET",
-          headers: { "Accept": "application/json" }
-        });
-        if (!response.ok) {
-          return JSON.stringify({success: false, status: response.status, error: "HTTP " + response.status});
-        }
-        const data = await response.json();
-        return JSON.stringify({success: true, status: response.status, data: data});
-      } catch (error) {
-        return JSON.stringify({success: false, error: error.message});
+#' Perform request with SSL auto-fallback
+#' @noRd
+safe_perform <- function(req) {
+  tryCatch(
+    httr2::req_perform(req),
+    error = function(e) {
+      if (grepl("SSL|certificate", e$message, ignore.case = TRUE)) {
+        cli::cli_warn(c(
+          "!" = "SSL certificate verification failed.",
+          "i" = "Retrying without SSL verification.",
+          "i" = "To suppress: {.code options(comex.ssl_verifypeer = FALSE)}"
+        ))
+        options(comex.ssl_verifypeer = FALSE)
+        req2 <- req |> httr2::req_options(ssl_verifypeer = 0)
+        httr2::req_perform(req2)
+      } else {
+        stop(e)
       }
-    })()
-  ', endpoint)
-  
-  result <- .comex_env$chrome$Runtime$evaluate(
-    expression = js_code,
-    awaitPromise = TRUE
+    }
   )
-  
-  parsed <- jsonlite::fromJSON(result$result$value, simplifyVector = FALSE)
-  
-  # Retry on rate limit (HTTP 429)
-  if (!parsed$success && identical(parsed$status, 429L)) {
-    for (attempt in 1:3) {
-      wait_secs <- attempt * 5
-      if (verbose) {
-        cli::cli_alert_warning(
-          "Rate limited (429). Waiting {wait_secs}s before retry {attempt}/3..."
-        )
-      }
-      Sys.sleep(wait_secs)
-      result <- .comex_env$chrome$Runtime$evaluate(
-        expression = js_code, awaitPromise = TRUE
-      )
-      parsed <- jsonlite::fromJSON(result$result$value, simplifyVector = FALSE)
-      if (parsed$success || !identical(parsed$status, 429L)) break
-    }
-  }
-  
-  if (!parsed$success) {
-    cli::cli_abort(c(
-      "x" = "API request failed",
-      "i" = "Error: {parsed$error}"
-    ))
-  }
-  
-  if (verbose) {
-    cli::cli_alert_success("Query completed")
-  }
-  
-  parsed
 }
 
-#' Execute POST request via browser
-#' @keywords internal
-execute_post <- function(endpoint, body, verbose = TRUE) {
-  ensure_session()
-  
-  body_json <- jsonlite::toJSON(body, auto_unbox = TRUE)
-  
-  if (verbose) {
-    cli::cli_progress_step("Sending query to API...")
-  }
-  
-  # Escape backticks in JSON
-  body_json_escaped <- gsub("`", "\\\\`", body_json)
-  
-  js_code <- sprintf('
-    (async () => {
-      try {
-        const response = await fetch("%s", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: `%s`
-        });
-        if (!response.ok) {
-          const text = await response.text();
-          return JSON.stringify({success: false, status: response.status, error: text || ("HTTP " + response.status)});
-        }
-        const data = await response.json();
-        return JSON.stringify({success: true, status: response.status, data: data});
-      } catch (error) {
-        return JSON.stringify({success: false, error: error.message});
-      }
-    })()
-  ', endpoint, body_json_escaped)
-  
-  # Retry loop for rate limiting (HTTP 429)
-  max_retries <- 3
-  for (attempt in seq_len(max_retries + 1)) {
-    result <- .comex_env$chrome$Runtime$evaluate(
-      expression = js_code,
-      awaitPromise = TRUE
-    )
-    
-    parsed <- jsonlite::fromJSON(result$result$value, simplifyVector = FALSE)
-    
-    # If rate limited, wait and retry
-    if (!parsed$success && identical(parsed$status, 429L) && attempt <= max_retries) {
-      wait_secs <- attempt * 5  # 5s, 10s, 15s
-      if (verbose) {
-        cli::cli_alert_warning(
-          "Rate limited (429). Waiting {wait_secs}s before retry {attempt}/{max_retries}..."
-        )
-      }
-      Sys.sleep(wait_secs)
-      next
-    }
-    
-    break
-  }
-  
-  if (!parsed$success) {
-    cli::cli_abort(c(
-      "x" = "API request failed",
-      "i" = "Status: {parsed$status}",
-      "i" = "Error: {parsed$error}"
-    ))
-  }
-  
-  if (verbose) {
-    cli::cli_alert_success("Query completed")
-  }
-  
-  parsed
-}
 
-#' Extract data from double-wrapped browser response
+#' Perform a GET request to the ComexStat API
 #'
-#' Browser wrapper returns nested lists with API envelope inside.
-#' This helper extracts the inner data field, handling several patterns:
-#' - Named data (e.g. country detail): return as-is
-#' - Unnamed single-element list (e.g. NCM detail): unwrap first element
-#' - NULL → return NULL
-#' @keywords internal
-extract_api_data <- function(response) {
-  # Level 1: browser wrapper → API envelope
-  envelope <- response$data
-  if (is.null(envelope)) return(NULL)
+#' @param endpoint Relative path (e.g. "/tables/countries").
+#' @param query Named list of query-string parameters.
+#' @param verbose Logical. Show progress messages.
+#' @return Parsed JSON response as a list.
+#' @noRd
+comex_get <- function(endpoint, query = list(), verbose = TRUE) {
+  url <- paste0(.base_url, endpoint)
 
-  # Level 2: API envelope → actual data
-  if (is.list(envelope) && "data" %in% names(envelope)) {
-    inner <- envelope$data
-  } else {
-    inner <- envelope
+  if (verbose) {
+    cli::cli_progress_step("GET {endpoint}")
   }
 
-  if (is.null(inner)) return(NULL)
+  req <- httr2::request(url) |>
+    httr2::req_headers(Accept = "application/json") |>
+    httr2::req_timeout(60) |>
+    httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
+    httr2::req_error(is_error = function(resp) FALSE) |>
+    comex_req_options()
 
-  # Unwrap single-element unnamed list: [{id, text}] → {id, text}
-  if (is.list(inner) && length(inner) == 1) {
-    nm <- names(inner)
-    is_unnamed <- is.null(nm) || length(nm) == 0 || all(nm == "")
-    if (is_unnamed && is.list(inner[[1]]) && !is.null(names(inner[[1]]))) {
-      return(inner[[1]])
+  # Append query params (dropping NULLs)
+  query <- Filter(Negate(is.null), query)
+  if (length(query) > 0) {
+    req <- do.call(httr2::req_url_query, c(list(req), query))
+  }
+
+  resp <- safe_perform(req)
+  status <- httr2::resp_status(resp)
+
+  if (status >= 400) {
+    body <- tryCatch(
+      httr2::resp_body_json(resp),
+      error = function(e) list(message = paste("HTTP", status))
+    )
+    msg <- body$message %||% body$error$message %||% paste("HTTP", status)
+    cli::cli_abort(c(
+      "x" = "API request failed (HTTP {status})",
+      "i" = "Endpoint: {endpoint}",
+      "i" = "Message: {msg}"
+    ))
+  }
+
+  httr2::resp_body_json(resp)
+}
+
+#' Perform a POST request to the ComexStat API
+#'
+#' @param endpoint Relative path (e.g. "/general").
+#' @param body List to send as JSON body.
+#' @param query Named list of query-string parameters.
+#' @param verbose Logical. Show progress messages.
+#' @return Parsed JSON response as a list.
+#' @noRd
+comex_post <- function(endpoint, body, query = list(), verbose = TRUE) {
+  url <- paste0(.base_url, endpoint)
+
+  if (verbose) {
+    cli::cli_progress_step("POST {endpoint}")
+  }
+
+  req <- httr2::request(url) |>
+    httr2::req_headers(
+      Accept = "application/json",
+      `Content-Type` = "application/json"
+    ) |>
+    httr2::req_body_json(body, auto_unbox = TRUE) |>
+    httr2::req_timeout(120) |>
+    httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
+    httr2::req_error(is_error = function(resp) FALSE) |>
+    comex_req_options()
+
+  query <- Filter(Negate(is.null), query)
+  if (length(query) > 0) {
+    req <- do.call(httr2::req_url_query, c(list(req), query))
+  }
+
+  resp <- safe_perform(req)
+  status <- httr2::resp_status(resp)
+
+  if (status >= 400) {
+    body_err <- tryCatch(
+      httr2::resp_body_json(resp),
+      error = function(e) list(message = paste("HTTP", status))
+    )
+    msg <- body_err$message %||% body_err$error$message %||% paste("HTTP", status)
+    cli::cli_abort(c(
+      "x" = "API request failed (HTTP {status})",
+      "i" = "Endpoint: {endpoint}",
+      "i" = "Message: {msg}"
+    ))
+  }
+
+  httr2::resp_body_json(resp)
+}
+
+# -------------------------------------------------------------------------
+# Response conversion
+# -------------------------------------------------------------------------
+
+#' Check if an object has meaningful names
+#' Handles NULL, character(0), and all-empty-string names
+#' @noRd
+has_names <- function(x) {
+  nm <- names(x)
+  !is.null(nm) && length(nm) > 0 && !all(nm == "")
+}
+
+#' Convert an API response to a data.frame
+#'
+#' Handles all known ComexStat API response patterns found empirically:
+#'
+#' **Pattern 1 — named list with "list" key:**
+#' `{"data": {"list": [...rows...], "count": N}}`
+#' Used by: `/tables/countries`, `/tables/ncm`, POST `/general`, POST `/cities`,
+#' `/general/filters`, `/general/details`, `/general/metrics`, etc.
+#'
+#' **Pattern 2 — direct unnamed array:**
+#' `{"data": [...rows...]}`
+#' Used by: `/tables/uf`, `/tables/cities`, `/tables/ways`, `/tables/urf`,
+#' POST `/historical-data/`
+#'
+#' **Pattern 3 — double-wrapped unnamed array:**
+#' `{"data": [[...rows...]]}`
+#' Used by: `/general/filters/{filter}` (filter values)
+#'
+#' @param response List returned by the API.
+#' @param path Name of the field containing the data. Default: `"data"`.
+#' @return A data.frame or tibble.
+#' @noRd
+response_to_df <- function(response, path = "data") {
+  # Step 1: Extract the top-level data field
+  data <- if (!is.null(path) && path %in% names(response)) {
+    response[[path]]
+  } else {
+    response
+  }
+
+  if (is.null(data) || length(data) == 0) {
+    return(data.frame())
+  }
+
+  # Step 2: Unwrap nested structures to get a flat list of rows
+
+  # Pattern 1: {"data": {"list": [...], "count": N}}
+  if (is.list(data) && has_names(data) && "list" %in% names(data)) {
+    data <- data[["list"]]
+    if (is.null(data) || length(data) == 0) return(data.frame())
+  }
+
+  # Pattern 3: {"data": [[...rows...]]} — unnamed list wrapping rows
+  # Keep unwrapping single-element unnamed lists until we reach rows
+  while (is.list(data) && !has_names(data) && length(data) == 1 &&
+         is.list(data[[1]]) && !is.data.frame(data[[1]])) {
+    data <- data[[1]]
+  }
+
+  # Check if we ended up with a data.frame after unwrapping
+  if (is.data.frame(data)) {
+    return(as_comex_df(data))
+  }
+
+  # Step 3: Convert list of records to data.frame
+  if (is.list(data) && length(data) > 0) {
+
+    # Check first element to detect row structure
+    first <- data[[1]]
+    is_row_list <- is.list(first) && has_names(first)
+
+    if (is_row_list) {
+      df <- tryCatch({
+        all_names <- unique(unlist(lapply(data, names)))
+        rows <- lapply(data, function(row) {
+          row_list <- lapply(all_names, function(nm) {
+            val <- row[[nm]]
+            if (is.null(val)) {
+              NA
+            } else if (is.list(val)) {
+              paste0(val, collapse = ", ")
+            } else {
+              val
+            }
+          })
+          names(row_list) <- all_names
+          as.data.frame(row_list, stringsAsFactors = FALSE)
+        })
+        do.call(rbind, rows)
+      }, error = function(e) {
+        data.frame()
+      })
+      return(as_comex_df(df))
+    }
+
+    # Named list that's not a list of rows → single-row data.frame
+    if (has_names(data)) {
+      df <- tryCatch({
+        flat <- lapply(data, function(val) {
+          if (is.null(val)) NA
+          else if (is.list(val)) paste0(val, collapse = ", ")
+          else val
+        })
+        as.data.frame(flat, stringsAsFactors = FALSE)
+      }, error = function(e) data.frame())
+      return(as_comex_df(df))
     }
   }
 
-  # If it's a named list with typical detail fields → return as-is
-  if (is.list(inner) && !is.null(names(inner)) && length(names(inner)) > 0) {
-    return(inner)
-  }
-
-  inner
+  data.frame()
 }
 
-# =============================================================================
-# DETAIL/FILTER MAPPINGS
-# =============================================================================
+#' Extract a single record from an API response
+#'
+#' Handles all detail endpoint patterns found empirically:
+#'
+#' **Named object:** `{"data": {"id": 105, "country": "Brasil", ...}}`
+#' Used by: `/tables/countries/105`, `/tables/uf/26`, `/tables/cities/5300050`,
+#' `/tables/urf/8110000`, `/general/dates/updated`, `/general/dates/years`
+#'
+#' **Unnamed list of 1:** `{"data": [{"id": "02042200", "text": "..."}]}`
+#' Used by: `/tables/ncm/{code}`, `/tables/nbm/{code}`
+#'
+#' **Named with "list" key:** `{"data": {"list": [{...}], "count": 1}}`
+#' (possible but not seen in practice)
+#'
+#' **NULL:** `{"data": null}`
+#' Used by: `/tables/ways/5` (invalid ID)
+#'
+#' @param response List returned by the API.
+#' @return The extracted data (list, character, or NULL).
+#' @noRd
+extract_single <- function(response) {
+  data <- response[["data"]]
+  if (is.null(data)) return(NULL)
 
-.details_map <- c(
-  # Geography
-  country = "country",
-  bloc = "economicBlock",
-  economic_block = "economicBlock",
-  state = "state",
-  city = "city",
-  transport_mode = "transportMode",
-  customs_unit = "urf",
-  # Products (general)
-  ncm = "ncm",
-  hs6 = "sh6",
-  hs4 = "sh4",
-  hs2 = "sh2",
-  section = "section",
-  # Products (city-specific names)
-  heading = "heading",
-  chapter = "chapter",
-  # Products (historical)
-  nbm = "nbm",
-  # CGCE
-  cgce_n1 = "cgceN1",
-  cgce_n2 = "cgceN2",
-  cgce_n3 = "cgceN3",
-  # SITC
-  sitc_section = "cuciSection",
-  sitc_chapter = "cuciChapter",
-  sitc_position = "cuciPosition",
-  sitc_subposition = "cuciSubposition",
-  sitc_item = "cuciItem",
-  # ISIC
-  isic_section = "isicSection",
-  isic_division = "isicDivision",
-  isic_group = "isicGroup",
-  isic_class = "isicClass",
-  # Other
-  company_size = "companySize"
-)
+  # Named list with "list" key: unwrap
+  if (is.list(data) && has_names(data) && "list" %in% names(data)) {
+    lst <- data[["list"]]
+    if (is.null(lst) || length(lst) == 0) return(NULL)
+    return(lst[[1]])
+  }
 
-#' Validate period format
-#' @keywords internal
+  # Unnamed list: unwrap first element
+  # Covers NCM/NBM detail: {"data": [{"id": "02042200", ...}]}
+  if (is.list(data) && !has_names(data) && length(data) >= 1) {
+    return(data[[1]])
+  }
+
+  # Named object or scalar: return directly
+  data
+}
+
+#' Convert to tibble if available, otherwise data.frame
+#' @noRd
+as_comex_df <- function(df) {
+  if (requireNamespace("tibble", quietly = TRUE)) {
+    tibble::as_tibble(df)
+  } else {
+    df
+  }
+}
+
+# -------------------------------------------------------------------------
+# Validation
+# -------------------------------------------------------------------------
+
+#' Validate period format (YYYY-MM)
+#' @noRd
 validate_period <- function(start_period, end_period) {
   pattern <- "^\\d{4}-\\d{2}$"
-  
+
   if (!grepl(pattern, start_period)) {
     cli::cli_abort(c(
       "x" = "Invalid start period: {start_period}",
-      "i" = "Use format 'YYYY-MM' (e.g., '2023-01')"
+      "i" = "Use format 'YYYY-MM' (e.g. '2023-01')"
     ))
   }
-  
+
   if (!grepl(pattern, end_period)) {
     cli::cli_abort(c(
       "x" = "Invalid end period: {end_period}",
-      "i" = "Use format 'YYYY-MM' (e.g., '2023-12')"
+      "i" = "Use format 'YYYY-MM' (e.g. '2023-12')"
     ))
   }
-  
+
   if (start_period > end_period) {
-    cli::cli_abort("Start period must be before or equal to end period")
+    cli::cli_abort("Start period must be before or equal to end period.")
   }
-  
+
   invisible(TRUE)
 }
 
-#' Convert flow to API format
-#' @keywords internal
+#' Convert flow argument to API format
+#' @noRd
 convert_flow <- function(flow) {
-  flow_lower <- tolower(flow)
-  
-  if (flow_lower %in% c("exp", "export", "exports")) {
-    return("export")
-  } else if (flow_lower %in% c("imp", "import", "imports")) {
-    return("import")
-  } else {
-    cli::cli_abort("Invalid flow: {flow}. Use 'export' or 'import'")
-  }
+  fl <- tolower(flow)
+  if (fl %in% c("exp", "export", "exports")) return("export")
+  if (fl %in% c("imp", "import", "imports")) return("import")
+  cli::cli_abort(c(
+    "x" = "Invalid flow: {flow}",
+    "i" = "Use 'export' or 'import'"
+  ))
 }
 
-#' Get API name for detail/filter
-#' @keywords internal
-get_api_name <- function(name, type = "general") {
-  if (name %in% names(.details_map)) {
-    return(.details_map[[name]])
-  }
-  if (name %in% .details_map) {
-    return(name)
-  }
-  cli::cli_warn("Unknown detail/filter: {name}")
+# -------------------------------------------------------------------------
+# Name mappings (user-friendly -> API names)
+# -------------------------------------------------------------------------
+
+#' @noRd
+.details_map <- c(
+  # Geographic
+  country        = "country",
+  bloc           = "economicBlock",
+  economic_block = "economicBlock",
+  state          = "state",
+  city           = "city",
+  transport_mode = "transportMode",
+  customs_unit   = "urf",
+  # Products - NCM / HS (general)
+  ncm            = "ncm",
+  hs6            = "sh6",
+  sh6            = "sh6",
+  hs4            = "sh4",
+  sh4            = "sh4",
+  hs2            = "sh2",
+  sh2            = "sh2",
+  section        = "section",
+  # Products - city endpoint names
+  heading        = "heading",
+  chapter        = "chapter",
+  # CGCE
+  cgce_n1        = "cgceN1",
+  cgce_n2        = "cgceN2",
+  cgce_n3        = "cgceN3",
+  # CUCI / SITC
+  sitc_section      = "cuciSection",
+  sitc_chapter      = "cuciChapter",
+  sitc_position     = "cuciPosition",
+
+  sitc_subposition  = "cuciSubposition",
+  sitc_item         = "cuciItem",
+  cuci_section      = "cuciSection",
+  cuci_chapter      = "cuciChapter",
+  cuci_position     = "cuciPosition",
+  cuci_subposition  = "cuciSubposition",
+  cuci_item         = "cuciItem",
+  # ISIC
+  isic_section   = "isicSection",
+  isic_division  = "isicDivision",
+  isic_group     = "isicGroup",
+  isic_class     = "isicClass",
+  # NBM (historical)
+  nbm            = "nbm",
+  # Other
+  company_size   = "companySize"
+)
+
+#' Convert user-friendly name to API name
+#' @noRd
+get_api_name <- function(name) {
+  if (name %in% names(.details_map)) return(unname(.details_map[[name]]))
+  if (name %in% .details_map) return(name)
+  cli::cli_warn("Unknown detail/filter: {name}. Will be sent as-is.")
   name
 }
 
-#' Build filters array for API
-#' @keywords internal
-build_filters <- function(filters, type = "general") {
-  if (is.null(filters) || length(filters) == 0) {
-    return(list())
-  }
-  
-  lapply(names(filters), function(filter_name) {
-    api_name <- get_api_name(filter_name, type)
-    values <- as.character(filters[[filter_name]])
-    list(filter = api_name, values = as.list(values))
+#' Build details list for the API
+#' @noRd
+build_details <- function(details) {
+  if (is.null(details) || length(details) == 0) return(list())
+  as.list(vapply(details, get_api_name, character(1), USE.NAMES = FALSE))
+}
+
+#' Build filters list for the API
+#' @noRd
+build_filters <- function(filters) {
+  if (is.null(filters) || length(filters) == 0) return(list())
+  lapply(names(filters), function(nm) {
+    list(
+      filter = get_api_name(nm),
+      values = as.list(filters[[nm]])
+    )
   })
 }
 
-#' Build details array for API
-#' @keywords internal
-build_details <- function(details, type = "general") {
-  if (is.null(details) || length(details) == 0) {
-    return(list())
-  }
-  as.list(sapply(details, function(d) get_api_name(d, type), USE.NAMES = FALSE))
-}
-
-#' Build metrics array for API
-#' @keywords internal
+#' Build metrics vector for the API
+#' @noRd
 build_metrics <- function(metric_fob = TRUE,
                           metric_kg = TRUE,
                           metric_statistic = FALSE,
                           metric_freight = FALSE,
                           metric_insurance = FALSE,
                           metric_cif = FALSE) {
-  metrics <- c()
-  
-  if (metric_fob) metrics <- c(metrics, "metricFOB")
-  if (metric_kg) metrics <- c(metrics, "metricKG")
+  metrics <- character()
+  if (metric_fob)       metrics <- c(metrics, "metricFOB")
+  if (metric_kg)        metrics <- c(metrics, "metricKG")
   if (metric_statistic) metrics <- c(metrics, "metricStatistic")
-  if (metric_freight) metrics <- c(metrics, "metricFreight")
+  if (metric_freight)   metrics <- c(metrics, "metricFreight")
   if (metric_insurance) metrics <- c(metrics, "metricInsurance")
-  if (metric_cif) metrics <- c(metrics, "metricCIF")
-  
+  if (metric_cif)       metrics <- c(metrics, "metricCIF")
+
   if (length(metrics) == 0) {
-    cli::cli_abort("At least one metric must be selected")
+    cli::cli_abort("At least one metric must be selected.")
   }
-  
+
   as.list(metrics)
-}
-
-#' Convert API response to tibble
-#' @keywords internal
-response_to_tibble <- function(response, path = "data") {
-  # Step 1: Extract from browser wrapper {success, status, data: <api_response>}
-  if (!is.null(path) && path %in% names(response)) {
-    data <- response[[path]]
-  } else {
-    data <- response
-  }
-
-  if (is.null(data) || length(data) == 0) {
-    return(tibble::tibble())
-  }
-
-  # Step 2: Unwrap API envelope {data: <rows>, success, message, ...}
-  if (is.list(data) && "data" %in% names(data)) {
-    data <- data[["data"]]
-  }
-
-  if (is.null(data) || length(data) == 0) {
-    return(tibble::tibble())
-  }
-
-  if (is.data.frame(data)) {
-    return(tibble::as_tibble(data))
-  }
-
-  # Step 3: Handle Pattern 1 — {list: [...], count: N}
-  has_nm <- !is.null(names(data)) && length(names(data)) > 0 && !all(names(data) == "")
-  if (has_nm && "list" %in% names(data)) {
-    data <- data[["list"]]
-    if (is.null(data) || length(data) == 0) {
-      return(tibble::tibble())
-    }
-  }
-
-  # Step 4: Unwrap single-element unnamed wrapper (Pattern 3: [[rows]])
-  while (is.list(data) && length(data) == 1) {
-    inner_nm <- names(data)
-    is_unnamed <- is.null(inner_nm) || length(inner_nm) == 0 || all(inner_nm == "")
-    if (is_unnamed && is.list(data[[1]])) {
-      data <- data[[1]]
-    } else {
-      break
-    }
-  }
-
-  if (is.null(data) || length(data) == 0) {
-    return(tibble::tibble())
-  }
-
-  # Step 5: Convert list of row-lists to data.frame
-  if (is.list(data) && length(data) > 0) {
-    first <- data[[1]]
-    if (is.list(first) && !is.null(names(first))) {
-      # Each element is a named list (row)
-      tryCatch({
-        df <- do.call(rbind, lapply(data, function(row) {
-          # NULL → NA, list values → collapsed string
-          row <- lapply(row, function(val) {
-            if (is.null(val)) return(NA_character_)
-            if (is.list(val)) return(paste(unlist(val), collapse = ", "))
-            val
-          })
-          as.data.frame(row, stringsAsFactors = FALSE)
-        }))
-        return(tibble::as_tibble(df))
-      }, error = function(e) {
-        return(tibble::tibble())
-      })
-    }
-  }
-
-  tibble::tibble()
 }

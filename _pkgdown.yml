@@ -38,12 +38,6 @@ reference:
       - comex_query_city
       - comex_historical
 
-  - title: "Session Management"
-    desc: "Functions to manage browser session for API access"
-    contents:
-      - comex_init
-      - comex_close
-
   - title: "API Metadata"
     desc: "Functions to get API information"
     contents:
@@ -86,10 +80,12 @@ reference:
       - comex_isic
 
 articles:
-  - title: "Getting Started"
+  - title: "Guides"
     navbar: ~
     contents:
-      - comexr
+      - getting-started
+      - querying-trade-data
+      - auxiliary-tables
 
 news:
   releases:

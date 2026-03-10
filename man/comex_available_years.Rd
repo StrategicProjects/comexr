@@ -7,12 +7,13 @@
 comex_available_years(type = "general", verbose = FALSE)
 }
 \arguments{
-\item{type}{Data type: "general", "city", or "historical"}
+\item{type}{Data type: \code{"general"}, \code{"city"}, or \code{"historical"}.
+Default: \code{"general"}.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A list with minimum and maximum available years
+A list with \code{min} and \code{max} year values.
 }
 \description{
 Returns the first and last years available for queries in the API.
@@ -20,8 +21,8 @@ Returns the first and last years available for queries in the API.
 \examples{
 \dontrun{
 comex_available_years()
-comex_available_years(type = "city")
-comex_available_years(type = "historical")
+comex_available_years("city")
+comex_available_years("historical")
 }
 
 }

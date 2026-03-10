@@ -4,24 +4,22 @@
 \alias{comex_customs_unit_detail}
 \title{Get customs unit details}
 \usage{
-comex_customs_unit_detail(urf_id, language = "en", verbose = FALSE)
+comex_customs_unit_detail(urf_id, verbose = FALSE)
 }
 \arguments{
-\item{urf_id}{Customs unit code}
+\item{urf_id}{Customs unit code (e.g. \code{8110000}).}
 
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
-
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{verbose}{Logical. Default: \code{FALSE}.}
 }
 \value{
-A list with customs unit details
+A list with customs unit details.
 }
 \description{
-Returns details for a specific customs unit.
+Returns details for a specific customs unit (URF).
 }
 \examples{
 \dontrun{
-comex_customs_unit_detail(817600)
+comex_customs_unit_detail(8110000)
 }
 
 }

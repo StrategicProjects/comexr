@@ -16,56 +16,71 @@ comex_import(
   metric_freight = FALSE,
   metric_insurance = FALSE,
   metric_cif = FALSE,
+  language = "en",
   verbose = TRUE
 )
 }
 \arguments{
-\item{start_period}{Start period in "YYYY-MM" format (e.g., "2023-01")}
+\item{start_period}{Start period in \code{"YYYY-MM"} format (e.g. \code{"2023-01"}).}
 
-\item{end_period}{End period in "YYYY-MM" format (e.g., "2023-12")}
+\item{end_period}{End period in \code{"YYYY-MM"} format (e.g. \code{"2023-12"}).}
 
-\item{details}{Character vector with desired detail levels. Options:
-\itemize{
-\item Geographic: "country", "bloc", "state", "city", "transport_mode", "customs_unit"
-\item Products: "ncm", "hs6", "hs4", "hs2", "section"
-\item CGCE: "cgce_n1", "cgce_n2", "cgce_n3"
-\item SITC: "sitc_section", "sitc_chapter", "sitc_position", "sitc_subposition", "sitc_item"
-\item ISIC: "isic_section", "isic_division", "isic_group", "isic_class"
-\item Other: "company_size" (imports only)
-}}
+\item{details}{Character vector of detail/grouping fields. Options:
 
-\item{filters}{Named list with filters. Use the same names as details.
-Example: \code{list(country = c("160", "249"), state = c("SP", "RJ"))}}
+\strong{Geographic:} \code{"country"}, \code{"bloc"}, \code{"state"}, \code{"city"},
+\code{"transport_mode"}, \code{"customs_unit"}
 
-\item{month_detail}{Logical. If TRUE, detail by month. Default: TRUE}
+\strong{Products:} \code{"ncm"}, \code{"hs6"} (or \code{"sh6"}), \code{"hs4"} (or \code{"sh4"}),
+\code{"hs2"} (or \code{"sh2"}), \code{"section"}
 
-\item{metric_fob}{Logical. If TRUE, include FOB value (US$). Default: TRUE}
+\strong{CGCE:} \code{"cgce_n1"}, \code{"cgce_n2"}, \code{"cgce_n3"}
 
-\item{metric_kg}{Logical. If TRUE, include net weight in kg. Default: TRUE}
+\strong{SITC/CUCI:} \code{"sitc_section"}, \code{"sitc_chapter"}, \code{"sitc_position"},
+\code{"sitc_subposition"}, \code{"sitc_item"}
 
-\item{metric_statistic}{Logical. If TRUE, include statistical quantity. Default: FALSE}
+\strong{ISIC:} \code{"isic_section"}, \code{"isic_division"}, \code{"isic_group"},
+\code{"isic_class"}
 
-\item{metric_freight}{Logical. If TRUE, include freight value (US$). Default: FALSE}
+\strong{Other:} \code{"company_size"} (imports only)}
 
-\item{metric_insurance}{Logical. If TRUE, include insurance value (US$). Default: FALSE}
+\item{filters}{Named list of filters. Names should match detail field names.
+Example: \code{list(country = c(160, 249), state = c(26, 13))}}
 
-\item{metric_cif}{Logical. If TRUE, include CIF value (US$). Default: FALSE}
+\item{month_detail}{Logical. If \code{TRUE}, break down results by month.
+Default: \code{FALSE}.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: TRUE}
+\item{metric_fob}{Logical. Include FOB value (US$). Default: \code{TRUE}.}
+
+\item{metric_kg}{Logical. Include net weight (kg). Default: \code{TRUE}.}
+
+\item{metric_statistic}{Logical. Include statistical quantity. Default: \code{FALSE}.}
+
+\item{metric_freight}{Logical. Include freight value (US$, imports only).
+Default: \code{FALSE}.}
+
+\item{metric_insurance}{Logical. Include insurance value (US$, imports only).
+Default: \code{FALSE}.}
+
+\item{metric_cif}{Logical. Include CIF value (US$, imports only).
+Default: \code{FALSE}.}
+
+\item{language}{Response language: \code{"pt"}, \code{"en"}, or \code{"es"}.
+Default: \code{"en"}.}
+
+\item{verbose}{Logical. Show progress messages. Default: \code{TRUE}.}
 }
 \value{
-A tibble with import data
+A data.frame (or tibble) with import data.
 }
 \description{
-Shortcut for \code{comex_query()} with \code{flow = "import"}.
+Shortcut for \code{\link[=comex_query]{comex_query()}} with \code{flow = "import"}.
 }
 \examples{
 \dontrun{
-# Imports in 2023 by country with CIF value
 comex_import(
   start_period = "2023-01",
   end_period = "2023-12",
-  details = c("country"),
+  details = "country",
   metric_cif = TRUE
 )
 }

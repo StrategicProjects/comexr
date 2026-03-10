@@ -1,232 +1,209 @@
-# Auxiliary Tables and Metadata
+# =========================================================================
+# API metadata and geographic auxiliary tables (GET)
+# =========================================================================
 
-# =============================================================================
-# METADATA
-# =============================================================================
+# ---- Metadata -----------------------------------------------------------
 
 #' Get last data update date
 #'
-#' @description
 #' Returns the date of the last data update in the API.
 #'
-#' @param type Data type: "general", "city", or "historical"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A list with last update information
+#' @param type Data type: `"general"`, `"city"`, or `"historical"`.
+#'   Default: `"general"`.
+#' @param verbose Logical. Show progress messages. Default: `FALSE`.
+#' @return A list with last update information.
 #'
 #' @examples
 #' \dontrun{
 #' comex_last_update()
-#' comex_last_update(type = "city")
-#' comex_last_update(type = "historical")
+#' comex_last_update("city")
+#' comex_last_update("historical")
 #' }
 #'
 #' @export
 comex_last_update <- function(type = "general", verbose = FALSE) {
   endpoint <- switch(type,
-    general = "/general/dates/updated",
-    city = "/cities/dates/updated",
+    general    = "/general/dates/updated",
+    city       = "/cities/dates/updated",
     historical = "/historical-data/dates/updated",
-    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'")
+    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'.")
   )
-  data <- execute_get(endpoint, verbose = verbose)
-  extract_api_data(data)
+  data <- comex_get(endpoint, verbose = verbose)
+  extract_single(data)
 }
 
 #' Get available years for queries
 #'
-#' @description
 #' Returns the first and last years available for queries in the API.
 #'
-#' @param type Data type: "general", "city", or "historical"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A list with minimum and maximum available years
+#' @inheritParams comex_last_update
+#' @return A list with `min` and `max` year values.
 #'
 #' @examples
 #' \dontrun{
 #' comex_available_years()
-#' comex_available_years(type = "city")
-#' comex_available_years(type = "historical")
+#' comex_available_years("city")
+#' comex_available_years("historical")
 #' }
 #'
 #' @export
 comex_available_years <- function(type = "general", verbose = FALSE) {
   endpoint <- switch(type,
-    general = "/general/dates/years",
-    city = "/cities/dates/years",
+    general    = "/general/dates/years",
+    city       = "/cities/dates/years",
     historical = "/historical-data/dates/years",
-    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'")
+    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'.")
   )
-  data <- execute_get(endpoint, verbose = verbose)
-  extract_api_data(data)
+  data <- comex_get(endpoint, verbose = verbose)
+  extract_single(data)
 }
 
-#' Get list of available filters
+#' Get available filters
 #'
-#' @description
-#' Returns the list of available filters for API queries.
+#' Returns the list of filter types available for API queries.
 #'
-#' @param type Data type: "general", "city", or "historical"
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with available filters
+#' @param type Data type: `"general"`, `"city"`, or `"historical"`.
+#' @param language Language: `"pt"`, `"en"`, or `"es"`. Default: `"en"`.
+#' @param verbose Logical. Show progress messages. Default: `FALSE`.
+#' @return A data.frame with available filters.
 #'
 #' @examples
 #' \dontrun{
 #' comex_filters()
-#' comex_filters(type = "city")
-#' comex_filters(type = "historical")
+#' comex_filters("city")
+#' comex_filters("historical")
 #' }
 #'
 #' @export
 comex_filters <- function(type = "general", language = "en", verbose = FALSE) {
-  endpoint <- switch(type,
-    general = paste0("/general/filters?language=", language),
-    city = paste0("/cities/filters?language=", language),
-    historical = paste0("/historical-data/filters?language=", language),
-    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'")
+  base <- switch(type,
+    general    = "/general/filters",
+    city       = "/cities/filters",
+    historical = "/historical-data/filters",
+    cli::cli_abort("Invalid type: {type}.")
   )
-  data <- execute_get(endpoint, verbose = verbose)
-  response_to_tibble(data, path = "data")
+  data <- comex_get(base, query = list(language = language), verbose = verbose)
+  response_to_df(data)
 }
 
 #' Get values for a specific filter
 #'
-#' @description
-#' Returns the possible values for a specific filter. Not all filters listed
-#' by [comex_filters()] have a values endpoint.
+#' Returns the possible values for a given filter name.
 #'
-#' @param filter Filter name. Available filters by type:
-#'   \itemize{
-#'     \item \strong{general}: "country", "economicBlock", "state", "urf",
-#'       "ncm", "section"
-#'     \item \strong{city}: "country", "economicBlock", "state", "city",
-#'       "heading", "chapter", "section"
-#'     \item \strong{historical}: "country", "state"
-#'   }
-#' @param type Data type: "general", "city", or "historical"
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with filter values (id, text columns)
+#' @param filter Filter name as returned by [comex_filters()]
+#'   (e.g. `"country"`, `"state"`, `"ncm"`, `"economicBlock"`).
+#' @param type Data type: `"general"`, `"city"`, or `"historical"`.
+#' @param language Language: `"pt"`, `"en"`, or `"es"`. Default: `"en"`.
+#' @param verbose Logical. Show progress messages. Default: `FALSE`.
+#' @return A data.frame with filter values.
 #'
 #' @examples
 #' \dontrun{
 #' comex_filter_values("country")
 #' comex_filter_values("state", type = "city")
-#' comex_filter_values("heading", type = "city")
+#' comex_filter_values("economicBlock")
 #' }
 #'
 #' @export
-comex_filter_values <- function(filter, type = "general", language = "en", verbose = FALSE) {
-  base_endpoint <- switch(type,
-    general = "/general/filters",
-    city = "/cities/filters",
+comex_filter_values <- function(filter,
+                                type = "general",
+                                language = "en",
+                                verbose = FALSE) {
+  base <- switch(type,
+    general    = "/general/filters",
+    city       = "/cities/filters",
     historical = "/historical-data/filters",
-    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'")
+    cli::cli_abort("Invalid type: {type}.")
   )
-  endpoint <- paste0(base_endpoint, "/", filter, "?language=", language)
-  data <- execute_get(endpoint, verbose = verbose)
-  response_to_tibble(data, path = "data")
+  endpoint <- paste0(base, "/", filter)
+  data <- comex_get(endpoint, query = list(language = language),
+                    verbose = verbose)
+  response_to_df(data)
 }
 
-#' Get list of available details
+#' Get available detail/grouping fields
 #'
-#' @description
-#' Returns the list of available detail/grouping fields.
+#' Returns the list of detail fields that can be used to group query results.
 #'
-#' @param type Data type: "general", "city", or "historical"
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with available details
+#' @inheritParams comex_filters
+#' @return A data.frame with available details.
 #'
 #' @examples
 #' \dontrun{
 #' comex_details()
-#' comex_details(type = "city")
-#' comex_details(type = "historical")
+#' comex_details("city")
+#' comex_details("historical")
 #' }
 #'
 #' @export
 comex_details <- function(type = "general", language = "en", verbose = FALSE) {
-  endpoint <- switch(type,
-    general = paste0("/general/details?language=", language),
-    city = paste0("/cities/details?language=", language),
-    historical = paste0("/historical-data/details?language=", language),
-    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'")
+  base <- switch(type,
+    general    = "/general/details",
+    city       = "/cities/details",
+    historical = "/historical-data/details",
+    cli::cli_abort("Invalid type: {type}.")
   )
-  data <- execute_get(endpoint, verbose = verbose)
-  response_to_tibble(data, path = "data")
+  data <- comex_get(base, query = list(language = language), verbose = verbose)
+  response_to_df(data)
 }
 
-#' Get list of available metrics
+#' Get available metrics
 #'
-#' @description
-#' Returns the list of available metrics for API queries.
+#' Returns the list of metrics (values) available for API queries.
 #'
-#' @param type Data type: "general", "city", or "historical"
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with available metrics
+#' @inheritParams comex_filters
+#' @return A data.frame with available metrics and their descriptions.
 #'
 #' @examples
 #' \dontrun{
 #' comex_metrics()
-#' comex_metrics(type = "city")
-#' comex_metrics(type = "historical")
+#' comex_metrics("city")
+#' comex_metrics("historical")
 #' }
 #'
 #' @export
 comex_metrics <- function(type = "general", language = "en", verbose = FALSE) {
-  endpoint <- switch(type,
-    general = paste0("/general/metrics?language=", language),
-    city = paste0("/cities/metrics?language=", language),
-    historical = paste0("/historical-data/metrics?language=", language),
-    cli::cli_abort("Invalid type: {type}. Use 'general', 'city', or 'historical'")
+  base <- switch(type,
+    general    = "/general/metrics",
+    city       = "/cities/metrics",
+    historical = "/historical-data/metrics",
+    cli::cli_abort("Invalid type: {type}.")
   )
-  data <- execute_get(endpoint, verbose = verbose)
-  response_to_tibble(data, path = "data")
+  data <- comex_get(base, query = list(language = language), verbose = verbose)
+  response_to_df(data)
 }
 
-# =============================================================================
-# AUXILIARY TABLES - GEOGRAPHY
-# =============================================================================
+# ---- Auxiliary tables: Geography ----------------------------------------
 
 #' Get countries table
 #'
-#' @description
 #' Returns the countries table with codes and names.
 #'
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with country codes and names
+#' @param search Optional search term to filter results (e.g. `"br"`).
+#' @param verbose Logical. Show progress messages. Default: `FALSE`.
+#' @return A data.frame with country codes and names.
 #'
 #' @examples
 #' \dontrun{
 #' comex_countries()
+#' comex_countries(search = "bra")
 #' }
 #'
 #' @export
-comex_countries <- function(language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/countries?language=", language), verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_countries <- function(search = NULL, verbose = FALSE) {
+  data <- comex_get("/tables/countries",
+                    query = list(search = search),
+                    verbose = verbose)
+  response_to_df(data)
 }
 
 #' Get country details
 #'
-#' @description
-#' Returns details for a specific country.
+#' Returns details for a specific country by its code.
 #'
-#' @param id Country code
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A list with country details
+#' @param id Country code (e.g. `105` for Brazil).
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A list with country details.
 #'
 #' @examples
 #' \dontrun{
@@ -234,41 +211,46 @@ comex_countries <- function(language = "en", verbose = FALSE) {
 #' }
 #'
 #' @export
-comex_country_detail <- function(id, language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/countries/", id, "?language=", language), verbose = verbose)
-  extract_api_data(data)
+comex_country_detail <- function(id, verbose = FALSE) {
+  endpoint <- paste0("/tables/countries/", id)
+  data <- comex_get(endpoint, verbose = verbose)
+  extract_single(data)
 }
 
 #' Get economic blocs table
 #'
-#' @description
-#' Returns the economic blocs table with codes and names.
+#' Returns the economic blocs table with codes and names. Economic blocs
+#' represent trade agreements between countries and regions.
 #'
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with economic bloc codes and names
+#' @param language Language: `"pt"`, `"en"`, or `"es"`. Default: `"en"`.
+#' @param search Optional search term to filter results.
+#' @param add Optional related table to include (e.g. `"country"`).
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A data.frame with economic bloc codes and names.
 #'
 #' @examples
 #' \dontrun{
 #' comex_blocs()
+#' comex_blocs(search = "mercosul")
+#' comex_blocs(add = "country")
 #' }
 #'
 #' @export
-comex_blocs <- function(language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/economic-blocks?language=", language), verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_blocs <- function(language = "en", search = NULL, add = NULL,
+                        verbose = FALSE) {
+  data <- comex_get("/tables/economic-blocks",
+                    query = list(language = language, search = search,
+                                 add = add),
+                    verbose = verbose)
+  response_to_df(data)
 }
 
-#' Get Brazilian states table
+#' Get Brazilian states (UF) table
 #'
-#' @description
 #' Returns the Brazilian states table with codes and names.
 #'
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with state codes and names
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A data.frame with state codes and names.
 #'
 #' @examples
 #' \dontrun{
@@ -276,42 +258,37 @@ comex_blocs <- function(language = "en", verbose = FALSE) {
 #' }
 #'
 #' @export
-comex_states <- function(language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/uf?language=", language), verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_states <- function(verbose = FALSE) {
+  data <- comex_get("/tables/uf", verbose = verbose)
+  response_to_df(data)
 }
 
 #' Get state details
 #'
-#' @description
 #' Returns details for a specific Brazilian state.
 #'
-#' @param state_id State code or abbreviation
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A list with state details
+#' @param uf_id State code (e.g. `26` for Pernambuco).
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A list with state details.
 #'
 #' @examples
 #' \dontrun{
-#' comex_state_detail("SP")
+#' comex_state_detail(26)
 #' }
 #'
 #' @export
-comex_state_detail <- function(state_id, language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/uf/", state_id, "?language=", language), verbose = verbose)
-  extract_api_data(data)
+comex_state_detail <- function(uf_id, verbose = FALSE) {
+  endpoint <- paste0("/tables/uf/", uf_id)
+  data <- comex_get(endpoint, verbose = verbose)
+  extract_single(data)
 }
 
 #' Get Brazilian cities table
 #'
-#' @description
 #' Returns the Brazilian cities table with codes and names.
 #'
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with city codes and names
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A data.frame with city (IBGE) codes and names.
 #'
 #' @examples
 #' \dontrun{
@@ -319,42 +296,37 @@ comex_state_detail <- function(state_id, language = "en", verbose = FALSE) {
 #' }
 #'
 #' @export
-comex_cities <- function(language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/cities?language=", language), verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_cities <- function(verbose = FALSE) {
+  data <- comex_get("/tables/cities", verbose = verbose)
+  response_to_df(data)
 }
 
 #' Get city details
 #'
-#' @description
 #' Returns details for a specific Brazilian city.
 #'
-#' @param city_id IBGE city code
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A list with city details
+#' @param city_id IBGE city code (e.g. `5300050`).
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A list with city details.
 #'
 #' @examples
 #' \dontrun{
-#' comex_city_detail(3550308)  # Sao Paulo
+#' comex_city_detail(5300050)
 #' }
 #'
 #' @export
-comex_city_detail <- function(city_id, language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/cities/", city_id, "?language=", language), verbose = verbose)
-  extract_api_data(data)
+comex_city_detail <- function(city_id, verbose = FALSE) {
+  endpoint <- paste0("/tables/cities/", city_id)
+  data <- comex_get(endpoint, verbose = verbose)
+  extract_single(data)
 }
 
 #' Get transport modes table
 #'
-#' @description
 #' Returns the transport modes table with codes and names.
 #'
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with transport mode codes and names
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A data.frame with transport mode codes and names.
 #'
 #' @examples
 #' \dontrun{
@@ -362,42 +334,39 @@ comex_city_detail <- function(city_id, language = "en", verbose = FALSE) {
 #' }
 #'
 #' @export
-comex_transport_modes <- function(language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/ways?language=", language), verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_transport_modes <- function(verbose = FALSE) {
+  data <- comex_get("/tables/ways", verbose = verbose)
+  response_to_df(data)
 }
 
 #' Get transport mode details
 #'
-#' @description
 #' Returns details for a specific transport mode.
 #'
-#' @param mode_id Transport mode code
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A list with transport mode details
+#' @param mode_id Transport mode code (e.g. `5` for maritime).
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A list with transport mode details.
 #'
 #' @examples
 #' \dontrun{
-#' comex_transport_mode_detail(1)  # Maritime
+#' comex_transport_mode_detail(5)
 #' }
 #'
 #' @export
-comex_transport_mode_detail <- function(mode_id, language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/ways/", mode_id, "?language=", language), verbose = verbose)
-  extract_api_data(data)
+comex_transport_mode_detail <- function(mode_id, verbose = FALSE) {
+  endpoint <- paste0("/tables/ways/", mode_id)
+  data <- comex_get(endpoint, verbose = verbose)
+  extract_single(data)
 }
 
 #' Get customs units (URF) table
 #'
-#' @description
-#' Returns the customs units table with codes and names.
+#' Returns the customs units table (Unidades da Receita Federal) with
+#' codes and names. These are the Federal Revenue Service administrative
+#' units responsible for overseeing foreign trade operations.
 #'
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A tibble with customs unit codes and names
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A data.frame with customs unit codes and names.
 #'
 #' @examples
 #' \dontrun{
@@ -405,29 +374,27 @@ comex_transport_mode_detail <- function(mode_id, language = "en", verbose = FALS
 #' }
 #'
 #' @export
-comex_customs_units <- function(language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/urf?language=", language), verbose = verbose)
-  response_to_tibble(data, path = "data")
+comex_customs_units <- function(verbose = FALSE) {
+  data <- comex_get("/tables/urf", verbose = verbose)
+  response_to_df(data)
 }
 
 #' Get customs unit details
 #'
-#' @description
-#' Returns details for a specific customs unit.
+#' Returns details for a specific customs unit (URF).
 #'
-#' @param urf_id Customs unit code
-#' @param language Language: "pt", "en", or "es". Default: "en"
-#' @param verbose Logical. If TRUE, display progress messages. Default: FALSE
-#'
-#' @return A list with customs unit details
+#' @param urf_id Customs unit code (e.g. `8110000`).
+#' @param verbose Logical. Default: `FALSE`.
+#' @return A list with customs unit details.
 #'
 #' @examples
 #' \dontrun{
-#' comex_customs_unit_detail(817600)
+#' comex_customs_unit_detail(8110000)
 #' }
 #'
 #' @export
-comex_customs_unit_detail <- function(urf_id, language = "en", verbose = FALSE) {
-  data <- execute_get(paste0("/tables/urf/", urf_id, "?language=", language), verbose = verbose)
-  extract_api_data(data)
+comex_customs_unit_detail <- function(urf_id, verbose = FALSE) {
+  endpoint <- paste0("/tables/urf/", urf_id)
+  data <- comex_get(endpoint, verbose = verbose)
+  extract_single(data)
 }

@@ -2,47 +2,53 @@
 % Please edit documentation in R/tables_classifications.R
 \name{comex_isic}
 \alias{comex_isic}
-\title{Get ISIC (International Standard Industrial Classification) tables}
+\title{Get ISIC (International Standard Industrial Classification) table}
 \usage{
-comex_isic(level = NULL, language = "en", verbose = FALSE)
+comex_isic(
+  language = "en",
+  search = NULL,
+  add = NULL,
+  page = NULL,
+  per_page = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
-\item{level}{Aggregation level (optional). If NULL, returns all levels.
-Options: "section", "division", "group", "class"}
+\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
 
-\item{language}{Language: "pt", "en", or "es". Default: "en"}
+\item{search}{Optional search term to filter results.}
 
-\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
+\item{add}{Optional related table to include (e.g. \code{"ncm"}).}
+
+\item{page}{Page number for pagination. Default: \code{NULL}.}
+
+\item{per_page}{Number of results per page. Default: \code{NULL}.}
+
+\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
 }
 \value{
-A tibble with ISIC codes and descriptions
+A data.frame with classification codes and descriptions.
 }
 \description{
-Returns ISIC tables. Use the \code{level} parameter to
-specify the desired aggregation level.
+Queries the \verb{/tables/product-categories} endpoint to retrieve ISIC
+classification data. ISIC is an international classification of economic
+activities developed by the United Nations.
 }
-\details{
-ISIC is an international classification of economic activities
-developed by the UN. It is used to classify productive units
-of goods and services.
-
-\itemize{
-\item \strong{section}: Section - 1 letter (21 sections: A-U)
-\item \strong{division}: Division - 2 digits
-\item \strong{group}: Group - 3 digits
-\item \strong{class}: Class - 4 digits (most detailed)
-}
+\note{
+The OpenAPI specification does not define a dedicated ISIC table endpoint.
+ISIC codes are available as detail/grouping fields in trade queries
+(e.g. \code{"isic_section"}, \code{"isic_division"}). This convenience function
+queries \verb{/tables/product-categories}, which may return ISIC data
+alongside CUCI/SITC classifications. You can also look up ISIC values
+using \code{\link[=comex_filter_values]{comex_filter_values()}} with filter names like \code{"isicSection"}.
 }
 \examples{
 \dontrun{
-# All ISIC levels
+# Browse product categories (includes ISIC)
 comex_isic()
 
-# ISIC sections
-comex_isic(level = "section")
-
-# ISIC classes (most detailed)
-comex_isic(level = "class")
+# Alternatively, look up ISIC values via filters:
+comex_filter_values("isicSection")
 }
 
 }
