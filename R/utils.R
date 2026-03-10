@@ -21,7 +21,13 @@ safe_perform <- function(req) {
   tryCatch(
     httr2::req_perform(req),
     error = function(e) {
-      if (grepl("SSL|certificate", e$message, ignore.case = TRUE)) {
+      # httr2 wraps curl errors: e$message = "Failed to perform HTTP request."
+      # The actual SSL message is in e$parent$message
+      full_msg <- paste(
+        conditionMessage(e),
+        if (!is.null(e$parent)) conditionMessage(e$parent) else ""
+      )
+      if (grepl("SSL|certificate|peer", full_msg, ignore.case = TRUE)) {
         cli::cli_warn(c(
           "!" = "SSL certificate verification failed.",
           "i" = "Retrying without SSL verification.",
