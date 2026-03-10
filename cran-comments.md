@@ -2,11 +2,11 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a resubmission.
+* This is a new release.
 
 ## Resubmission
 
-This is a resubmission. Changes since last submission:
+This is a new release. Changes since last submission:
 
 1. Fixed SSL certificate handling: the ComexStat API uses the ICP-Brasil
    certificate chain, which is not present in the CA bundle of all systems.
