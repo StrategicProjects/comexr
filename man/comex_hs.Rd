@@ -4,51 +4,51 @@
 \alias{comex_hs}
 \title{Get Harmonized System (HS) tables}
 \usage{
-comex_hs(
-  language = "en",
-  add = NULL,
-  page = NULL,
-  per_page = NULL,
-  verbose = FALSE
-)
+comex_hs(level = NULL, language = "en", verbose = FALSE)
 }
 \arguments{
-\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
+\item{level}{Aggregation level (optional). If NULL, returns all levels.
+Options: "section", "chapter" (HS2), "heading" (HS4), "subheading" (HS6)}
 
-\item{add}{Optional related table to include (e.g. \code{"ncm"}).}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
 
-\item{page}{Page number for pagination. Default: \code{NULL}.}
-
-\item{per_page}{Number of results per page. Default: \code{NULL}.}
-
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with HS codes and descriptions.
+A tibble with Harmonized System codes and descriptions
 }
 \description{
-Returns Harmonized System classification tables. The HS is an
-international product nomenclature developed by the World Customs
-Organization (WCO).
+Returns Harmonized System tables. Use the \code{level} parameter to
+specify the desired aggregation level.
 }
 \details{
-The Harmonized System is organized hierarchically:
-\itemize{
-\item \strong{Section}: 21 sections (broadest grouping)
-\item \strong{Chapter (HS2)}: ~97 chapters (2 digits)
-\item \strong{Heading (HS4)}: 4 digits
-\item \strong{Subheading (HS6)}: 6 digits (most detailed)
-}
+The Harmonized System (HS) is an international product nomenclature
+developed by the World Customs Organization (WCO). It is organized
+into sections, chapters, headings, and subheadings.
 
-The NCM adds 2 more digits to the HS6 code.
+\itemize{
+\item \strong{section}: Section - Broadest grouping (21 sections)
+\item \strong{chapter}: Chapter (HS2) - 2 digits, ~97 chapters
+\item \strong{heading}: Heading (HS4) - 4 digits
+\item \strong{subheading}: Subheading (HS6) - 6 digits
+}
 }
 \examples{
 \dontrun{
-# All HS classifications
+# All HS levels
 comex_hs()
 
-# With related NCM codes
-comex_hs(add = "ncm", per_page = 10)
+# Sections only
+comex_hs(level = "section")
+
+# Chapters (HS2)
+comex_hs(level = "chapter")
+
+# Headings (HS4)
+comex_hs(level = "heading")
+
+# Subheadings (HS6)
+comex_hs(level = "subheading")
 }
 
 }

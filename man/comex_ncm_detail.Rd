@@ -4,23 +4,24 @@
 \alias{comex_ncm_detail}
 \title{Get NCM code details}
 \usage{
-comex_ncm_detail(ncm_code, verbose = FALSE)
+comex_ncm_detail(ncm_code, language = "en", verbose = FALSE)
 }
 \arguments{
-\item{ncm_code}{NCM code (8 digits, as character, e.g. \code{"02042200"}).}
+\item{ncm_code}{NCM code (8 digits)}
 
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A list with NCM details.
+A list with NCM details
 }
 \description{
-Returns details for a specific NCM code, including product description
-and its HS classification hierarchy.
+Returns details for a specific NCM code.
 }
 \examples{
 \dontrun{
-comex_ncm_detail("02042200")
+comex_ncm_detail("02023000")  # Boneless frozen beef
 }
 
 }

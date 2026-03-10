@@ -10,96 +10,77 @@ comex_query(
   end_period,
   details = NULL,
   filters = NULL,
-  month_detail = FALSE,
+  month_detail = TRUE,
   metric_fob = TRUE,
   metric_kg = TRUE,
   metric_statistic = FALSE,
   metric_freight = FALSE,
   metric_insurance = FALSE,
   metric_cif = FALSE,
-  language = "en",
   verbose = TRUE
 )
 }
 \arguments{
-\item{flow}{Trade flow: \code{"export"} or \code{"import"}.}
+\item{flow}{Trade flow type: "export" or "import"}
 
-\item{start_period}{Start period in \code{"YYYY-MM"} format (e.g. \code{"2023-01"}).}
+\item{start_period}{Start period in "YYYY-MM" format (e.g., "2023-01")}
 
-\item{end_period}{End period in \code{"YYYY-MM"} format (e.g. \code{"2023-12"}).}
+\item{end_period}{End period in "YYYY-MM" format (e.g., "2023-12")}
 
-\item{details}{Character vector of detail/grouping fields. Options:
+\item{details}{Character vector with desired detail levels. Options:
+\itemize{
+\item Geographic: "country", "bloc", "state", "city", "transport_mode", "customs_unit"
+\item Products: "ncm", "hs6", "hs4", "hs2", "section"
+\item CGCE: "cgce_n1", "cgce_n2", "cgce_n3"
+\item SITC: "sitc_section", "sitc_chapter", "sitc_position", "sitc_subposition", "sitc_item"
+\item ISIC: "isic_section", "isic_division", "isic_group", "isic_class"
+\item Other: "company_size" (imports only)
+}}
 
-\strong{Geographic:} \code{"country"}, \code{"bloc"}, \code{"state"}, \code{"city"},
-\code{"transport_mode"}, \code{"customs_unit"}
+\item{filters}{Named list with filters. Use the same names as details.
+Example: \code{list(country = c("160", "249"), state = c("SP", "RJ"))}}
 
-\strong{Products:} \code{"ncm"}, \code{"hs6"} (or \code{"sh6"}), \code{"hs4"} (or \code{"sh4"}),
-\code{"hs2"} (or \code{"sh2"}), \code{"section"}
+\item{month_detail}{Logical. If TRUE, detail by month. Default: TRUE}
 
-\strong{CGCE:} \code{"cgce_n1"}, \code{"cgce_n2"}, \code{"cgce_n3"}
+\item{metric_fob}{Logical. If TRUE, include FOB value (US$). Default: TRUE}
 
-\strong{SITC/CUCI:} \code{"sitc_section"}, \code{"sitc_chapter"}, \code{"sitc_position"},
-\code{"sitc_subposition"}, \code{"sitc_item"}
+\item{metric_kg}{Logical. If TRUE, include net weight in kg. Default: TRUE}
 
-\strong{ISIC:} \code{"isic_section"}, \code{"isic_division"}, \code{"isic_group"},
-\code{"isic_class"}
+\item{metric_statistic}{Logical. If TRUE, include statistical quantity. Default: FALSE}
 
-\strong{Other:} \code{"company_size"} (imports only)}
+\item{metric_freight}{Logical. If TRUE, include freight value (US$). Default: FALSE}
 
-\item{filters}{Named list of filters. Names should match detail field names.
-Example: \code{list(country = c(160, 249), state = c(26, 13))}}
+\item{metric_insurance}{Logical. If TRUE, include insurance value (US$). Default: FALSE}
 
-\item{month_detail}{Logical. If \code{TRUE}, break down results by month.
-Default: \code{FALSE}.}
+\item{metric_cif}{Logical. If TRUE, include CIF value (US$). Default: FALSE}
 
-\item{metric_fob}{Logical. Include FOB value (US$). Default: \code{TRUE}.}
-
-\item{metric_kg}{Logical. Include net weight (kg). Default: \code{TRUE}.}
-
-\item{metric_statistic}{Logical. Include statistical quantity. Default: \code{FALSE}.}
-
-\item{metric_freight}{Logical. Include freight value (US$, imports only).
-Default: \code{FALSE}.}
-
-\item{metric_insurance}{Logical. Include insurance value (US$, imports only).
-Default: \code{FALSE}.}
-
-\item{metric_cif}{Logical. Include CIF value (US$, imports only).
-Default: \code{FALSE}.}
-
-\item{language}{Response language: \code{"pt"}, \code{"en"}, or \code{"es"}.
-Default: \code{"en"}.}
-
-\item{verbose}{Logical. Show progress messages. Default: \code{TRUE}.}
+\item{verbose}{Logical. If TRUE, display progress messages. Default: TRUE}
 }
 \value{
-A data.frame (or tibble if available) with query results.
+A tibble with query results
 }
 \description{
 Query the main ComexStat API endpoint to retrieve Brazilian export and
-import data. Supports filtering and grouping by multiple classifications
+import data. Allows filtering and detailing by various classifications
 such as NCM, Harmonized System, countries, states, etc.
-
-Data is available monthly from 1997 to the most recent complete month.
 }
 \examples{
 \dontrun{
-# Brazilian exports in 2023, by country
+# Brazilian exports in 2023 by country (monthly by default)
 comex_query(
   flow = "export",
   start_period = "2023-01",
   end_period = "2023-12",
-  details = "country"
+  details = c("country")
 )
 
-# Imports 2023 by NCM + country, filtered by specific countries
+# Imports 2022-2023 by NCM, filtered by country
 comex_query(
   flow = "import",
-  start_period = "2023-01",
+  start_period = "2022-01",
   end_period = "2023-12",
   details = c("ncm", "country"),
-  filters = list(country = c(160, 249)),
-  month_detail = TRUE,
+  filters = list(country = c("160", "249")),
   metric_cif = TRUE
 )
 }

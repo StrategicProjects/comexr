@@ -2,7 +2,7 @@
 % Please edit documentation in R/historical.R
 \name{comex_historical}
 \alias{comex_historical}
-\title{Query historical foreign trade data (1989-1996)}
+\title{Query historical foreign trade data}
 \usage{
 comex_historical(
   flow = "export",
@@ -10,67 +10,51 @@ comex_historical(
   end_period,
   details = NULL,
   filters = NULL,
-  month_detail = FALSE,
+  month_detail = TRUE,
   metric_fob = TRUE,
   metric_kg = TRUE,
-  metric_statistic = FALSE,
-  metric_freight = FALSE,
-  metric_insurance = FALSE,
-  metric_cif = FALSE,
-  language = "en",
   verbose = TRUE
 )
 }
 \arguments{
-\item{flow}{Trade flow: \code{"export"} or \code{"import"}.}
+\item{flow}{Trade flow type: "export" or "import"}
 
-\item{start_period}{Start period in \code{"YYYY-MM"} format (e.g. \code{"1990-01"}).}
+\item{start_period}{Start period in "YYYY-MM" format (e.g., "1995-01")}
 
-\item{end_period}{End period in \code{"YYYY-MM"} format (e.g. \code{"1996-12"}).}
+\item{end_period}{End period in "YYYY-MM" format (e.g., "1996-12")}
 
-\item{details}{Character vector of detail/grouping fields. Options:
-\code{"country"}, \code{"state"}, \code{"ncm"} (actually NBM for this period).}
+\item{details}{Character vector with desired detail levels. Options for historical data:
+\itemize{
+\item "country"
+\item "state"
+\item "nbm"
+}}
 
-\item{filters}{Named list of filters.}
+\item{filters}{Named list with filters.}
 
-\item{month_detail}{Logical. If \code{TRUE}, break down by month.
-Default: \code{FALSE}.}
+\item{month_detail}{Logical. If TRUE, detail by month. Default: TRUE}
 
-\item{metric_fob}{Logical. Include FOB value (US$). Default: \code{TRUE}.}
+\item{metric_fob}{Logical. If TRUE, include FOB value (US$). Default: TRUE}
 
-\item{metric_kg}{Logical. Include net weight (kg). Default: \code{TRUE}.}
+\item{metric_kg}{Logical. If TRUE, include net weight in kg. Default: TRUE}
 
-\item{metric_statistic}{Logical. Include statistical quantity.
-Default: \code{FALSE}.}
-
-\item{metric_freight}{Logical. Include freight value (US$). Default: \code{FALSE}.}
-
-\item{metric_insurance}{Logical. Include insurance value (US$).
-Default: \code{FALSE}.}
-
-\item{metric_cif}{Logical. Include CIF value (US$). Default: \code{FALSE}.}
-
-\item{language}{Response language: \code{"pt"}, \code{"en"}, or \code{"es"}.
-Default: \code{"en"}.}
-
-\item{verbose}{Logical. Show progress messages. Default: \code{TRUE}.}
+\item{verbose}{Logical. If TRUE, display progress messages. Default: TRUE}
 }
 \value{
-A data.frame (or tibble) with query results.
+A tibble with historical query results
 }
 \description{
 Query the historical data endpoint of the ComexStat API to retrieve
-Brazilian export and import data from 1989 to 1996, before the SISCOMEX
-system was implemented. Historical data uses the NBM (Brazilian
-Nomenclature of Goods) classification.
+Brazilian export and import data from 1989 to 1996, before the SISCOMEX system.
 }
 \details{
-Historical data differs from general data:
+Historical data has important differences from general data:
 \itemize{
-\item Available period: \strong{1989 to 1996} only
-\item Limited details: \code{"country"}, \code{"state"}, \code{"ncm"}
-\item Product classification is \strong{NBM} (not NCM)
-\item All six metrics are available (FOB, KG, Statistic, Freight, Insurance, CIF)
+\item Available period: 1989 to 1996
+\item Limited details: only "country", "state", and "nbm"
+\item Only FOB and KG metrics are available (no statistic, freight,
+insurance, or CIF)
+\item "section" is NOT a valid detail for historical queries
 }
 }
 \examples{
@@ -80,10 +64,10 @@ comex_historical(
   flow = "export",
   start_period = "1995-01",
   end_period = "1996-12",
-  details = "country"
+  details = c("country")
 )
 
-# Historical imports with CIF value
+# Historical imports with multiple metrics
 comex_historical(
   flow = "import",
   start_period = "1990-01",

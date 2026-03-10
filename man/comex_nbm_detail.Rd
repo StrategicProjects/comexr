@@ -4,22 +4,24 @@
 \alias{comex_nbm_detail}
 \title{Get NBM code details}
 \usage{
-comex_nbm_detail(nbm_code, verbose = FALSE)
+comex_nbm_detail(nbm_code, language = "en", verbose = FALSE)
 }
 \arguments{
-\item{nbm_code}{NBM code (e.g. \code{"2924101100"}).}
+\item{nbm_code}{NBM code}
 
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A list with NBM details.
+A list with NBM details
 }
 \description{
 Returns details for a specific NBM code.
 }
 \examples{
 \dontrun{
-comex_nbm_detail("2924101100")
+comex_nbm_detail("00100101")
 }
 
 }

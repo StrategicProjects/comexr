@@ -2,7 +2,7 @@
 % Please edit documentation in R/query_city.R
 \name{comex_query_city}
 \alias{comex_query_city}
-\title{Query city-level foreign trade data}
+\title{Query foreign trade data by city}
 \usage{
 comex_query_city(
   flow = "export",
@@ -10,73 +10,63 @@ comex_query_city(
   end_period,
   details = NULL,
   filters = NULL,
-  month_detail = FALSE,
+  month_detail = TRUE,
   metric_fob = TRUE,
   metric_kg = TRUE,
   metric_statistic = FALSE,
-  language = "en",
   verbose = TRUE
 )
 }
 \arguments{
-\item{flow}{Trade flow: \code{"export"} or \code{"import"}.}
+\item{flow}{Trade flow type: "export" or "import"}
 
-\item{start_period}{Start period in \code{"YYYY-MM"} format.}
+\item{start_period}{Start period in "YYYY-MM" format (e.g., "2023-01")}
 
-\item{end_period}{End period in \code{"YYYY-MM"} format.}
+\item{end_period}{End period in "YYYY-MM" format (e.g., "2023-12")}
 
-\item{details}{Character vector of detail/grouping fields. Options:
+\item{details}{Character vector with desired detail levels. Options for city data:
+\itemize{
+\item Geographic: "country", "economic_block", "state", "city"
+\item Products: "heading" (SH4), "chapter" (SH2), "section"
+}}
 
-\strong{Geographic:} \code{"country"}, \code{"state"}, \code{"city"}
+\item{filters}{Named list with filters.}
 
-\strong{Products:} \code{"hs6"} (or \code{"sh6"}), \code{"hs4"} (or \code{"sh4"}),
-\code{"hs2"} (or \code{"sh2"}), \code{"section"}}
+\item{month_detail}{Logical. If TRUE, detail by month. Default: TRUE}
 
-\item{filters}{Named list of filters.
-Example: \code{list(city = "3550308", state = "26")}}
+\item{metric_fob}{Logical. If TRUE, include FOB value (US$). Default: TRUE}
 
-\item{month_detail}{Logical. If \code{TRUE}, break down by month.
-Default: \code{FALSE}.}
+\item{metric_kg}{Logical. If TRUE, include net weight in kg. Default: TRUE}
 
-\item{metric_fob}{Logical. Include FOB value (US$). Default: \code{TRUE}.}
+\item{metric_statistic}{Logical. If TRUE, include statistical quantity. Default: FALSE}
 
-\item{metric_kg}{Logical. Include net weight (kg). Default: \code{TRUE}.}
-
-\item{metric_statistic}{Logical. Include statistical quantity.
-Default: \code{FALSE}.}
-
-\item{language}{Response language: \code{"pt"}, \code{"en"}, or \code{"es"}.
-Default: \code{"en"}.}
-
-\item{verbose}{Logical. Show progress messages. Default: \code{TRUE}.}
+\item{verbose}{Logical. If TRUE, display progress messages. Default: TRUE}
 }
 \value{
-A data.frame (or tibble) with query results.
+A tibble with query results
 }
 \description{
-Query the city endpoint of the ComexStat API. City-level data is more
-aggregated than general data, with fewer available details and metrics.
-
-City information is based on the declarant of exports/imports, not the
-producer or buyer.
+Query the city endpoint of the ComexStat API. City-level data has
+more limited detail options than general data.
 }
 \details{
-City-level data differs from general data:
+City-level data has important differences from general data:
 \itemize{
-\item Full NCM is \strong{not} available (use HS6/SH4/SH2)
-\item Classifications like CGCE, SITC, and ISIC are \strong{not} available
-\item Only FOB, KG, and Statistical quantity metrics are available
-\item Freight, Insurance, and CIF metrics are \strong{not} available
+\item Product details use different names: "heading" (≈SH4),
+"chapter" (≈SH2), "section" — NOT "hs6"/"hs4"/"hs2"/"ncm"
+\item "economic_block" (or "economicBlock") is available
+\item Classifications (CGCE, SITC, ISIC) are NOT available
+\item Only FOB, KG, and statistical quantity metrics are available
 }
 }
 \examples{
 \dontrun{
-# Exports from Pernambuco in 2023
+# Exports from Pernambuco in 2023 by country
 comex_query_city(
   flow = "export",
   start_period = "2023-01",
   end_period = "2023-12",
-  details = c("country", "state"),
+  details = c("state", "country"),
   filters = list(state = 26)
 )
 }

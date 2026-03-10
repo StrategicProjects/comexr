@@ -2,15 +2,17 @@
 % Please edit documentation in R/tables.R
 \name{comex_states}
 \alias{comex_states}
-\title{Get Brazilian states (UF) table}
+\title{Get Brazilian states table}
 \usage{
-comex_states(verbose = FALSE)
+comex_states(language = "en", verbose = FALSE)
 }
 \arguments{
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with state codes and names.
+A tibble with state codes and names
 }
 \description{
 Returns the Brazilian states table with codes and names.

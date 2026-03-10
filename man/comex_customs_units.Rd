@@ -4,18 +4,18 @@
 \alias{comex_customs_units}
 \title{Get customs units (URF) table}
 \usage{
-comex_customs_units(verbose = FALSE)
+comex_customs_units(language = "en", verbose = FALSE)
 }
 \arguments{
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with customs unit codes and names.
+A tibble with customs unit codes and names
 }
 \description{
-Returns the customs units table (Unidades da Receita Federal) with
-codes and names. These are the Federal Revenue Service administrative
-units responsible for overseeing foreign trade operations.
+Returns the customs units table with codes and names.
 }
 \examples{
 \dontrun{

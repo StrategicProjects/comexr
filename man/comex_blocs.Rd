@@ -4,29 +4,22 @@
 \alias{comex_blocs}
 \title{Get economic blocs table}
 \usage{
-comex_blocs(language = "en", search = NULL, add = NULL, verbose = FALSE)
+comex_blocs(language = "en", verbose = FALSE)
 }
 \arguments{
-\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
 
-\item{search}{Optional search term to filter results.}
-
-\item{add}{Optional related table to include (e.g. \code{"country"}).}
-
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with economic bloc codes and names.
+A tibble with economic bloc codes and names
 }
 \description{
-Returns the economic blocs table with codes and names. Economic blocs
-represent trade agreements between countries and regions.
+Returns the economic blocs table with codes and names.
 }
 \examples{
 \dontrun{
 comex_blocs()
-comex_blocs(search = "mercosul")
-comex_blocs(add = "country")
 }
 
 }

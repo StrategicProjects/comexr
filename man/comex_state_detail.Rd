@@ -4,22 +4,24 @@
 \alias{comex_state_detail}
 \title{Get state details}
 \usage{
-comex_state_detail(uf_id, verbose = FALSE)
+comex_state_detail(state_id, language = "en", verbose = FALSE)
 }
 \arguments{
-\item{uf_id}{State code (e.g. \code{26} for Pernambuco).}
+\item{state_id}{State code or abbreviation}
 
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A list with state details.
+A list with state details
 }
 \description{
 Returns details for a specific Brazilian state.
 }
 \examples{
 \dontrun{
-comex_state_detail(26)
+comex_state_detail("SP")
 }
 
 }

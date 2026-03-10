@@ -4,53 +4,33 @@ template:
   bootstrap: 5
   bootswatch: flatly
   bslib:
-    primary: "#1a5276"
-    border-radius: 0.25rem
+    primary: "#0d6efd"
+    border-radius: 0.5rem
     btn-border-radius: 0.25rem
 
 home:
-  title: "comexr — R Client for ComexStat API"
+  title: comexr - R Interface to Brazilian ComexStat API
   description: >
-    Access Brazilian foreign trade statistics from the ComexStat API
-    maintained by the Ministry of Development, Industry, Trade and Services
-    (MDIC). Query export/import data, city-level trade, historical records,
-    and lookup tables for products, countries, and classifications.
+    R package for querying Brazilian export and import data through
+    the ComexStat API (MDIC).
+
+authors:
+  Andre Leite:
+    href: https://github.com/StrategicProjects
 
 navbar:
   structure:
-    left:  [intro, reference, articles]
+    left:  [intro, reference, articles, news]
     right: [search, github]
   components:
-    intro:
-      text: Get Started
-      href: articles/getting-started.html
-    articles:
-      text: Articles
-      menu:
-        - text: Getting Started
-          href: articles/getting-started.html
-        - text: Querying Trade Data
-          href: articles/querying-trade-data.html
-        - text: Auxiliary Tables & Lookups
-          href: articles/auxiliary-tables.html
     github:
-      icon: fa-github
-      href: https://github.com/StrategicProjects/comex
+      icon: fab fa-github fa-lg
+      href: https://github.com/StrategicProjects/comexr
       aria-label: GitHub
 
-articles:
-  - title: Guides
-    navbar: ~
-    contents:
-      - getting-started
-      - querying-trade-data
-      - auxiliary-tables
-
 reference:
-  - title: "Trade Data Queries"
-    desc: >
-      Functions to query export/import statistics. These are the main
-      workhorse functions that hit the POST endpoints.
+  - title: "Main Query Functions"
+    desc: "Functions to query foreign trade data"
     contents:
       - comex_query
       - comex_export
@@ -58,10 +38,14 @@ reference:
       - comex_query_city
       - comex_historical
 
-  - title: "Metadata Discovery"
-    desc: >
-      Discover available filters, details, metrics, date ranges, and
-      last update timestamps for each data type.
+  - title: "Session Management"
+    desc: "Functions to manage browser session for API access"
+    contents:
+      - comex_init
+      - comex_close
+
+  - title: "API Metadata"
+    desc: "Functions to get API information"
     contents:
       - comex_last_update
       - comex_available_years
@@ -70,10 +54,8 @@ reference:
       - comex_details
       - comex_metrics
 
-  - title: "Geography Tables"
-    desc: >
-      Lookup tables for countries, economic blocs, states, cities,
-      transport modes, and customs units.
+  - title: "Auxiliary Tables - Geography"
+    desc: "Functions to query geographic tables"
     contents:
       - comex_countries
       - comex_country_detail
@@ -87,10 +69,8 @@ reference:
       - comex_customs_units
       - comex_customs_unit_detail
 
-  - title: "Product Tables"
-    desc: >
-      Nomenclature tables: NCM (Mercosur), NBM (historical), and
-      Harmonized System (HS).
+  - title: "Auxiliary Tables - Products"
+    desc: "Functions to query product classification tables"
     contents:
       - comex_ncm
       - comex_ncm_detail
@@ -98,11 +78,25 @@ reference:
       - comex_nbm_detail
       - comex_hs
 
-  - title: "Classification Tables"
-    desc: >
-      Economic classification tables: CGCE (BEC), SITC (CUCI), and
-      ISIC codes.
+  - title: "Auxiliary Tables - Economic Classifications"
+    desc: "Functions to query economic classification tables"
     contents:
       - comex_cgce
       - comex_sitc
       - comex_isic
+
+articles:
+  - title: "Getting Started"
+    navbar: ~
+    contents:
+      - comexr
+
+news:
+  releases:
+    - text: "Version 0.2.0"
+      href: https://github.com/StrategicProjects/comexr/releases/tag/v0.2.0
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with

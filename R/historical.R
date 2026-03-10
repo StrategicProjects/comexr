@@ -1,43 +1,35 @@
-# =========================================================================
-# Historical foreign trade data queries (POST /historical-data/)
-# =========================================================================
-
-#' Query historical foreign trade data (1989-1996)
+#' Query historical foreign trade data
 #'
 #' @description
 #' Query the historical data endpoint of the ComexStat API to retrieve
-#' Brazilian export and import data from 1989 to 1996, before the SISCOMEX
-#' system was implemented. Historical data uses the NBM (Brazilian
-#' Nomenclature of Goods) classification.
+#' Brazilian export and import data from 1989 to 1996, before the SISCOMEX system.
 #'
-#' @param flow Trade flow: `"export"` or `"import"`.
-#' @param start_period Start period in `"YYYY-MM"` format (e.g. `"1990-01"`).
-#' @param end_period End period in `"YYYY-MM"` format (e.g. `"1996-12"`).
-#' @param details Character vector of detail/grouping fields. Options:
-#'   `"country"`, `"state"`, `"ncm"` (actually NBM for this period).
-#' @param filters Named list of filters.
-#' @param month_detail Logical. If `TRUE`, break down by month.
-#'   Default: `FALSE`.
-#' @param metric_fob Logical. Include FOB value (US$). Default: `TRUE`.
-#' @param metric_kg Logical. Include net weight (kg). Default: `TRUE`.
-#' @param metric_statistic Logical. Include statistical quantity.
-#'   Default: `FALSE`.
-#' @param metric_freight Logical. Include freight value (US$). Default: `FALSE`.
-#' @param metric_insurance Logical. Include insurance value (US$).
-#'   Default: `FALSE`.
-#' @param metric_cif Logical. Include CIF value (US$). Default: `FALSE`.
-#' @param language Response language: `"pt"`, `"en"`, or `"es"`.
-#'   Default: `"en"`.
-#' @param verbose Logical. Show progress messages. Default: `TRUE`.
+#' @param flow Trade flow type: "export" or "import"
+#' @param start_period Start period in "YYYY-MM" format (e.g., "1995-01")
+#' @param end_period End period in "YYYY-MM" format (e.g., "1996-12")
+#' @param details Character vector with desired detail levels. Options for historical data:
+#'   \itemize{
+#'     \item "country"
+#'     \item "state"
+#'     \item "nbm"
+#'   }
+#' @param filters Named list with filters.
+#' @param month_detail Logical. If TRUE, detail by month. Default: TRUE
+#' @param metric_fob Logical. If TRUE, include FOB value (US$). Default: TRUE
+#' @param metric_kg Logical. If TRUE, include net weight in kg. Default: TRUE
+#' @param verbose Logical. If TRUE, display progress messages. Default: TRUE
 #'
-#' @return A data.frame (or tibble) with query results.
+#' @return A tibble with historical query results
 #'
 #' @details
-#' Historical data differs from general data:
-#' - Available period: **1989 to 1996** only
-#' - Limited details: `"country"`, `"state"`, `"ncm"`
-#' - Product classification is **NBM** (not NCM)
-#' - All six metrics are available (FOB, KG, Statistic, Freight, Insurance, CIF)
+#' Historical data has important differences from general data:
+#' \itemize{
+#'   \item Available period: 1989 to 1996
+#'   \item Limited details: only "country", "state", and "nbm"
+#'   \item Only FOB and KG metrics are available (no statistic, freight,
+#'     insurance, or CIF)
+#'   \item "section" is NOT a valid detail for historical queries
+#' }
 #'
 #' @examples
 #' \dontrun{
@@ -46,10 +38,10 @@
 #'   flow = "export",
 #'   start_period = "1995-01",
 #'   end_period = "1996-12",
-#'   details = "country"
+#'   details = c("country")
 #' )
 #'
-#' # Historical imports with CIF value
+#' # Historical imports with multiple metrics
 #' comex_historical(
 #'   flow = "import",
 #'   start_period = "1990-01",
@@ -65,58 +57,66 @@ comex_historical <- function(flow = "export",
                              end_period,
                              details = NULL,
                              filters = NULL,
-                             month_detail = FALSE,
+                             month_detail = TRUE,
                              metric_fob = TRUE,
                              metric_kg = TRUE,
-                             metric_statistic = FALSE,
-                             metric_freight = FALSE,
-                             metric_insurance = FALSE,
-                             metric_cif = FALSE,
-                             language = "en",
                              verbose = TRUE) {
 
+  # Validations
   validate_period(start_period, end_period)
   flow_api <- convert_flow(flow)
 
+  # Validate year range for historical data
   start_year <- as.integer(substr(start_period, 1, 4))
-  end_year   <- as.integer(substr(end_period, 1, 4))
+  end_year <- as.integer(substr(end_period, 1, 4))
 
   if (start_year < 1989 || end_year > 1996) {
     cli::cli_warn(c(
-      "!" = "Historical data is available from 1989 to 1996.",
+      "!" = "Historical data is available from 1989 to 1996",
       "i" = "Requested period: {start_period} to {end_period}"
     ))
   }
 
   if (verbose) {
-    type_label <- if (flow_api == "export") "exports" else "imports"
     cli::cli_alert_info(
-      "Querying historical {type_label} from {start_period} to {end_period}"
+      "Querying historical {if(flow_api == 'export') 'exports' else 'imports'} from {start_period} to {end_period}"
     )
   }
 
+  # Build details in API format
+  details_api <- build_details(details, type = "historical")
+
+  # Build filters in API format
+  filters_api <- build_filters(filters, type = "historical")
+
+  # Historical only supports FOB and KG
+  metrics <- character()
+  if (metric_fob) metrics <- c(metrics, "metricFOB")
+  if (metric_kg)  metrics <- c(metrics, "metricKG")
+  if (length(metrics) == 0) {
+    cli::cli_abort("At least one metric must be selected (metric_fob or metric_kg)")
+  }
+
+  # Request body
   body <- list(
-    flow        = flow_api,
+    flow = flow_api,
     monthDetail = month_detail,
-    period      = list(from = start_period, to = end_period),
-    filters     = build_filters(filters),
-    details     = build_details(details),
-    metrics     = build_metrics(
-      metric_fob       = metric_fob,
-      metric_kg        = metric_kg,
-      metric_statistic = metric_statistic,
-      metric_freight   = metric_freight,
-      metric_insurance = metric_insurance,
-      metric_cif       = metric_cif
-    )
+    period = list(
+      from = start_period,
+      to = end_period
+    ),
+    filters = filters_api,
+    details = details_api,
+    metrics = as.list(metrics)
   )
 
-  # Note: the API spec defines this endpoint with a trailing slash
-  data <- comex_post("/historical-data/", body,
-                     query = list(language = language), verbose = verbose)
-  result <- response_to_df(data)
+  # Execute query
+  data <- execute_post("/historical-data/", body, verbose = verbose)
 
-  if (verbose && nrow(result) > 0) {
+  # Convert to tibble
+  result <- response_to_tibble(data)
+
+  if (nrow(result) > 0 && verbose) {
     cli::cli_alert_success("{nrow(result)} records found")
   }
 

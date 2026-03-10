@@ -2,28 +2,28 @@
 % Please edit documentation in R/tables.R
 \name{comex_details}
 \alias{comex_details}
-\title{Get available detail/grouping fields}
+\title{Get list of available details}
 \usage{
 comex_details(type = "general", language = "en", verbose = FALSE)
 }
 \arguments{
-\item{type}{Data type: \code{"general"}, \code{"city"}, or \code{"historical"}.}
+\item{type}{Data type: "general", "city", or "historical"}
 
-\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
 
-\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with available details.
+A tibble with available details
 }
 \description{
-Returns the list of detail fields that can be used to group query results.
+Returns the list of available detail/grouping fields.
 }
 \examples{
 \dontrun{
 comex_details()
-comex_details("city")
-comex_details("historical")
+comex_details(type = "city")
+comex_details(type = "historical")
 }
 
 }

@@ -4,13 +4,15 @@
 \alias{comex_transport_modes}
 \title{Get transport modes table}
 \usage{
-comex_transport_modes(verbose = FALSE)
+comex_transport_modes(language = "en", verbose = FALSE)
 }
 \arguments{
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with transport mode codes and names.
+A tibble with transport mode codes and names
 }
 \description{
 Returns the transport modes table with codes and names.

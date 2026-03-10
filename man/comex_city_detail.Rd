@@ -4,22 +4,24 @@
 \alias{comex_city_detail}
 \title{Get city details}
 \usage{
-comex_city_detail(city_id, verbose = FALSE)
+comex_city_detail(city_id, language = "en", verbose = FALSE)
 }
 \arguments{
-\item{city_id}{IBGE city code (e.g. \code{5300050}).}
+\item{city_id}{IBGE city code}
 
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A list with city details.
+A list with city details
 }
 \description{
 Returns details for a specific Brazilian city.
 }
 \examples{
 \dontrun{
-comex_city_detail(5300050)
+comex_city_detail(3550308)  # Sao Paulo
 }
 
 }

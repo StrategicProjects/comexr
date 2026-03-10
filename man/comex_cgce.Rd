@@ -2,45 +2,45 @@
 % Please edit documentation in R/tables_classifications.R
 \name{comex_cgce}
 \alias{comex_cgce}
-\title{Get CGCE (Classification by Broad Economic Categories) table}
+\title{Get CGCE (Classification by Broad Economic Categories) tables}
 \usage{
-comex_cgce(
-  language = "en",
-  search = NULL,
-  add = NULL,
-  page = NULL,
-  per_page = NULL,
-  verbose = FALSE
-)
+comex_cgce(level = NULL, language = "en", verbose = FALSE)
 }
 \arguments{
-\item{language}{Language: \code{"pt"}, \code{"en"}, or \code{"es"}. Default: \code{"en"}.}
+\item{level}{Aggregation level (optional). If NULL, returns all levels.
+Options: "n1", "n2", "n3"}
 
-\item{search}{Optional search term to filter results.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
 
-\item{add}{Optional related table to include (e.g. \code{"ncm"}).}
-
-\item{page}{Page number for pagination. Default: \code{NULL} (all results).}
-
-\item{per_page}{Number of results per page. Default: \code{NULL}.}
-
-\item{verbose}{Logical. Show progress messages. Default: \code{FALSE}.}
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with CGCE codes and descriptions.
+A tibble with CGCE codes and descriptions
 }
 \description{
-Returns the CGCE classification table from the \verb{/tables/classifications}
-endpoint. CGCE groups products by use or economic purpose (e.g. capital
-goods, intermediate goods, consumer goods).
+Returns tables from the Classification by Broad Economic Categories.
+Use the \code{level} parameter to specify the desired aggregation level.
+}
+\details{
+CGCE groups products by use or economic purpose. It is used for
+foreign trade analysis by economic category.
+
+\itemize{
+\item \strong{n1}: First level (most aggregated)
+\item \strong{n2}: Second level
+\item \strong{n3}: Third level (most detailed)
+}
 }
 \examples{
 \dontrun{
-# All CGCE classifications
+# All CGCE levels
 comex_cgce()
 
-# Search within CGCE
-comex_cgce(search = "110")
+# CGCE level 1
+comex_cgce(level = "n1")
+
+# CGCE level 3 (most detailed)
+comex_cgce(level = "n3")
 }
 
 }

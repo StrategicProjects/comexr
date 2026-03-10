@@ -4,13 +4,15 @@
 \alias{comex_cities}
 \title{Get Brazilian cities table}
 \usage{
-comex_cities(verbose = FALSE)
+comex_cities(language = "en", verbose = FALSE)
 }
 \arguments{
-\item{verbose}{Logical. Default: \code{FALSE}.}
+\item{language}{Language: "pt", "en", or "es". Default: "en"}
+
+\item{verbose}{Logical. If TRUE, display progress messages. Default: FALSE}
 }
 \value{
-A data.frame with city (IBGE) codes and names.
+A tibble with city codes and names
 }
 \description{
 Returns the Brazilian cities table with codes and names.
