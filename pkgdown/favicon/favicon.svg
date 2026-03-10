@@ -1,34 +1,207 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="232"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="232"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 232" width="200" height="232">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="232"><svg viewBox="0 0 200 232" width="200" height="232">
   <defs>
+    <!-- Premium dark gradient background -->
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1a5276;stop-opacity:1"></stop>
-      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1"></stop>
+      <stop offset="0%" stop-color="#0a1628"></stop>
+      <stop offset="50%" stop-color="#0f2847"></stop>
+      <stop offset="100%" stop-color="#0a1628"></stop>
     </linearGradient>
+
+    <!-- Subtle hex border gradient -->
+    <linearGradient id="border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e88e5" stop-opacity="0.8"></stop>
+      <stop offset="50%" stop-color="#42a5f5" stop-opacity="0.4"></stop>
+      <stop offset="100%" stop-color="#1e88e5" stop-opacity="0.8"></stop>
+    </linearGradient>
+
+    <!-- Globe ring gradient -->
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64b5f6" stop-opacity="0.9"></stop>
+      <stop offset="50%" stop-color="#e3f2fd" stop-opacity="0.5"></stop>
+      <stop offset="100%" stop-color="#64b5f6" stop-opacity="0.9"></stop>
+    </linearGradient>
+
+    <!-- Export arrow gradient (warm amber) -->
+    <linearGradient id="exportGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffb74d" stop-opacity="0.4"></stop>
+      <stop offset="100%" stop-color="#ff9800"></stop>
+    </linearGradient>
+
+    <!-- Import arrow gradient (emerald) -->
+    <linearGradient id="importGrad" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#66bb6a" stop-opacity="0.4"></stop>
+      <stop offset="100%" stop-color="#43a047"></stop>
+    </linearGradient>
+
+    <!-- Glow filters -->
+    <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"></feGaussianBlur>
+      <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+    <filter id="glowAmber" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"></feGaussianBlur>
+      <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"></feGaussianBlur>
+      <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+    <filter id="textGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1" result="blur"></feGaussianBlur>
+      <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+
+    <!-- Dot pattern for globe texture -->
+    <pattern id="dots" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="0.4" fill="#64b5f6" opacity="0.15"></circle>
+    </pattern>
+
+    <!-- Clip for globe interior -->
+    <clipPath id="globeClip">
+      <circle cx="100" cy="62" r="20"></circle>
+    </clipPath>
   </defs>
-  <polygon points="100,2 196,60 196,172 100,230 4,172 4,60" fill="url(#bg)" stroke="#154360" stroke-width="4"></polygon>
-  <!-- Globe -->
-  <circle cx="100" cy="65" r="22" fill="none" stroke="#ecf0f1" stroke-width="2.5" opacity="0.9"></circle>
-  <ellipse cx="100" cy="65" rx="10" ry="22" fill="none" stroke="#ecf0f1" stroke-width="1.5" opacity="0.7"></ellipse>
-  <line x1="78" y1="65" x2="122" y2="65" stroke="#ecf0f1" stroke-width="1.5" opacity="0.7"></line>
-  <line x1="82" y1="53" x2="118" y2="53" stroke="#ecf0f1" stroke-width="1" opacity="0.5"></line>
-  <line x1="82" y1="77" x2="118" y2="77" stroke="#ecf0f1" stroke-width="1" opacity="0.5"></line>
-  <!-- Export arrow -->
-  <g transform="translate(100,98)">
-    <line x1="-25" y1="0" x2="25" y2="0" stroke="#f39c12" stroke-width="5" stroke-linecap="round"></line>
-    <polyline points="15,-10 25,0 15,10" fill="none" stroke="#e67e22" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+
+  <style>
+    /* Globe rotation */
+    @keyframes spinGlobe {
+      0%   { transform: translateX(-12px); }
+      50%  { transform: translateX(12px); }
+      100% { transform: translateX(-12px); }
+    }
+    @keyframes pulseRing {
+      0%, 100% { opacity: 0.7; stroke-width: 2; }
+      50%      { opacity: 1;   stroke-width: 2.5; }
+    }
+    /* Arrow slide */
+    @keyframes slideRight {
+      0%   { transform: translate(-6px, 0); opacity: 0.5; }
+      50%  { transform: translate(3px, 0);  opacity: 1; }
+      100% { transform: translate(-6px, 0); opacity: 0.5; }
+    }
+    @keyframes slideLeft {
+      0%   { transform: translate(6px, 0);  opacity: 0.5; }
+      50%  { transform: translate(-3px, 0); opacity: 1; }
+      100% { transform: translate(6px, 0);  opacity: 0.5; }
+    }
+    /* Particle float */
+    @keyframes floatUp1 {
+      0%   { transform: translate(0, 0);    opacity: 0; }
+      20%  { opacity: 0.6; }
+      80%  { opacity: 0.3; }
+      100% { transform: translate(-8px, -30px); opacity: 0; }
+    }
+    @keyframes floatUp2 {
+      0%   { transform: translate(0, 0);    opacity: 0; }
+      20%  { opacity: 0.5; }
+      80%  { opacity: 0.2; }
+      100% { transform: translate(6px, -28px); opacity: 0; }
+    }
+    @keyframes floatUp3 {
+      0%   { transform: translate(0, 0);    opacity: 0; }
+      25%  { opacity: 0.4; }
+      75%  { opacity: 0.2; }
+      100% { transform: translate(-4px, -25px); opacity: 0; }
+    }
+    /* Border pulse */
+    @keyframes borderPulse {
+      0%, 100% { stroke-opacity: 0.5; }
+      50%      { stroke-opacity: 0.9; }
+    }
+    /* Accent bar shimmer */
+    @keyframes shimmer {
+      0%   { opacity: 0.5; }
+      50%  { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+    /* Inner hex glow breathe */
+    @keyframes breathe {
+      0%, 100% { opacity: 0.03; }
+      50%      { opacity: 0.07; }
+    }
+
+    .globe-meridian { animation: spinGlobe 8s ease-in-out infinite; }
+    .globe-ring     { animation: pulseRing 4s ease-in-out infinite; }
+    .arrow-export   { animation: slideRight 3s ease-in-out infinite; }
+    .arrow-import   { animation: slideLeft 3s ease-in-out 0.4s infinite; }
+    .particle-1     { animation: floatUp1 4s ease-out infinite; }
+    .particle-2     { animation: floatUp2 4.5s ease-out 1.2s infinite; }
+    .particle-3     { animation: floatUp3 5s ease-out 2.4s infinite; }
+    .hex-border     { animation: borderPulse 5s ease-in-out infinite; }
+    .accent-g       { animation: shimmer 3s ease-in-out infinite; }
+    .accent-y       { animation: shimmer 3s ease-in-out 0.3s infinite; }
+    .accent-b       { animation: shimmer 3s ease-in-out 0.6s infinite; }
+    .inner-glow     { animation: breathe 6s ease-in-out infinite; }
+  </style>
+
+  <!-- === HEX BACKGROUND === -->
+  <polygon points="100,2 196,60 196,172 100,230 4,172 4,60" fill="url(#bg)"></polygon>
+
+  <!-- Inner radial glow -->
+  <polygon points="100,2 196,60 196,172 100,230 4,172 4,60" fill="#1e88e5" class="inner-glow"></polygon>
+
+  <!-- Hex border -->
+  <polygon points="100,2 196,60 196,172 100,230 4,172 4,60" fill="none" stroke="url(#border)" stroke-width="1.5" class="hex-border"></polygon>
+
+  <!-- Subtle inner line -->
+  <polygon points="100,8 190,63 190,169 100,224 10,169 10,63" fill="none" stroke="#1e88e5" stroke-width="0.3" opacity="0.2"></polygon>
+
+  <!-- === GLOBE === -->
+  <g filter="url(#glowBlue)">
+    <!-- Outer ring -->
+    <circle cx="100" cy="62" r="21" fill="none" stroke="url(#ring)" stroke-width="2" class="globe-ring"></circle>
+
+    <!-- Globe fill texture -->
+    <circle cx="100" cy="62" r="20" fill="url(#dots)" opacity="0.5"></circle>
+
+    <!-- Meridians (animated) -->
+    <g clip-path="url(#globeClip)" class="globe-meridian">
+      <ellipse cx="100" cy="62" rx="10" ry="20" fill="none" stroke="#90caf9" stroke-width="1" opacity="0.5"></ellipse>
+      <ellipse cx="100" cy="62" rx="20" ry="20" fill="none" stroke="#90caf9" stroke-width="0.6" opacity="0.3"></ellipse>
+      <ellipse cx="100" cy="62" rx="3" ry="20" fill="none" stroke="#90caf9" stroke-width="0.8" opacity="0.35"></ellipse>
+    </g>
+
+    <!-- Parallels -->
+    <line x1="80" y1="55" x2="120" y2="55" stroke="#90caf9" stroke-width="0.6" opacity="0.3"></line>
+    <line x1="78" y1="62" x2="122" y2="62" stroke="#90caf9" stroke-width="0.8" opacity="0.4"></line>
+    <line x1="80" y1="69" x2="120" y2="69" stroke="#90caf9" stroke-width="0.6" opacity="0.3"></line>
+
+    <!-- Globe highlight -->
+    <circle cx="92" cy="55" r="7" fill="#e3f2fd" opacity="0.06"></circle>
   </g>
-  <!-- Import arrow -->
-  <g transform="translate(100,118)">
-    <line x1="25" y1="0" x2="-25" y2="0" stroke="#27ae60" stroke-width="5" stroke-linecap="round"></line>
-    <polyline points="-15,-10 -25,0 -15,10" fill="none" stroke="#27ae60" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+
+  <!-- === FLOATING PARTICLES === -->
+  <circle cx="78" cy="85" r="1.2" fill="#64b5f6" class="particle-1"></circle>
+  <circle cx="118" cy="82" r="0.9" fill="#ff9800" class="particle-2"></circle>
+  <circle cx="100" cy="88" r="1" fill="#66bb6a" class="particle-3"></circle>
+
+  <!-- === EXPORT ARROW === -->
+  <g transform="translate(100,97)" class="arrow-export" filter="url(#glowAmber)">
+    <line x1="-22" y1="0" x2="18" y2="0" stroke="url(#exportGrad)" stroke-width="3" stroke-linecap="round"></line>
+    <polyline points="12,-7 22,0 12,7" fill="none" stroke="#ff9800" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
   </g>
-  <!-- Package name -->
-  <text x="100" y="158" text-anchor="middle" font-family="'Fira Code','Menlo','Consolas',monospace" font-size="32" font-weight="bold" fill="#ecf0f1" letter-spacing="2">comex</text>
-  <text x="100" y="178" text-anchor="middle" font-family="'Segoe UI','Helvetica',sans-serif" font-size="11" fill="#bdc3c7" letter-spacing="1">COMEXSTAT API</text>
-  <!-- BR flag accent -->
-  <line x1="60" y1="190" x2="85" y2="190" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round"></line>
-  <line x1="88" y1="190" x2="113" y2="190" stroke="#f1c40f" stroke-width="2.5" stroke-linecap="round"></line>
-  <line x1="116" y1="190" x2="141" y2="190" stroke="#2980b9" stroke-width="2.5" stroke-linecap="round"></line>
-</svg></svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
-@media (prefers-color-scheme: dark) { :root { filter: none; } }
-</style></svg>
+
+  <!-- === IMPORT ARROW === -->
+  <g transform="translate(100,113)" class="arrow-import" filter="url(#glowGreen)">
+    <line x1="22" y1="0" x2="-18" y2="0" stroke="url(#importGrad)" stroke-width="3" stroke-linecap="round"></line>
+    <polyline points="-12,-7 -22,0 -12,7" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+  </g>
+
+  <!-- Thin separator line -->
+  <line x1="55" y1="130" x2="145" y2="130" stroke="#1e88e5" stroke-width="0.4" opacity="0.3"></line>
+
+  <!-- === PACKAGE NAME === -->
+  <text x="100" y="153" text-anchor="middle" font-family="'SF Mono','Fira Code','JetBrains Mono','Cascadia Code',monospace" font-size="30" font-weight="700" fill="#e3f2fd" letter-spacing="4" filter="url(#textGlow)">comex</text>
+
+  <!-- Subtitle -->
+  <text x="100" y="170" text-anchor="middle" font-family="'Inter','Helvetica Neue','Segoe UI',sans-serif" font-size="8.5" fill="#90caf9" opacity="0.7" letter-spacing="3" font-weight="300">COMEXSTAT API</text>
+
+  <!-- === BRAZILIAN FLAG ACCENT BARS === -->
+  <line x1="62" y1="183" x2="82" y2="183" stroke="#43a047" stroke-width="2" stroke-linecap="round" class="accent-g"></line>
+  <line x1="86" y1="183" x2="114" y2="183" stroke="#fdd835" stroke-width="2" stroke-linecap="round" class="accent-y"></line>
+  <line x1="118" y1="183" x2="138" y2="183" stroke="#1e88e5" stroke-width="2" stroke-linecap="round" class="accent-b"></line>
+
+  <!-- Corner accent dots -->
+  <circle cx="58" cy="183" r="1" fill="#43a047" opacity="0.5"></circle>
+  <circle cx="142" cy="183" r="1" fill="#1e88e5" opacity="0.5"></circle>
+</svg></svg>
