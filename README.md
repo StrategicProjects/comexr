@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-The **comexr** package provides a complete R interface to the [ComexStat API](https://comexstat.mdic.gov.br/) from the Brazilian Ministry of Development, Industry, Trade and Services (MDIC). It allows programmatic access to detailed Brazilian export and import data.
+The **comexr** package provides a complete R interface to the [ComexStat API](https://api-comexstat.mdic.gov.br/docs#/) from the Brazilian Ministry of Development, Industry, Trade and Services (MDIC). It allows programmatic access to detailed Brazilian export and import data.
 
 ## Features
 
@@ -121,9 +121,9 @@ options(comex.ssl_verifypeer = FALSE)
 
 ## References
 
-- [ComexStat](https://comexstat.mdic.gov.br/) — Brazilian foreign trade statistics
+- [ComexStat](https://comexstat.mdic.gov.br/en/home) — Brazilian foreign trade statistics
 - [ComexStat API Docs](https://api-comexstat.mdic.gov.br/docs) — Official API documentation
-- [MDIC](https://www.gov.br/mdic/) — Ministry of Development, Industry, Trade and Services
+- [MDIC](https://www.gov.br/mdic/pt-br) — Ministry of Development, Industry, Trade and Services
 
 ## License
 
