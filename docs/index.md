@@ -1,9 +1,9 @@
 # comexr
 
 The **comexr** package provides a complete R interface to the [ComexStat
-API](https://comexstat.mdic.gov.br/) from the Brazilian Ministry of
-Development, Industry, Trade and Services (MDIC). It allows programmatic
-access to detailed Brazilian export and import data.
+API](https://api-comexstat.mdic.gov.br/docs#/) from the Brazilian
+Ministry of Development, Industry, Trade and Services (MDIC). It allows
+programmatic access to detailed Brazilian export and import data.
 
 ## Features
 
@@ -49,6 +49,7 @@ imports <- comex_import(
 )
 
 # Filter: exports to China (160), grouped by HS4
+# (the package translates "hs4" to the API's `heading`)
 soy <- comex_export(
   start_period = "2024-01",
   end_period = "2024-12",
@@ -129,12 +130,12 @@ options(comex.ssl_verifypeer = FALSE)
 
 ## References
 
-- [ComexStat](https://comexstat.mdic.gov.br/) — Brazilian foreign trade
-  statistics
+- [ComexStat](https://comexstat.mdic.gov.br/en/home) — Brazilian foreign
+  trade statistics
 - [ComexStat API Docs](https://api-comexstat.mdic.gov.br/docs) —
   Official API documentation
-- [MDIC](https://www.gov.br/mdic/) — Ministry of Development, Industry,
-  Trade and Services
+- [MDIC](https://www.gov.br/mdic/pt-br) — Ministry of Development,
+  Industry, Trade and Services
 
 ## License
 

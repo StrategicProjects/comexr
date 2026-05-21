@@ -36,23 +36,28 @@ comex_export(
 
 - details:
 
-  Character vector of detail/grouping fields. Options:
+  Character vector of detail/grouping fields. The names below are
+  user-friendly aliases; the package translates each to the underlying
+  API name. The API names returned by `comex_details("general")` are
+  also accepted verbatim. Available options:
 
-  **Geographic:** `"country"`, `"bloc"`, `"state"`, `"city"`,
-  `"transport_mode"`, `"customs_unit"`
+  **Geographic:** `"country"`, `"bloc"` (`"economic_block"`), `"state"`,
+  `"transport_mode"` (API: `via`), `"customs_unit"` (API: `urf`)
 
-  **Products:** `"ncm"`, `"hs6"` (or `"sh6"`), `"hs4"` (or `"sh4"`),
-  `"hs2"` (or `"sh2"`), `"section"`
+  **Products:** `"ncm"`, `"hs6"` / `"sh6"` (API: `subHeading`), `"hs4"`
+  / `"sh4"` (API: `heading`), `"hs2"` / `"sh2"` (API: `chapter`),
+  `"section"`
 
-  **CGCE:** `"cgce_n1"`, `"cgce_n2"`, `"cgce_n3"`
+  **CGCE (BEC):** `"cgce_n1"`, `"cgce_n2"`, `"cgce_n3"` (API:
+  `BECLevel1`, `BECLevel2`, `BECLevel3`)
 
-  **SITC/CUCI:** `"sitc_section"`, `"sitc_chapter"`, `"sitc_position"`,
-  `"sitc_subposition"`, `"sitc_item"`
+  **SITC/CUCI:** `"sitc_section"`, `"sitc_division"`, `"sitc_group"`,
+  `"sitc_subgroup"`, `"sitc_basic_heading"` (API: `SITCSection`,
+  `SITCDivision`, `SITCGroup`, `SITCSubGroup`, `SITCBasicHeading`)
 
   **ISIC:** `"isic_section"`, `"isic_division"`, `"isic_group"`,
-  `"isic_class"`
-
-  **Other:** `"company_size"` (imports only)
+  `"isic_class"` (API: `ISICSection`, `ISICDivision`, `ISICGroup`,
+  `ISICClass`)
 
 - filters:
 

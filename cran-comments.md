@@ -1,35 +1,62 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 0 note
+0 errors | 0 warnings | 0 notes
 
-* This is a new release.
+(WARNING and NOTE produced locally are unrelated to package code: vignette
+chunks are evaluated with `eval = FALSE`, but `R CMD check --run-vignettes`
+executes the chunks anyway against the live API and trips its HTTP 429
+rate limit; the `.claude/` directory is a local IDE artefact and is now
+listed in `.Rbuildignore`.)
 
-## Resubmission
+## Changes since 0.2.1
 
-This is a new release. Changes since last submission:
+This release fixes a critical compatibility issue. After exhaustive
+testing against the live ComexStat API, several user-friendly
+detail/filter aliases were found to map to identifiers the API now
+rejects with HTTP 400 ("Invalid detail item"). This made `comex_query()`,
+`comex_export()`, `comex_import()` and `comex_query_city()` fail for
+several common groupings. The release corrects the mapping and the
+accompanying documentation.
 
-1. Fixed SSL certificate handling: the ComexStat API uses the ICP-Brasil
-   certificate chain, which is not present in the CA bundle of all systems.
-   Added automatic fallback with a one-time warning and a user-configurable
-   option (`options(comex.ssl_verifypeer = FALSE)`).
-2. Fixed API parameter mapping based on exhaustive testing against the
-   live API, which revealed discrepancies with the official documentation:
-   - Corrected detail name mapping (`bloc` now correctly maps to
-     `economicBlock`; added `heading`, `chapter`, `nbm` mappings).
-   - Restricted `comex_historical()` to only FOB and KG metrics, which
-     are the only ones accepted by the historical endpoint.
-   - Corrected `comex_query_city()` documentation to reflect the actual
-     detail names accepted by the city endpoint (`heading`, `chapter`,
-     `section` instead of `hs4`, `hs2`).
-   - Updated `comex_filter_values()` documentation to list only the
-     filters that actually have a values endpoint.
-   - Fixed response parsing for fields containing NULL or list values.
+### Breaking changes
 
+* `.details_map` (internal) updated to match the names returned by
+  `/general/details`, `/general/filters`, `/cities/filters` and
+  `/historical-data/filters`:
+    - `"transport_mode"` now maps to `via` (was `transportMode`).
+    - `"hs6"` / `"sh6"` → `subHeading` (was `sh6`).
+    - `"hs4"` / `"sh4"` → `heading` (was `sh4`).
+    - `"hs2"` / `"sh2"` → `chapter` (was `sh2`).
+    - `"cgce_n1"` / `"cgce_n2"` / `"cgce_n3"` → `BECLevel1` / `BECLevel2`
+      / `BECLevel3` (was `cgceN1` / `cgceN2` / `cgceN3`).
+    - `"sitc_*"` / `"cuci_*"` → `SITCSection` / `SITCDivision` /
+      `SITCGroup` / `SITCSubGroup` / `SITCBasicHeading` (was
+      `cuciSection` / `cuciChapter` / etc.).
+    - `"isic_*"` → `ISICSection` / `ISICDivision` / `ISICGroup` /
+      `ISICClass` (was lowercase `isicSection` etc.).
+* `comex_query_city()`: removed the `metric_statistic` parameter; the
+  city endpoint only supports `metricFOB` and `metricKG`.
+* `comex_isic()`: rewritten to call `/general/filters/ISIC*`, the only
+  place the API exposes ISIC values. The function now takes a `level`
+  argument (`"section"`, `"division"`, `"group"`, `"class"`).
 
-# Dear Konstanze,
+### Documentation
 
-Thank you for the review. I have addressed all the points:
+* Detail-list documentation in `comex_query()`, `comex_query_city()`
+  and `comex_historical()` rewritten to show both the user-friendly
+  alias and the actual API name.
+* `comex_query_city()`: corrected — HS6 is **not** available for the
+  city endpoint; product detail goes only down to HS4 (heading).
+* `comex_filter_values()`: clarified that the `filter` argument is
+  case-sensitive and must match `comex_filters()` output verbatim.
+* New vignette `city-profile.Rmd` showing how to reproduce the
+  public ComexStat municipality page using `comex_query_city()`.
 
-1. Removed the redundant "R" from both the title and the description.
-2. Expanded all acronyms in the description text (NCM, NBM, HS, CGCE, SITC, ISIC, MDIC).
-3. Added the API web reference in angle brackets.
+### Misc
+
+* Bumped `Date` to 2026-05-21.
+* Added `.claude/` to `.Rbuildignore`.
+
+## Downstream dependencies
+
+There are currently no reverse dependencies on CRAN.

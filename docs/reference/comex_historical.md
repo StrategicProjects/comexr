@@ -38,12 +38,14 @@ comex_historical(
 
 - details:
 
-  Character vector of detail/grouping fields. Options: `"country"`,
-  `"state"`, `"nbm"`.
+  Character vector of detail/grouping fields. The historical endpoint
+  supports only: `"country"`, `"bloc"` (`"economic_block"`), `"state"`,
+  `"nbm"`.
 
 - filters:
 
-  Named list of filters.
+  Named list of filters. Accepts the same names as `details`
+  (`"country"`, `"bloc"`, `"state"`, `"nbm"`).
 
 - month_detail:
 

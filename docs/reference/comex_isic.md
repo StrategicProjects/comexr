@@ -1,43 +1,30 @@
-# Get ISIC (International Standard Industrial Classification) table
+# Get ISIC (International Standard Industrial Classification) values
 
-Queries the `/tables/product-categories` endpoint to retrieve ISIC
-classification data. ISIC is an international classification of economic
-activities developed by the United Nations.
+Retrieves ISIC classification values at a chosen hierarchical level by
+calling the corresponding `/general/filters/{filter}` endpoint, which is
+the only place the ComexStat API exposes ISIC codes (there is no
+`/tables/isic` endpoint).
 
 ## Usage
 
 ``` r
 comex_isic(
+  level = c("section", "division", "group", "class"),
   language = "en",
-  search = NULL,
-  add = NULL,
-  page = NULL,
-  per_page = NULL,
   verbose = FALSE
 )
 ```
 
 ## Arguments
 
+- level:
+
+  Hierarchical level. One of `"section"`, `"division"`, `"group"`, or
+  `"class"`. Default: `"section"`.
+
 - language:
 
   Language: `"pt"`, `"en"`, or `"es"`. Default: `"en"`.
-
-- search:
-
-  Optional search term to filter results.
-
-- add:
-
-  Optional related table to include (e.g. `"ncm"`).
-
-- page:
-
-  Page number for pagination. Default: `NULL`.
-
-- per_page:
-
-  Number of results per page. Default: `NULL`.
 
 - verbose:
 
@@ -45,27 +32,18 @@ comex_isic(
 
 ## Value
 
-A data.frame with classification codes and descriptions.
+A data.frame with ISIC codes and descriptions for the given level.
 
-## Note
+## Details
 
-The OpenAPI specification does not define a dedicated ISIC table
-endpoint. ISIC codes are available as detail/grouping fields in trade
-queries (e.g. `"isic_section"`, `"isic_division"`). This convenience
-function queries `/tables/product-categories`, which may return ISIC
-data alongside CUCI/SITC classifications. You can also look up ISIC
-values using
-[`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md)
-with filter names like `"isicSection"`.
+ISIC is the international classification of economic activities
+maintained by the United Nations.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Browse product categories (includes ISIC)
-comex_isic()
-
-# Alternatively, look up ISIC values via filters:
-comex_filter_values("isicSection")
+comex_isic("section")
+comex_isic("division", language = "pt")
 } # }
 ```

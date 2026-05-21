@@ -1,5 +1,60 @@
 # Changelog
 
+## comexr 0.3.0
+
+### Breaking Changes
+
+- Many user-friendly detail/filter aliases now map to the correct API
+  names. Previous releases sent names that the ComexStat API rejects
+  with HTTP 400 “Invalid detail item”. Behaviour now matches the live
+  API as verified against `/general/details` and `/general/filters`:
+  - `"transport_mode"` → `via` (was `transportMode`)
+  - `"hs6"` / `"sh6"` → `subHeading` (was `sh6`)
+  - `"hs4"` / `"sh4"` → `heading` (was `sh4`)
+  - `"hs2"` / `"sh2"` → `chapter` (was `sh2`)
+  - `"cgce_n1"`/`"cgce_n2"`/`"cgce_n3"` → `BECLevel1`/`2`/`3`
+  - `"sitc_*"` / `"cuci_*"` → `SITCSection`/`SITCDivision`/`SITCGroup`/
+    `SITCSubGroup`/`SITCBasicHeading`
+  - `"isic_*"` → `ISICSection`/`ISICDivision`/`ISICGroup`/`ISICClass`
+- [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md):
+  removed `metric_statistic` parameter. The city endpoint only supports
+  `metricFOB` and `metricKG`.
+- [`comex_isic()`](https://strategicprojects.github.io/comexr/reference/comex_isic.md):
+  rewritten to query `/general/filters/ISIC*` (the only place the API
+  exposes ISIC values). Now takes a `level` argument (`"section"`,
+  `"division"`, `"group"`, `"class"`) and no longer duplicates
+  [`comex_sitc()`](https://strategicprojects.github.io/comexr/reference/comex_sitc.md)
+  output.
+
+### Bug Fixes
+
+- Removed `"company_size"` from documented details — the API does not
+  support a company-size detail/filter.
+
+### Documentation
+
+- [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md):
+  detail list rewritten to show the user-friendly alias **and** the
+  underlying API name for every option.
+- [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md):
+  corrected — HS6 (subheading) is **not** available for the city
+  endpoint; product detail goes only down to HS4 (heading). Added
+  `bloc`/`economic_block` to documented details.
+- [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md):
+  documented the available filter names (`country`, `bloc`, `state`,
+  `nbm`).
+- [`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md):
+  clarified that the `filter` argument is case-sensitive and must match
+  [`comex_filters()`](https://strategicprojects.github.io/comexr/reference/comex_filters.md)
+  output verbatim (e.g. `"BECLevel1"`, `"SITCSection"`,
+  `"ISICSection"`).
+- New vignette `city-profile`: reproduces the panels of the public
+  ComexStat municipality page
+  (`comexstat.mdic.gov.br/{lang}/municipio/`) — totals, top countries,
+  top blocs, top HS4 products, monthly time series, year-over-year —
+  using
+  [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md).
+
 ## comexr 0.2.0
 
 CRAN release: 2026-03-10

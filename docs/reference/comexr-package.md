@@ -111,6 +111,8 @@ Useful links:
 
 Authors:
 
+- Andre Leite <leite@castlab.org>
+
 - Marcos Wasilew <marcos.wasilew@gmail.com>
 
 - Hugo Vasconcelos <hugo.vasconcelos@ufpe.br>

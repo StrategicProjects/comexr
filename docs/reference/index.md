@@ -83,4 +83,4 @@ Functions to query economic classification tables
 - [`comex_sitc()`](https://strategicprojects.github.io/comexr/reference/comex_sitc.md)
   : Get SITC/CUCI (Standard International Trade Classification) table
 - [`comex_isic()`](https://strategicprojects.github.io/comexr/reference/comex_isic.md)
-  : Get ISIC (International Standard Industrial Classification) table
+  : Get ISIC (International Standard Industrial Classification) values
