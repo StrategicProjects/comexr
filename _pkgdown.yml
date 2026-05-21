@@ -87,6 +87,7 @@ articles:
       - querying-trade-data
       - auxiliary-tables
       - city-profile
+      - state-trade-profile
 
 news:
   releases:

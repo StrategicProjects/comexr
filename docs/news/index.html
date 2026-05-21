@@ -22,6 +22,7 @@
     <li><a class="dropdown-item" href="../articles/querying-trade-data.html">Querying Trade Data</a></li>
     <li><a class="dropdown-item" href="../articles/auxiliary-tables.html">Auxiliary Tables &amp; Lookups</a></li>
     <li><a class="dropdown-item" href="../articles/city-profile.html">Building a city trade profile (replicating the ComexStat municipality page)</a></li>
+    <li><a class="dropdown-item" href="../articles/state-trade-profile.html">Full state trade profile (Pernambuco example)</a></li>
   </ul></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
@@ -87,6 +88,7 @@
 <li>
 <code><a href="../reference/comex_filter_values.html">comex_filter_values()</a></code>: clarified that the <code>filter</code> argument is case-sensitive and must match <code><a href="../reference/comex_filters.html">comex_filters()</a></code> output verbatim (e.g. <code>"BECLevel1"</code>, <code>"SITCSection"</code>, <code>"ISICSection"</code>).</li>
 <li>New vignette <code>city-profile</code>: reproduces the panels of the public ComexStat municipality page (<code>comexstat.mdic.gov.br/{lang}/municipio/</code>) — totals, top countries, top blocs, top HS4 products, monthly time series, year-over-year — using <code><a href="../reference/comex_query_city.html">comex_query_city()</a></code>.</li>
+<li>New vignette <code>state-trade-profile</code>: full state-level extract (Pernambuco example) combining the “By Municipality” panel filters — exports + imports, monthly detail, state filter, details by state / city / HS4 / section / HS2 / country — and showing how to derive trade balance, top municipalities, top products, top partners and year-over-year comparisons from the result.</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -54,6 +54,12 @@
   top blocs, top HS4 products, monthly time series, year-over-year —
   using
   [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md).
+- New vignette `state-trade-profile`: full state-level extract
+  (Pernambuco example) combining the “By Municipality” panel filters —
+  exports + imports, monthly detail, state filter, details by state /
+  city / HS4 / section / HS2 / country — and showing how to derive trade
+  balance, top municipalities, top products, top partners and
+  year-over-year comparisons from the result.
 
 ## comexr 0.2.0
 
