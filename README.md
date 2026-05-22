@@ -55,6 +55,14 @@ soy <- comex_export(
 )
 ```
 
+It is fairly common for the ComexStat API to return rate limit errors ("Você excedeu o limite de solicitações. Por favor, tente novamente em 10 segundos.") or to report timeouts. There are three package options you can adjust to work around these errors:
+
+- `comexr.retry_time` - the number of seconds to wait after a failed request before trying again (default 10, increase if you get errors about exceeding request limits)
+- `comexr.max_tries` - maximum number of times to repeat the same failed request before giving up (default 3, adjusting `comexr.retry_time` is generally a better approach to avoid errors without overloading ComexStat servers)
+- `comexr.timeout` - maximum number of seconds to wait for the ComexStat servers to respond (default 60 for simple requests and 120 for complex requests; increase if you get errors about timeouts)
+
+You can set any of these using the `options` function: e.g. `options("comexr.retry_time" = 30)` to set the retry time to 30 seconds.
+
 ## Discover available options
 
 ```r

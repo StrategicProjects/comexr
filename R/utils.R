@@ -60,8 +60,9 @@ comex_get <- function(endpoint, query = list(), verbose = TRUE) {
 
   req <- httr2::request(url) |>
     httr2::req_headers(Accept = "application/json") |>
-    httr2::req_timeout(60) |>
-    httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
+    httr2::req_timeout(getOption("comexr.timeout", 60)) |>
+    # 10 seconds appears to be the recommended amount of time based on errors from the API
+    httr2::req_retry(max_tries = getOption("comexr.max_tries", 3), backoff = ~ getOption("comexr.retry_time", 10)) |>
     httr2::req_error(is_error = function(resp) FALSE) |>
     comex_req_options()
 
@@ -111,8 +112,8 @@ comex_post <- function(endpoint, body, query = list(), verbose = TRUE) {
       `Content-Type` = "application/json"
     ) |>
     httr2::req_body_json(body, auto_unbox = TRUE) |>
-    httr2::req_timeout(120) |>
-    httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
+    httr2::req_timeout(getOption("comexr.timeout", 120)) |>
+    httr2::req_retry(max_tries = getOption("comexr.max_tries", 3), backoff = ~ getOption("comexr.retry_time", 10)) |>
     httr2::req_error(is_error = function(resp) FALSE) |>
     comex_req_options()
 
