@@ -23,7 +23,16 @@ points to something that errors out.
 
 The API rate-limits aggressively: HTTP 429 with body `"Você excedeu
 o limite de solicitações. Por favor, tente novamente em 10
-segundos."` Use a retry loop:
+segundos."` Since 0.3.1 the package's own retry/timeout behaviour is
+user-configurable via options (`R/utils.R`, both `comex_get` and
+`comex_post`):
+
+* `comexr.timeout`    — `req_timeout` (default 60 for GET, 120 for POST)
+* `comexr.max_tries`  — `req_retry(max_tries=)` (default 3)
+* `comexr.retry_time` — `req_retry(backoff=)` in seconds (default 10,
+  matching the API's 429 wait; was 2 before 0.3.1)
+
+For ad-hoc CLI probing use a retry loop:
 
 ```bash
 while /usr/bin/curl -sS "$URL" -o /tmp/r.json && grep -q "429" /tmp/r.json; do
