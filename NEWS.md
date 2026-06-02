@@ -1,3 +1,14 @@
+# comexr 0.3.1
+
+## New Features
+
+* Request timeout, number of retries, and retry backoff are now
+  configurable through the options `comexr.timeout`, `comexr.max_tries`
+  and `comexr.retry_time`. The default retry backoff was increased from
+  2 to 10 seconds to match the wait time the ComexStat API requests on
+  HTTP 429 rate-limit errors. Thanks to Matt Bhagat-Conway
+  (@mattwigway) for the contribution (#1).
+
 # comexr 0.3.0
 
 ## Breaking Changes
