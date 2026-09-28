@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">comexr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,46 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.0" id="comexr-030">comexr 0.3.0<a class="anchor" aria-label="anchor" href="#comexr-030"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="comexr-040">comexr 0.4.0<a class="anchor" aria-label="anchor" href="#comexr-040"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-4-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
+<ul><li>Query results (<code><a href="../reference/comex_query.html">comex_query()</a></code>, <code><a href="../reference/comex_export.html">comex_export()</a></code>, <code><a href="../reference/comex_import.html">comex_import()</a></code>, <code><a href="../reference/comex_query_city.html">comex_query_city()</a></code>, <code><a href="../reference/comex_historical.html">comex_historical()</a></code>) are now typed: <code>metric*</code> columns are numeric and <code>year</code> / <code>monthNumber</code> are integer. The API returns every value as a string, so previously all columns were character. Code that called <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> on metrics keeps working.</li>
+<li>SSL verification is no longer disabled automatically. Previously any error mentioning “SSL”, “certificate” or “peer” (which also matched plain network errors such as “Connection reset by peer”) made the package retry without verification and silently set a global option for the rest of the session. SSL failures now raise an error explaining how to opt out with <code>options(comexr.ssl_verifypeer = FALSE)</code>. The old option name <code>comex.ssl_verifypeer</code> is still honoured.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-4-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/comex_historical.html">comex_historical()</a></code> was failing with HTTP 403: the endpoint URL had a trailing slash (<code>/historical-data/</code>), which the API’s Cloudflare front now blocks. It now calls <code>/historical-data</code>.</li>
+<li>
+<code><a href="../reference/comex_historical.html">comex_historical()</a></code> returned whole years even when the period asked for specific months (the API ignores months). Results are now trimmed to the requested months when <code>month_detail = TRUE</code>, and a warning is issued when <code>month_detail = FALSE</code> and the period is not whole years.</li>
+<li>Fixed <code>could not find function "%||%"</code> on R &lt; 4.4.0 whenever the API returned an HTTP error (e.g. the 429 rate limit).</li>
+<li>
+<code>filters</code> must now be a named list; unnamed entries used to be dropped silently, returning unfiltered data.</li>
+<li>Conversion errors in API responses are no longer swallowed into an empty data frame.</li>
+<li>Column names from the API are kept verbatim (no <code><a href="https://rdrr.io/r/base/make.names.html" class="external-link">make.names()</a></code> mangling).</li>
+<li>
+<code>validate_period()</code> rejects invalid months (e.g. <code>"2023-13"</code>) and non-scalar input.</li>
+<li>Documented the correct default for <code>month_detail</code> (<code>TRUE</code>) in <code><a href="../reference/comex_query.html">comex_query()</a></code>, <code><a href="../reference/comex_export.html">comex_export()</a></code> and <code><a href="../reference/comex_import.html">comex_import()</a></code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-4-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-4-0"></a></h3>
+<ul><li>Response parsing builds columns directly instead of binding one data frame per row: about 17x faster on 20,000 rows, and the gap widens with larger results.</li>
+<li>
+<code>type</code> in <code><a href="../reference/comex_last_update.html">comex_last_update()</a></code>, <code><a href="../reference/comex_available_years.html">comex_available_years()</a></code>, <code><a href="../reference/comex_filters.html">comex_filters()</a></code>, <code><a href="../reference/comex_filter_values.html">comex_filter_values()</a></code>, <code><a href="../reference/comex_details.html">comex_details()</a></code> and <code><a href="../reference/comex_metrics.html">comex_metrics()</a></code> is validated with <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg()</a></code>.</li>
+<li>Added an offline test suite (no network access required).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.1" id="comexr-031">comexr 0.3.1<a class="anchor" aria-label="anchor" href="#comexr-031"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-3-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-3-1"></a></h3>
+<ul><li>Request timeout, number of retries, and retry backoff are now configurable through the options <code>comexr.timeout</code>, <code>comexr.max_tries</code> and <code>comexr.retry_time</code>. The default retry backoff was increased from 2 to 10 seconds to match the wait time the ComexStat API requests on HTTP 429 rate-limit errors. Thanks to Matt Bhagat-Conway
+<ol class="example" style="list-style-type: decimal"><li>for the contribution (<a href="https://github.com/StrategicProjects/comexr/issues/1" class="external-link">#1</a>).</li>
+</ol></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="comexr-030">comexr 0.3.0<a class="anchor" aria-label="anchor" href="#comexr-030"></a></h2><p class="text-muted">CRAN release: 2026-05-21</p>
 <div class="section level3">
 <h3 id="breaking-changes-0-3-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h3>
 <ul><li>Many user-friendly detail/filter aliases now map to the correct API names. Previous releases sent names that the ComexStat API rejects with HTTP 400 “Invalid detail item”. Behaviour now matches the live API as verified against <code>/general/details</code> and <code>/general/filters</code>:
@@ -138,7 +177,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra.</p>
+  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorim, Diogo Bezerra.</p>
 </div>
 
 <div class="pkgdown-footer-right">

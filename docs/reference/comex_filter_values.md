@@ -10,7 +10,12 @@ exact name returned by
 ## Usage
 
 ``` r
-comex_filter_values(filter, type = "general", language = "en", verbose = FALSE)
+comex_filter_values(
+  filter,
+  type = c("general", "city", "historical"),
+  language = "en",
+  verbose = FALSE
+)
 ```
 
 ## Arguments
@@ -24,7 +29,7 @@ comex_filter_values(filter, type = "general", language = "en", verbose = FALSE)
 
 - type:
 
-  Data type: `"general"`, `"city"`, or `"historical"`.
+  Data type: `"general"` (default), `"city"`, or `"historical"`.
 
 - language:
 

@@ -5,15 +5,15 @@ Returns the date of the last data update in the API.
 ## Usage
 
 ``` r
-comex_last_update(type = "general", verbose = FALSE)
+comex_last_update(type = c("general", "city", "historical"), verbose = FALSE)
 ```
 
 ## Arguments
 
 - type:
 
-  Data type: `"general"`, `"city"`, or `"historical"`. Default:
-  `"general"`.
+  Data type: `"general"` (default), `"city"`, or `"historical"`.
+  Default: `"general"`.
 
 - verbose:
 

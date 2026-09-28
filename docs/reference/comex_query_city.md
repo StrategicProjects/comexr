@@ -75,7 +75,9 @@ comex_query_city(
 
 ## Value
 
-A data.frame (or tibble) with query results.
+A data.frame (or tibble if available) with query results. Metric columns
+(`metricFOB`, `metricKG`, ...) are numeric and `year` / `monthNumber`
+are integer; all other columns are character.
 
 ## Details
 

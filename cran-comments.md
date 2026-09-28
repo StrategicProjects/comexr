@@ -2,23 +2,24 @@
 
 0 errors | 0 warnings | 0 notes
 
-(WARNING and NOTE produced locally are unrelated to package code: vignette
-chunks are evaluated with `eval = FALSE`, but `R CMD check --run-vignettes`
-executes the chunks anyway against the live API and trips its HTTP 429
-rate limit; the `.claude/` directory is a local IDE artefact and is now
-listed in `.Rbuildignore`.)
+All examples and vignette chunks that call the live ComexStat API are
+wrapped in `\dontrun{}` / `eval = FALSE`, because the API rate-limits
+aggressively (HTTP 429). The test suite runs fully offline.
 
-## Changes since 0.3.0
+## Changes since 0.3.0 (current CRAN version)
 
-This is a minor release adding user-facing configuration options.
-
-* Request timeout, retry count and retry backoff are now configurable
-  via the options `comexr.timeout`, `comexr.max_tries` and
-  `comexr.retry_time`. The default retry backoff was raised from 2 to
-  10 seconds, matching the wait time the ComexStat API requests on its
-  HTTP 429 rate-limit responses. This helps users who hit the rate
-  limit on heavier workloads. Contributed by Matt Bhagat-Conway (#1).
-* Documented the new options in README.md.
+* Fixes a failure on R < 4.4.0: the internal error handler used `%||%`,
+  which base R only provides from 4.4.0. The package now defines it.
+* Fixes `comex_historical()`, which failed with HTTP 403 because the
+  API now blocks its old endpoint URL (trailing slash).
+* SSL verification is no longer disabled automatically or written to a
+  global option; users opt out explicitly via
+  `options(comexr.ssl_verifypeer = FALSE)`.
+* Query results are now typed (numeric metrics, integer year/month).
+* Faster response parsing, stricter argument validation, and a new
+  offline testthat suite.
+* Request timeout, retry count and backoff are configurable via options
+  (contributed by Matt Bhagat-Conway).
 
 ## Downstream dependencies
 

@@ -17,26 +17,22 @@ works for any Brazilian municipality; just swap the IBGE code.
 > \[[`comex_city_detail()`](https://strategicprojects.github.io/comexr/reference/comex_city_detail.md)\]
 > to look up the right code.
 
-``` r
-
-library(comexr)
-
-city_code <- "2611606"  # Recife - PE (IBGE)
-year_from <- "2024-01"
-year_to   <- "2024-12"
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`comexr`](https://strategicprojects.github.io/comexr/)`)`\
+\
+`city_code`` ``<-`` ``"2611606"``  ``# Recife - PE (IBGE)`\
+`year_from`` ``<-`` ``"2024-01"`\
+`year_to``   ``<-`` ``"2024-12"`
 
 ## What the city endpoint exposes
 
 City-level data is more limited than the general endpoint. Always
 inspect the available options before building a query:
 
-``` r
-
-comex_filters("city")    # 7 filters
-comex_details("city")    # 7 details (same names as filters)
-comex_metrics("city")    # only FOB and KG
-```
+\
+[`comex_filters`](https://strategicprojects.github.io/comexr/reference/comex_filters.md)`(``"city"``)``    ``# 7 filters`\
+[`comex_details`](https://strategicprojects.github.io/comexr/reference/comex_details.md)`(``"city"``)``    ``# 7 details (same names as filters)`\
+[`comex_metrics`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md)`(``"city"``)``    ``# only FOB and KG`
 
 | Available for cities | Not available for cities                         |
 |----------------------|--------------------------------------------------|
@@ -56,90 +52,82 @@ User-friendly aliases — `bloc` / `economic_block`, `hs4` / `sh4`, `hs2`
 Aggregate exports and imports for the period, with no detail grouping
 beyond the year:
 
-``` r
-
-exports_total <- comex_query_city(
-  flow         = "export",
-  start_period = year_from,
-  end_period   = year_to,
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-
-imports_total <- comex_query_city(
-  flow         = "import",
-  start_period = year_from,
-  end_period   = year_to,
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-
-exports_total
-imports_total
-```
+\
+`exports_total`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+\
+`imports_total`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"import"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+\
+`exports_total`\
+`imports_total`
 
 The trade balance is just `metricFOB(export) - metricFOB(import)`:
 
-``` r
-
-balance <- as.numeric(exports_total$metricFOB) -
-           as.numeric(imports_total$metricFOB)
-```
+\
+`balance`` ``<-`` ``exports_total``$``metricFOB`` ``-`\
+`           ``imports_total``$``metricFOB`
 
 ## 2. Top trading partners
 
 The “Top countries” panel on the municipality page is a `country` group:
 
-``` r
-
-top_export_countries <- comex_query_city(
-  flow         = "export",
-  start_period = year_from,
-  end_period   = year_to,
-  details      = "country",
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-
-top_export_countries <- top_export_countries[
-  order(-as.numeric(top_export_countries$metricFOB)),
-]
-head(top_export_countries, 10)
-
-top_import_countries <- comex_query_city(
-  flow         = "import",
-  start_period = year_from,
-  end_period   = year_to,
-  details      = "country",
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-top_import_countries <- top_import_countries[
-  order(-as.numeric(top_import_countries$metricFOB)),
-]
-head(top_import_countries, 10)
-```
+\
+`top_export_countries`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  details      ``=`` ``"country"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+\
+`top_export_countries`` ``<-`` ``top_export_countries``[`\
+`  `[`order`](https://rdrr.io/r/base/order.html)`(``-``top_export_countries``$``metricFOB``)``,`\
+`]`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``top_export_countries``, ``10``)`\
+\
+`top_import_countries`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"import"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  details      ``=`` ``"country"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+`top_import_countries`` ``<-`` ``top_import_countries``[`\
+`  `[`order`](https://rdrr.io/r/base/order.html)`(``-``top_import_countries``$``metricFOB``)``,`\
+`]`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``top_import_countries``, ``10``)`
 
 ## 3. Top economic blocs
 
 The “Top blocs” panel groups by `economicBlock` (alias: `bloc`):
 
-``` r
-
-exports_by_bloc <- comex_query_city(
-  flow         = "export",
-  start_period = year_from,
-  end_period   = year_to,
-  details      = "bloc",
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-
-exports_by_bloc <- exports_by_bloc[
-  order(-as.numeric(exports_by_bloc$metricFOB)),
-]
-exports_by_bloc
-```
+\
+`exports_by_bloc`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  details      ``=`` ``"bloc"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+\
+`exports_by_bloc`` ``<-`` ``exports_by_bloc``[`\
+`  `[`order`](https://rdrr.io/r/base/order.html)`(``-``exports_by_bloc``$``metricFOB``)``,`\
+`]`\
+`exports_by_bloc`
 
 ## 4. Top products (HS4 / heading)
 
@@ -147,134 +135,118 @@ Product detail goes down to HS4 (`heading`) for cities — HS6
 (`subHeading`) is **not** available at this endpoint, and neither is the
 full 8-digit NCM:
 
-``` r
-
-top_export_products <- comex_query_city(
-  flow         = "export",
-  start_period = year_from,
-  end_period   = year_to,
-  details      = "hs4",   # → heading
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-
-top_export_products <- top_export_products[
-  order(-as.numeric(top_export_products$metricFOB)),
-]
-head(top_export_products, 10)
-```
+\
+`top_export_products`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  details      ``=`` ``"hs4"``,   ``# → heading`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+\
+`top_export_products`` ``<-`` ``top_export_products``[`\
+`  `[`order`](https://rdrr.io/r/base/order.html)`(``-``top_export_products``$``metricFOB``)``,`\
+`]`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``top_export_products``, ``10``)`
 
 For a coarser cut, use `"hs2"` (chapter) or `"section"`:
 
-``` r
-
-exports_by_section <- comex_query_city(
-  flow         = "export",
-  start_period = year_from,
-  end_period   = year_to,
-  details      = "section",
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-exports_by_section
-```
+\
+`exports_by_section`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  details      ``=`` ``"section"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+`exports_by_section`
 
 ## 5. Monthly time series
 
 Set `month_detail = TRUE` (the default) to reproduce the time-series
 chart on the page:
 
-``` r
-
-exports_monthly <- comex_query_city(
-  flow         = "export",
-  start_period = year_from,
-  end_period   = year_to,
-  filters      = list(city = city_code),
-  month_detail = TRUE
-)
-exports_monthly  # year, monthNumber, metricFOB, metricKG
-```
+\
+`exports_monthly`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``TRUE`\
+`)`\
+`exports_monthly``  ``# year, monthNumber, metricFOB, metricKG`
 
 Plot it with whichever graphics package you prefer:
 
-``` r
-
-# Example with base R
-exports_monthly$date <- as.Date(
-  sprintf("%s-%s-01", exports_monthly$year, exports_monthly$monthNumber)
-)
-exports_monthly$fob_musd <- as.numeric(exports_monthly$metricFOB) / 1e6
-
-plot(
-  exports_monthly$date, exports_monthly$fob_musd,
-  type = "b", pch = 19,
-  xlab = "Month", ylab = "Exports (US$ millions)",
-  main = sprintf("Recife - PE exports, %s to %s", year_from, year_to)
-)
-```
+\
+`# Example with base R`\
+`exports_monthly``$``date`` ``<-`` `[`as.Date`](https://rdrr.io/r/base/as.Date.html)`(`\
+`  `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"%d-%02d-01"``, ``exports_monthly``$``year``, ``exports_monthly``$``monthNumber``)`\
+`)`\
+`exports_monthly``$``fob_musd`` ``<-`` ``exports_monthly``$``metricFOB`` ``/`` ``1e6`\
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(`\
+`  ``exports_monthly``$``date``, ``exports_monthly``$``fob_musd``,`\
+`  type ``=`` ``"b"``, pch ``=`` ``19``,`\
+`  xlab ``=`` ``"Month"``, ylab ``=`` ``"Exports (US$ millions)"``,`\
+`  main ``=`` `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"Recife - PE exports, %s to %s"``, ``year_from``, ``year_to``)`\
+`)`
 
 ## 6. Year-over-year comparison
 
 To compare with prior years (the page typically shows a YoY change),
 extend the period and group by year only:
 
-``` r
-
-exports_yearly <- comex_query_city(
-  flow         = "export",
-  start_period = "2019-01",
-  end_period   = "2024-12",
-  filters      = list(city = city_code),
-  month_detail = FALSE
-)
-exports_yearly  # one row per year
-```
+\
+`exports_yearly`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``"2019-01"``,`\
+`  end_period   ``=`` ``"2024-12"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+`exports_yearly``  ``# one row per year`
 
 ## 7. Cross-cutting query: top destinations by product
 
 You can combine details to drill in further — e.g. top destinations for
 the city’s leading product:
 
-``` r
-
-# 1. Find the top HS4
-top_hs4 <- head(top_export_products, 1)$headingCode
-
-# 2. Break that product down by destination
-top_destinations_for_product <- comex_query_city(
-  flow         = "export",
-  start_period = year_from,
-  end_period   = year_to,
-  details      = c("country", "hs4"),
-  filters      = list(city = city_code, hs4 = top_hs4),
-  month_detail = FALSE
-)
-top_destinations_for_product
-```
+\
+`# 1. Find the top HS4`\
+`top_hs4`` ``<-`` `[`head`](https://rdrr.io/r/utils/head.html)`(``top_export_products``, ``1``)``$``headingCode`\
+\
+`# 2. Break that product down by destination`\
+`top_destinations_for_product`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``year_from``,`\
+`  end_period   ``=`` ``year_to``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"country"``, ``"hs4"``)``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``city_code``, hs4 ``=`` ``top_hs4``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+`top_destinations_for_product`
 
 ## Looking up the city code from a name
 
 If you only have the city’s name, search the cities table:
 
-``` r
-
-recife <- comex_cities()
-recife[grepl("Recife", recife$text, ignore.case = TRUE), ]
-# Use the `id` column (IBGE coMunGeo) in subsequent filters.
-```
+\
+`recife`` ``<-`` `[`comex_cities`](https://strategicprojects.github.io/comexr/reference/comex_cities.md)`(``)`\
+`recife``[`[`grepl`](https://rdrr.io/r/base/grep.html)`(``"Recife"``, ``recife``$``text``, ignore.case ``=`` ``TRUE``)``, ``]`\
+`` # Use the `id` column (IBGE coMunGeo) in subsequent filters. ``
 
 For an authoritative single-city lookup (with state), use
 \[[`comex_city_detail()`](https://strategicprojects.github.io/comexr/reference/comex_city_detail.md)\]:
 
-``` r
-
-comex_city_detail(2611606)
-#> $coMunGeo  "2611606"
-#> $noMun     "RECIFE"
-#> $noMunMin  "Recife"
-#> $sgUf      "PE"
-```
+\
+[`comex_city_detail`](https://strategicprojects.github.io/comexr/reference/comex_city_detail.md)`(``2611606``)`\
+`#> $coMunGeo  "2611606"`\
+`#> $noMun     "RECIFE"`\
+`#> $noMunMin  "Recife"`\
+`#> $sgUf      "PE"`
 
 ## Tips
 

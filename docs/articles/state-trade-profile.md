@@ -16,170 +16,148 @@ requested in the “By Municipality” panel:
 > only goes down to HS4 (heading) — full NCM and HS6 (subHeading) are
 > not available for this view.
 
-``` r
-
-library(comexr)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`comexr`](https://strategicprojects.github.io/comexr/)`)`
 
 ## 1. Look up the state code
 
 Brazilian state codes follow the IBGE convention (`26` = Pernambuco). If
 you don’t remember the code, query the table:
 
-``` r
-
-states <- comex_states()
-states[states$uf == "PE", ]
-#>      text id uf
-#>  Pernambuco 26 PE
-```
+\
+`states`` ``<-`` `[`comex_states`](https://strategicprojects.github.io/comexr/reference/comex_states.md)`(``)`\
+`states``[``states``$``uf`` ``==`` ``"PE"``, ``]`\
+`#>      text id uf`\
+`#>  Pernambuco 26 PE`
 
 ## 2. Build the query parameters
 
-``` r
-
-state_code <- 26                       # Pernambuco
-period_from <- "2026-01"
-period_to   <- "2026-12"               # API returns up to the latest update
-
-# These names are user-friendly aliases. The package translates each
-# to the underlying API name (see `getting-started` vignette for the
-# full mapping table):
-#   hs4     -> heading
-#   hs2     -> chapter
-detalhes <- c("state", "city", "hs4", "section", "hs2", "country")
-
-filtros <- list(state = state_code)
-```
+\
+`state_code`` ``<-`` ``26``                       ``# Pernambuco`\
+`period_from`` ``<-`` ``"2026-01"`\
+`period_to``   ``<-`` ``"2026-12"``               ``# API returns up to the latest update`\
+\
+`# These names are user-friendly aliases. The package translates each`\
+`` # to the underlying API name (see `getting-started` vignette for the ``\
+`# full mapping table):`\
+`#   hs4     -> heading`\
+`#   hs2     -> chapter`\
+`detalhes`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"state"``, ``"city"``, ``"hs4"``, ``"section"``, ``"hs2"``, ``"country"``)`\
+\
+`filtros`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(``state ``=`` ``state_code``)`
 
 ## 3. Fetch exports and imports
 
 The API serves one flow per request, so we make two calls and combine
 the results:
 
-``` r
-
-exp_pe <- comex_query_city(
-  flow         = "export",
-  start_period = period_from,
-  end_period   = period_to,
-  details      = detalhes,
-  filters      = filtros,
-  month_detail = TRUE,
-  metric_fob   = TRUE,
-  metric_kg    = TRUE
-)
-exp_pe$flow <- "export"
-
-imp_pe <- comex_query_city(
-  flow         = "import",
-  start_period = period_from,
-  end_period   = period_to,
-  details      = detalhes,
-  filters      = filtros,
-  month_detail = TRUE,
-  metric_fob   = TRUE,
-  metric_kg    = TRUE
-)
-imp_pe$flow <- "import"
-
-pe <- rbind(exp_pe, imp_pe)
-```
+\
+`exp_pe`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``period_from``,`\
+`  end_period   ``=`` ``period_to``,`\
+`  details      ``=`` ``detalhes``,`\
+`  filters      ``=`` ``filtros``,`\
+`  month_detail ``=`` ``TRUE``,`\
+`  metric_fob   ``=`` ``TRUE``,`\
+`  metric_kg    ``=`` ``TRUE`\
+`)`\
+`exp_pe``$``flow`` ``<-`` ``"export"`\
+\
+`imp_pe`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"import"``,`\
+`  start_period ``=`` ``period_from``,`\
+`  end_period   ``=`` ``period_to``,`\
+`  details      ``=`` ``detalhes``,`\
+`  filters      ``=`` ``filtros``,`\
+`  month_detail ``=`` ``TRUE``,`\
+`  metric_fob   ``=`` ``TRUE``,`\
+`  metric_kg    ``=`` ``TRUE`\
+`)`\
+`imp_pe``$``flow`` ``<-`` ``"import"`\
+\
+`pe`` ``<-`` `[`rbind`](https://rdrr.io/r/base/cbind.html)`(``exp_pe``, ``imp_pe``)`
 
 The resulting data frame has one row per **month × city × HS4 × country
 × flow** combination:
 
-``` r
-
-str(pe)
-head(pe)
-```
+\
+[`str`](https://rdrr.io/r/utils/str.html)`(``pe``)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``pe``)`
 
 ## 4. Cast metrics and add a date column
 
-API responses come back as character. Convert metrics to numeric and
-build a proper `Date` column for time-series analysis:
+Metric columns already come back as numeric and `year`/`monthNumber` as
+integer. Build a proper `Date` column for time-series analysis:
 
-``` r
-
-pe$metricFOB <- as.numeric(pe$metricFOB)
-pe$metricKG  <- as.numeric(pe$metricKG)
-pe$date      <- as.Date(sprintf("%s-%s-01", pe$year, pe$monthNumber))
-```
+\
+`pe``$``date`` ``<-`` `[`as.Date`](https://rdrr.io/r/base/as.Date.html)`(`[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"%d-%02d-01"``, ``pe``$``year``, ``pe``$``monthNumber``)``)`
 
 ## 5. Monthly trade balance
 
-``` r
-
-monthly <- aggregate(metricFOB ~ date + flow, data = pe, FUN = sum)
-monthly_wide <- reshape(monthly, idvar = "date", timevar = "flow",
-                        direction = "wide")
-names(monthly_wide) <- c("date", "exports", "imports")
-monthly_wide$balance <- monthly_wide$exports - monthly_wide$imports
-monthly_wide
-
-# Base-R plot
-with(monthly_wide, {
-  plot(date, exports / 1e6, type = "b", pch = 19, col = "steelblue",
-       ylim = range(c(exports, imports), na.rm = TRUE) / 1e6,
-       xlab = "Month", ylab = "US$ millions",
-       main = "Pernambuco: exports vs imports, 2026")
-  lines(date, imports / 1e6, type = "b", pch = 17, col = "tomato")
-  legend("topleft", legend = c("Exports", "Imports"),
-         col = c("steelblue", "tomato"), pch = c(19, 17), bty = "n")
-})
-```
+\
+`monthly`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(``metricFOB`` ``~`` ``date`` ``+`` ``flow``, data ``=`` ``pe``, FUN ``=`` ``sum``)`\
+`monthly_wide`` ``<-`` `[`reshape`](https://rdrr.io/r/stats/reshape.html)`(``monthly``, idvar ``=`` ``"date"``, timevar ``=`` ``"flow"``,`\
+`                        direction ``=`` ``"wide"``)`\
+[`names`](https://rdrr.io/r/base/names.html)`(``monthly_wide``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"date"``, ``"exports"``, ``"imports"``)`\
+`monthly_wide``$``balance`` ``<-`` ``monthly_wide``$``exports`` ``-`` ``monthly_wide``$``imports`\
+`monthly_wide`\
+\
+`# Base-R plot`\
+[`with`](https://rdrr.io/r/base/with.html)`(``monthly_wide``, ``{`\
+`  `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``date``, ``exports`` ``/`` ``1e6``, type ``=`` ``"b"``, pch ``=`` ``19``, col ``=`` ``"steelblue"``,`\
+`       ylim ``=`` `[`range`](https://rdrr.io/r/base/range.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``exports``, ``imports``)``, na.rm ``=`` ``TRUE``)`` ``/`` ``1e6``,`\
+`       xlab ``=`` ``"Month"``, ylab ``=`` ``"US$ millions"``,`\
+`       main ``=`` ``"Pernambuco: exports vs imports, 2026"``)`\
+`  `[`lines`](https://rdrr.io/r/graphics/lines.html)`(``date``, ``imports`` ``/`` ``1e6``, type ``=`` ``"b"``, pch ``=`` ``17``, col ``=`` ``"tomato"``)`\
+`  `[`legend`](https://rdrr.io/r/graphics/legend.html)`(``"topleft"``, legend ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"Exports"``, ``"Imports"``)``,`\
+`         col ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"steelblue"``, ``"tomato"``)``, pch ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``19``, ``17``)``, bty ``=`` ``"n"``)`\
+`}``)`
 
 ## 6. Top municipalities by flow
 
 The package returns the city as `noMunMinsgUf` (e.g. “Goiana - PE”):
 
-``` r
-
-exports_by_city <- aggregate(metricFOB ~ noMunMinsgUf,
-                             data = subset(pe, flow == "export"),
-                             FUN = sum)
-head(exports_by_city[order(-exports_by_city$metricFOB), ], 10)
-
-imports_by_city <- aggregate(metricFOB ~ noMunMinsgUf,
-                             data = subset(pe, flow == "import"),
-                             FUN = sum)
-head(imports_by_city[order(-imports_by_city$metricFOB), ], 10)
-```
+\
+`exports_by_city`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(``metricFOB`` ``~`` ``noMunMinsgUf``,`\
+`                             data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"export"``)``,`\
+`                             FUN ``=`` ``sum``)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``exports_by_city``[`[`order`](https://rdrr.io/r/base/order.html)`(``-``exports_by_city``$``metricFOB``)``, ``]``, ``10``)`\
+\
+`imports_by_city`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(``metricFOB`` ``~`` ``noMunMinsgUf``,`\
+`                             data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"import"``)``,`\
+`                             FUN ``=`` ``sum``)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``imports_by_city``[`[`order`](https://rdrr.io/r/base/order.html)`(``-``imports_by_city``$``metricFOB``)``, ``]``, ``10``)`
 
 ## 7. Top products (HS4)
 
-``` r
-
-exp_hs4 <- aggregate(
-  metricFOB ~ headingCode + heading,
-  data = subset(pe, flow == "export"),
-  FUN  = sum
-)
-head(exp_hs4[order(-exp_hs4$metricFOB), ], 10)
-
-imp_hs4 <- aggregate(
-  metricFOB ~ headingCode + heading,
-  data = subset(pe, flow == "import"),
-  FUN  = sum
-)
-head(imp_hs4[order(-imp_hs4$metricFOB), ], 10)
-```
+\
+`exp_hs4`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(`\
+`  ``metricFOB`` ``~`` ``headingCode`` ``+`` ``heading``,`\
+`  data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"export"``)``,`\
+`  FUN  ``=`` ``sum`\
+`)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``exp_hs4``[`[`order`](https://rdrr.io/r/base/order.html)`(``-``exp_hs4``$``metricFOB``)``, ``]``, ``10``)`\
+\
+`imp_hs4`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(`\
+`  ``metricFOB`` ``~`` ``headingCode`` ``+`` ``heading``,`\
+`  data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"import"``)``,`\
+`  FUN  ``=`` ``sum`\
+`)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``imp_hs4``[`[`order`](https://rdrr.io/r/base/order.html)`(``-``imp_hs4``$``metricFOB``)``, ``]``, ``10``)`
 
 ## 8. Top trading partners (countries)
 
-``` r
-
-exp_country <- aggregate(metricFOB ~ country,
-                         data = subset(pe, flow == "export"),
-                         FUN  = sum)
-head(exp_country[order(-exp_country$metricFOB), ], 10)
-
-imp_country <- aggregate(metricFOB ~ country,
-                         data = subset(pe, flow == "import"),
-                         FUN  = sum)
-head(imp_country[order(-imp_country$metricFOB), ], 10)
-```
+\
+`exp_country`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(``metricFOB`` ``~`` ``country``,`\
+`                         data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"export"``)``,`\
+`                         FUN  ``=`` ``sum``)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``exp_country``[`[`order`](https://rdrr.io/r/base/order.html)`(``-``exp_country``$``metricFOB``)``, ``]``, ``10``)`\
+\
+`imp_country`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(``metricFOB`` ``~`` ``country``,`\
+`                         data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"import"``)``,`\
+`                         FUN  ``=`` ``sum``)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``imp_country``[`[`order`](https://rdrr.io/r/base/order.html)`(``-``imp_country``$``metricFOB``)``, ``]``, ``10``)`
 
 ## 9. Cross-cuts (country × product, city × product)
 
@@ -187,75 +165,68 @@ Because `pe` already contains the full set of details, any deeper cut is
 just a matter of
 [`aggregate()`](https://rdrr.io/r/stats/aggregate.html):
 
-``` r
-
-# Top product for each top destination
-exp_country_hs4 <- aggregate(
-  metricFOB ~ country + heading,
-  data = subset(pe, flow == "export"),
-  FUN  = sum
-)
-exp_country_hs4 <- exp_country_hs4[
-  order(exp_country_hs4$country, -exp_country_hs4$metricFOB),
-]
-do.call(rbind, lapply(
-  split(exp_country_hs4, exp_country_hs4$country),
-  function(x) head(x, 1)
-))
-
-# Top destination for each Pernambuco municipality
-exp_city_country <- aggregate(
-  metricFOB ~ noMunMinsgUf + country,
-  data = subset(pe, flow == "export"),
-  FUN  = sum
-)
-exp_city_country <- exp_city_country[
-  order(exp_city_country$noMunMinsgUf, -exp_city_country$metricFOB),
-]
-do.call(rbind, lapply(
-  split(exp_city_country, exp_city_country$noMunMinsgUf),
-  function(x) head(x, 1)
-))
-```
+\
+`# Top product for each top destination`\
+`exp_country_hs4`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(`\
+`  ``metricFOB`` ``~`` ``country`` ``+`` ``heading``,`\
+`  data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"export"``)``,`\
+`  FUN  ``=`` ``sum`\
+`)`\
+`exp_country_hs4`` ``<-`` ``exp_country_hs4``[`\
+`  `[`order`](https://rdrr.io/r/base/order.html)`(``exp_country_hs4``$``country``, ``-``exp_country_hs4``$``metricFOB``)``,`\
+`]`\
+[`do.call`](https://rdrr.io/r/base/do.call.html)`(``rbind``, `[`lapply`](https://rdrr.io/r/base/lapply.html)`(`\
+`  `[`split`](https://rdrr.io/r/base/split.html)`(``exp_country_hs4``, ``exp_country_hs4``$``country``)``,`\
+`  ``function``(``x``)`` `[`head`](https://rdrr.io/r/utils/head.html)`(``x``, ``1``)`\
+`)``)`\
+\
+`# Top destination for each Pernambuco municipality`\
+`exp_city_country`` ``<-`` `[`aggregate`](https://rdrr.io/r/stats/aggregate.html)`(`\
+`  ``metricFOB`` ``~`` ``noMunMinsgUf`` ``+`` ``country``,`\
+`  data ``=`` `[`subset`](https://rdrr.io/r/base/subset.html)`(``pe``, ``flow`` ``==`` ``"export"``)``,`\
+`  FUN  ``=`` ``sum`\
+`)`\
+`exp_city_country`` ``<-`` ``exp_city_country``[`\
+`  `[`order`](https://rdrr.io/r/base/order.html)`(``exp_city_country``$``noMunMinsgUf``, ``-``exp_city_country``$``metricFOB``)``,`\
+`]`\
+[`do.call`](https://rdrr.io/r/base/do.call.html)`(``rbind``, `[`lapply`](https://rdrr.io/r/base/lapply.html)`(`\
+`  `[`split`](https://rdrr.io/r/base/split.html)`(``exp_city_country``, ``exp_city_country``$``noMunMinsgUf``)``,`\
+`  ``function``(``x``)`` `[`head`](https://rdrr.io/r/utils/head.html)`(``x``, ``1``)`\
+`)``)`
 
 ## 10. Year-over-year comparison
 
 To compare with previous years, just widen the date range and drop
 `month_detail`:
 
-``` r
-
-yearly_exp <- comex_query_city(
-  flow         = "export",
-  start_period = "2019-01",
-  end_period   = "2026-12",
-  details      = "state",
-  filters      = list(state = state_code),
-  month_detail = FALSE
-)
-yearly_imp <- comex_query_city(
-  flow         = "import",
-  start_period = "2019-01",
-  end_period   = "2026-12",
-  details      = "state",
-  filters      = list(state = state_code),
-  month_detail = FALSE
-)
-yearly_exp$flow <- "export"; yearly_imp$flow <- "import"
-yearly <- rbind(yearly_exp, yearly_imp)
-yearly$metricFOB <- as.numeric(yearly$metricFOB)
-yearly  # one row per year × flow
-```
+\
+`yearly_exp`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``"2019-01"``,`\
+`  end_period   ``=`` ``"2026-12"``,`\
+`  details      ``=`` ``"state"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``state ``=`` ``state_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+`yearly_imp`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"import"``,`\
+`  start_period ``=`` ``"2019-01"``,`\
+`  end_period   ``=`` ``"2026-12"``,`\
+`  details      ``=`` ``"state"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``state ``=`` ``state_code``)``,`\
+`  month_detail ``=`` ``FALSE`\
+`)`\
+`yearly_exp``$``flow`` ``<-`` ``"export"``; ``yearly_imp``$``flow`` ``<-`` ``"import"`\
+`yearly`` ``<-`` `[`rbind`](https://rdrr.io/r/base/cbind.html)`(``yearly_exp``, ``yearly_imp``)`\
+`yearly``  ``# one row per year × flow`
 
 ## 11. Adapt to any state
 
 The same code works for any Brazilian state — change only `state_code`
 and the date range. To get the code interactively:
 
-``` r
-
-comex_filter_values("state", type = "city")
-```
+\
+[`comex_filter_values`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md)`(``"state"``, type ``=`` ``"city"``)`
 
 For analyses that require finer product detail (NCM, HS6) or other
 classifications (CGCE, SITC, ISIC), use

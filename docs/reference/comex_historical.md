@@ -69,7 +69,9 @@ comex_historical(
 
 ## Value
 
-A data.frame (or tibble) with query results.
+A data.frame (or tibble if available) with query results. Metric columns
+(`metricFOB`, `metricKG`, ...) are numeric and `year` / `monthNumber`
+are integer; all other columns are character.
 
 ## Details
 
@@ -83,6 +85,11 @@ Historical data differs from general data:
 
 - Only **FOB and KG** metrics are available (no statistic, freight,
   insurance, or CIF)
+
+- The API ignores the months in the period and always returns whole
+  years. With `month_detail = TRUE` the result is trimmed to the
+  requested months; with `month_detail = FALSE` the yearly totals cover
+  full years and a warning is issued if the period is not whole years.
 
 ## Examples
 

@@ -11,3 +11,7 @@
 ^CRAN-SUBMISSION$
 ^\.claude$
 ^\.positai$
+^CLAUDE\.md$
+^\.Rhistory$
+^vignettes/.*\.html$
+^vignettes/.*\.R$

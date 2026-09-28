@@ -13,7 +13,7 @@ Data is available monthly from 1997 to the most recent complete month."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">comexr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,7 +122,7 @@ Example: <code>list(country = c(160, 249), state = c(26, 13))</code></p></dd>
 
 <dt id="arg-month-detail">month_detail<a class="anchor" aria-label="anchor" href="#arg-month-detail"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, break down results by month.
-Default: <code>FALSE</code>.</p></dd>
+Default: <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-metric-fob">metric_fob<a class="anchor" aria-label="anchor" href="#arg-metric-fob"></a></dt>
@@ -163,7 +163,9 @@ Default: <code>"en"</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data.frame (or tibble if available) with query results.</p>
+    <p>A data.frame (or tibble if available) with query results.
+Metric columns (<code>metricFOB</code>, <code>metricKG</code>, ...) are numeric and
+<code>year</code> / <code>monthNumber</code> are integer; all other columns are character.</p>
     </div>
 
     <div class="section level2">
@@ -196,7 +198,7 @@ Default: <code>"en"</code>.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra.</p>
+  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorim, Diogo Bezerra.</p>
 </div>
 
 <div class="pkgdown-footer-right">

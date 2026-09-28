@@ -5,14 +5,18 @@ Returns the list of metrics (values) available for API queries.
 ## Usage
 
 ``` r
-comex_metrics(type = "general", language = "en", verbose = FALSE)
+comex_metrics(
+  type = c("general", "city", "historical"),
+  language = "en",
+  verbose = FALSE
+)
 ```
 
 ## Arguments
 
 - type:
 
-  Data type: `"general"`, `"city"`, or `"historical"`.
+  Data type: `"general"` (default), `"city"`, or `"historical"`.
 
 - language:
 

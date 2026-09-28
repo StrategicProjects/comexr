@@ -7,3 +7,5 @@ inst/doc
 docs.zip
 .positai
 CLAUDE.md
+vignettes/*.html
+vignettes/*.R

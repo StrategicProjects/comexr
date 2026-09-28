@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">comexr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,12 +176,11 @@ country × flow</strong> combination:</p>
 <div class="section level2">
 <h2 id="cast-metrics-and-add-a-date-column">4. Cast metrics and add a date column<a class="anchor" aria-label="anchor" href="#cast-metrics-and-add-a-date-column"></a>
 </h2>
-<p>API responses come back as character. Convert metrics to numeric and
-build a proper <code>Date</code> column for time-series analysis:</p>
+<p>Metric columns already come back as numeric and
+<code>year</code>/<code>monthNumber</code> as integer. Build a proper
+<code>Date</code> column for time-series analysis:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pe</span><span class="op">$</span><span class="va">metricFOB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">pe</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span></span>
-<span><span class="va">pe</span><span class="op">$</span><span class="va">metricKG</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">pe</span><span class="op">$</span><span class="va">metricKG</span><span class="op">)</span></span>
-<span><span class="va">pe</span><span class="op">$</span><span class="va">date</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s-%s-01"</span>, <span class="va">pe</span><span class="op">$</span><span class="va">year</span>, <span class="va">pe</span><span class="op">$</span><span class="va">monthNumber</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pe</span><span class="op">$</span><span class="va">date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%d-%02d-01"</span>, <span class="va">pe</span><span class="op">$</span><span class="va">year</span>, <span class="va">pe</span><span class="op">$</span><span class="va">monthNumber</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="monthly-trade-balance">5. Monthly trade balance<a class="anchor" aria-label="anchor" href="#monthly-trade-balance"></a>
@@ -311,7 +310,6 @@ deeper cut is just a matter of <code><a href="https://rdrr.io/r/stats/aggregate.
 <span><span class="op">)</span></span>
 <span><span class="va">yearly_exp</span><span class="op">$</span><span class="va">flow</span> <span class="op">&lt;-</span> <span class="st">"export"</span>; <span class="va">yearly_imp</span><span class="op">$</span><span class="va">flow</span> <span class="op">&lt;-</span> <span class="st">"import"</span></span>
 <span><span class="va">yearly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">yearly_exp</span>, <span class="va">yearly_imp</span><span class="op">)</span></span>
-<span><span class="va">yearly</span><span class="op">$</span><span class="va">metricFOB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">yearly</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span></span>
 <span><span class="va">yearly</span>  <span class="co"># one row per year × flow</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -335,7 +333,7 @@ filter.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra.</p>
+  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorim, Diogo Bezerra.</p>
 </div>
 
 <div class="pkgdown-footer-right">

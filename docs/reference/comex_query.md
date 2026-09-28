@@ -73,7 +73,7 @@ comex_query(
 
 - month_detail:
 
-  Logical. If `TRUE`, break down results by month. Default: `FALSE`.
+  Logical. If `TRUE`, break down results by month. Default: `TRUE`.
 
 - metric_fob:
 
@@ -110,7 +110,9 @@ comex_query(
 
 ## Value
 
-A data.frame (or tibble if available) with query results.
+A data.frame (or tibble if available) with query results. Metric columns
+(`metricFOB`, `metricKG`, ...) are numeric and `year` / `monthNumber`
+are integer; all other columns are character.
 
 ## Examples
 

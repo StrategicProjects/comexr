@@ -5,15 +5,18 @@ Returns the first and last years available for queries in the API.
 ## Usage
 
 ``` r
-comex_available_years(type = "general", verbose = FALSE)
+comex_available_years(
+  type = c("general", "city", "historical"),
+  verbose = FALSE
+)
 ```
 
 ## Arguments
 
 - type:
 
-  Data type: `"general"`, `"city"`, or `"historical"`. Default:
-  `"general"`.
+  Data type: `"general"` (default), `"city"`, or `"historical"`.
+  Default: `"general"`.
 
 - verbose:
 

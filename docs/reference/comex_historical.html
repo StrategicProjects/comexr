@@ -13,7 +13,7 @@ Nomenclature of Goods) classification."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">comexr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,7 +126,9 @@ Default: <code>"en"</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data.frame (or tibble) with query results.</p>
+    <p>A data.frame (or tibble if available) with query results.
+Metric columns (<code>metricFOB</code>, <code>metricKG</code>, ...) are numeric and
+<code>year</code> / <code>monthNumber</code> are integer; all other columns are character.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -135,6 +137,10 @@ Default: <code>"en"</code>.</p></dd>
 <li><p>Product classification is <strong>NBM</strong> (not NCM)</p></li>
 <li><p>Only <strong>FOB and KG</strong> metrics are available (no statistic, freight,
 insurance, or CIF)</p></li>
+<li><p>The API ignores the months in the period and always returns whole
+years. With <code>month_detail = TRUE</code> the result is trimmed to the
+requested months; with <code>month_detail = FALSE</code> the yearly totals cover
+full years and a warning is issued if the period is not whole years.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -156,7 +162,7 @@ insurance, or CIF)</p></li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra.</p>
+  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorim, Diogo Bezerra.</p>
 </div>
 
 <div class="pkgdown-footer-right">

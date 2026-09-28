@@ -5,14 +5,18 @@ Returns the list of filter types available for API queries.
 ## Usage
 
 ``` r
-comex_filters(type = "general", language = "en", verbose = FALSE)
+comex_filters(
+  type = c("general", "city", "historical"),
+  language = "en",
+  verbose = FALSE
+)
 ```
 
 ## Arguments
 
 - type:
 
-  Data type: `"general"`, `"city"`, or `"historical"`.
+  Data type: `"general"` (default), `"city"`, or `"historical"`.
 
 - language:
 

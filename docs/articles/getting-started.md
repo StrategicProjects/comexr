@@ -22,11 +22,9 @@ require a headless browser or any external software.
 
 ## Installation
 
-``` r
-
-# Install from GitHub:
-remotes::install_github("StrategicProjects/comexr")
-```
+\
+`# Install from GitHub:`\
+`remotes``::`[`install_github`](https://remotes.r-lib.org/reference/install_github.html)`(``"StrategicProjects/comexr"``)`
 
 ## Quick start
 
@@ -35,36 +33,34 @@ remotes::install_github("StrategicProjects/comexr")
 Before querying, you can discover the date range, available grouping
 fields (details), and metrics for each data type:
 
-``` r
-
-library(comex)
-
-# What is the most recent data available?
-comex_last_update("general")
-#> $updated
-#> [1] "2026-02-05"
-#> $year
-#> [1] "2026"
-#> $monthNumber
-#> [1] "01"
-
-# What years are covered?
-comex_available_years("general")
-#> $max
-#> [1] "2026"
-#> $min
-#> [1] "1997"
-
-# What detail/grouping fields can I use?
-comex_details("general")
-#> # A tibble: 22 × 2
-#>    filter        text
-#>    <chr>         <chr>
-#>  1 country       Countries
-#>  2 economicBlock Economic Blocks
-#>  3 state         States
-#>  4 ...
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``comex``)`\
+\
+`# What is the most recent data available?`\
+[`comex_last_update`](https://strategicprojects.github.io/comexr/reference/comex_last_update.md)`(``"general"``)`\
+`#> $updated`\
+`#> [1] "2026-02-05"`\
+`#> $year`\
+`#> [1] "2026"`\
+`#> $monthNumber`\
+`#> [1] "01"`\
+\
+`# What years are covered?`\
+[`comex_available_years`](https://strategicprojects.github.io/comexr/reference/comex_available_years.md)`(``"general"``)`\
+`#> $max`\
+`#> [1] "2026"`\
+`#> $min`\
+`#> [1] "1997"`\
+\
+`# What detail/grouping fields can I use?`\
+[`comex_details`](https://strategicprojects.github.io/comexr/reference/comex_details.md)`(``"general"``)`\
+`#> # A tibble: 22 × 2`\
+`#>    filter        text`\
+`#>    <chr>         <chr>`\
+`#>  1 country       Countries`\
+`#>  2 economicBlock Economic Blocks`\
+`#>  3 state         States`\
+`#>  4 ...`
 
 ### 2. Run a simple export query
 
@@ -73,38 +69,34 @@ The easiest way to query is with
 and
 [`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md):
 
-``` r
-
-# Top export destinations in January 2024
-exports <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-01",
-  details      = "country"
-)
-
-exports
-#> # A tibble: 219 × 4
-#>    year  country                   metricFOB metricKG
-#>    <chr> <chr>                         <dbl>    <dbl>
-#>  1 2024  China                    7812623070    ...
-#>  2 2024  United States            3254810234    ...
-#>  3 2024  Argentina                 916456789    ...
-#>  ...
-```
+\
+`# Top export destinations in January 2024`\
+`exports`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-01"``,`\
+`  details      ``=`` ``"country"`\
+`)`\
+\
+`exports`\
+`#> # A tibble: 219 × 4`\
+`#>    year  country                   metricFOB metricKG`\
+`#>    <chr> <chr>                         <dbl>    <dbl>`\
+`#>  1 2024  China                    7812623070    ...`\
+`#>  2 2024  United States            3254810234    ...`\
+`#>  3 2024  Argentina                 916456789    ...`\
+`#>  ...`
 
 ### 3. Add filters and multiple details
 
-``` r
-
-# Exports to China and USA, broken down by HS4 product group
-exports_filtered <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-06",
-  details      = c("country", "hs4"),
-  filters      = list(country = c(160, 249)),
-  month_detail = TRUE
-)
-```
+\
+`# Exports to China and USA, broken down by HS4 product group`\
+`exports_filtered`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-06"``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"country"``, ``"hs4"``)``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``country ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``160``, ``249``)``)``,`\
+`  month_detail ``=`` ``TRUE`\
+`)`
 
 Filter codes come from the auxiliary tables — use
 [`comex_countries()`](https://strategicprojects.github.io/comexr/reference/comex_countries.md),
@@ -113,21 +105,19 @@ etc. to look them up.
 
 ### 4. Look up auxiliary tables
 
-``` r
-
-# All countries
-countries <- comex_countries()
-countries
-#> # A tibble: 281 × 2
-#>    id    text
-#>    <chr> <chr>
-#>  1 994   A Designar
-#>  2 132   Afeganistão
-#>  ...
-
-# Search for a specific country
-comex_countries(search = "Brazil")
-```
+\
+`# All countries`\
+`countries`` ``<-`` `[`comex_countries`](https://strategicprojects.github.io/comexr/reference/comex_countries.md)`(``)`\
+`countries`\
+`#> # A tibble: 281 × 2`\
+`#>    id    text`\
+`#>    <chr> <chr>`\
+`#>  1 994   A Designar`\
+`#>  2 132   Afeganistão`\
+`#>  ...`\
+\
+`# Search for a specific country`\
+[`comex_countries`](https://strategicprojects.github.io/comexr/reference/comex_countries.md)`(``search ``=`` ``"Brazil"``)`
 
 ## Available detail names
 
@@ -161,24 +151,22 @@ the API’s internal names. Here is the full list:
 All functions accept a `language` parameter. Use `"pt"` (Portuguese),
 `"en"` (English), or `"es"` (Spanish):
 
-``` r
-
-comex_blocs(language = "pt")
-#> # A tibble: 12 × 2
-#>    id    text
-#>    <chr> <chr>
-#>  1 105   América Central e Caribe
-#>  2 107   América do Norte
-#>  ...
-
-comex_blocs(language = "en")
-#> # A tibble: 12 × 2
-#>    id    text
-#>    <chr> <chr>
-#>  1 105   Central America and Caribbean
-#>  2 107   North America
-#>  ...
-```
+\
+[`comex_blocs`](https://strategicprojects.github.io/comexr/reference/comex_blocs.md)`(``language ``=`` ``"pt"``)`\
+`#> # A tibble: 12 × 2`\
+`#>    id    text`\
+`#>    <chr> <chr>`\
+`#>  1 105   América Central e Caribe`\
+`#>  2 107   América do Norte`\
+`#>  ...`\
+\
+[`comex_blocs`](https://strategicprojects.github.io/comexr/reference/comex_blocs.md)`(``language ``=`` ``"en"``)`\
+`#> # A tibble: 12 × 2`\
+`#>    id    text`\
+`#>    <chr> <chr>`\
+`#>  1 105   Central America and Caribbean`\
+`#>  2 107   North America`\
+`#>  ...`
 
 ## Next steps
 

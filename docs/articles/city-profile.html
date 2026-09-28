@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">comexr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -191,8 +191,8 @@ beyond the year:</p>
 <p>The trade balance is just
 <code>metricFOB(export) - metricFOB(import)</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">balance</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">exports_total</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span> <span class="op">-</span></span>
-<span>           <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">imports_total</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">balance</span> <span class="op">&lt;-</span> <span class="va">exports_total</span><span class="op">$</span><span class="va">metricFOB</span> <span class="op">-</span></span>
+<span>           <span class="va">imports_total</span><span class="op">$</span><span class="va">metricFOB</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="top-trading-partners">2. Top trading partners<a class="anchor" aria-label="anchor" href="#top-trading-partners"></a>
@@ -210,7 +210,7 @@ beyond the year:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">top_export_countries</span> <span class="op">&lt;-</span> <span class="va">top_export_countries</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">top_export_countries</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">top_export_countries</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span>,</span>
 <span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">top_export_countries</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
@@ -223,7 +223,7 @@ beyond the year:</p>
 <span>  month_detail <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">top_import_countries</span> <span class="op">&lt;-</span> <span class="va">top_import_countries</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">top_import_countries</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">top_import_countries</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span>,</span>
 <span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">top_import_countries</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -243,7 +243,7 @@ beyond the year:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">exports_by_bloc</span> <span class="op">&lt;-</span> <span class="va">exports_by_bloc</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">exports_by_bloc</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">exports_by_bloc</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span>,</span>
 <span><span class="op">]</span></span>
 <span><span class="va">exports_by_bloc</span></span></code></pre></div>
 </div>
@@ -264,7 +264,7 @@ endpoint, and neither is the full 8-digit NCM:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">top_export_products</span> <span class="op">&lt;-</span> <span class="va">top_export_products</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">top_export_products</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">top_export_products</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span>,</span>
 <span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">top_export_products</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p>For a coarser cut, use <code>"hs2"</code> (chapter) or
@@ -298,9 +298,9 @@ time-series chart on the page:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example with base R</span></span>
 <span><span class="va">exports_monthly</span><span class="op">$</span><span class="va">date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s-%s-01"</span>, <span class="va">exports_monthly</span><span class="op">$</span><span class="va">year</span>, <span class="va">exports_monthly</span><span class="op">$</span><span class="va">monthNumber</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%d-%02d-01"</span>, <span class="va">exports_monthly</span><span class="op">$</span><span class="va">year</span>, <span class="va">exports_monthly</span><span class="op">$</span><span class="va">monthNumber</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">exports_monthly</span><span class="op">$</span><span class="va">fob_musd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">exports_monthly</span><span class="op">$</span><span class="va">metricFOB</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span></span>
+<span><span class="va">exports_monthly</span><span class="op">$</span><span class="va">fob_musd</span> <span class="op">&lt;-</span> <span class="va">exports_monthly</span><span class="op">$</span><span class="va">metricFOB</span> <span class="op">/</span> <span class="fl">1e6</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">exports_monthly</span><span class="op">$</span><span class="va">date</span>, <span class="va">exports_monthly</span><span class="op">$</span><span class="va">fob_musd</span>,</span>
@@ -385,7 +385,7 @@ filter.</li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra.</p>
+  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorim, Diogo Bezerra.</p>
 </div>
 
 <div class="pkgdown-footer-right">

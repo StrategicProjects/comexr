@@ -7,7 +7,7 @@ different time period and level of geographic detail:
 |----|----|----|----|
 | [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md) | POST /general | 1997–present | National |
 | [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md) | POST /cities | 1997–present | Municipal |
-| [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md) | POST /historical-data/ | 1989–1996 | National |
+| [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md) | POST /historical-data | 1989–1996 | National |
 
 Convenience wrappers
 [`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md)
@@ -21,19 +21,17 @@ with the flow pre-set.
 
 ### Exports by country
 
-``` r
-
-library(comexr)
-
-exports <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-12",
-  details      = "country"
-)
-#> ℹ Querying exports from 2024-01 to 2024-12
-#> ✔ POST /general [580ms]
-#> ✔ 219 records found
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`comexr`](https://strategicprojects.github.io/comexr/)`)`\
+\
+`exports`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-12"``,`\
+`  details      ``=`` ``"country"`\
+`)`\
+`#> ℹ Querying exports from 2024-01 to 2024-12`\
+`#> ✔ POST /general [580ms]`\
+`#> ✔ 219 records found`
 
 By default,
 [`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md)
@@ -45,79 +43,69 @@ of the requested detail fields and the year.
 The import endpoint supports additional metrics — freight, insurance,
 and CIF:
 
-``` r
-
-imports <- comex_import(
-  start_period = "2024-01",
-  end_period   = "2024-06",
-  details      = "country",
-  metric_cif   = TRUE
-)
-# Returns columns: year, country, metricFOB, metricKG, metricCIF
-```
+\
+`imports`` ``<-`` `[`comex_import`](https://strategicprojects.github.io/comexr/reference/comex_import.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-06"``,`\
+`  details      ``=`` ``"country"``,`\
+`  metric_cif   ``=`` ``TRUE`\
+`)`\
+`# Returns columns: year, country, metricFOB, metricKG, metricCIF`
 
 ## Monthly breakdown
 
 Set `month_detail = TRUE` to get data split by month:
 
-``` r
-
-monthly <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-06",
-  details      = "country",
-  month_detail = TRUE
-)
-# Now each row also includes a month column
-```
+\
+`monthly`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-06"``,`\
+`  details      ``=`` ``"country"``,`\
+`  month_detail ``=`` ``TRUE`\
+`)`\
+`# Now each row also includes a month column`
 
 ## Multiple grouping fields
 
 Pass a character vector to `details` to cross-tabulate:
 
-``` r
-
-by_country_product <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-03",
-  details      = c("country", "hs4"),
-  month_detail = TRUE
-)
-# Rows grouped by: year × month × country × HS4 product heading
-```
+\
+`by_country_product`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-03"``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"country"``, ``"hs4"``)``,`\
+`  month_detail ``=`` ``TRUE`\
+`)`\
+`# Rows grouped by: year × month × country × HS4 product heading`
 
 ## Applying filters
 
 Use `filters` to restrict the query to specific values. Filter codes
 come from the auxiliary tables.
 
-``` r
-
-# Step 1: Find the codes for China and USA
-countries <- comex_countries(search = "China")
-# id = 160 (China), 249 (United States)
-
-# Step 2: Query only exports to these countries
-to_china_usa <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-12",
-  details      = c("country", "section"),
-  filters      = list(country = c(160, 249))
-)
-```
+\
+`# Step 1: Find the codes for China and USA`\
+`countries`` ``<-`` `[`comex_countries`](https://strategicprojects.github.io/comexr/reference/comex_countries.md)`(``search ``=`` ``"China"``)`\
+`# id = 160 (China), 249 (United States)`\
+\
+`# Step 2: Query only exports to these countries`\
+`to_china_usa`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-12"``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"country"``, ``"section"``)``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``country ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``160``, ``249``)``)`\
+`)`
 
 Multiple filters can be combined:
 
-``` r
-
-# Exports of HS section 02 (Vegetable products) from São Paulo
-sp_veg <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-12",
-  details      = c("state", "hs2"),
-  filters      = list(state = 35, sh2 = "02")
-)
-```
+\
+`# Exports of HS section 02 (Vegetable products) from São Paulo`\
+`sp_veg`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-12"``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"state"``, ``"hs2"``)``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``state ``=`` ``35``, sh2 ``=`` ``"02"``)`\
+`)`
 
 ## The generic `comex_query()`
 
@@ -125,79 +113,73 @@ For full control, use
 [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md)
 which lets you specify flow, metrics, and all options:
 
-``` r
-
-result <- comex_query(
-  flow         = "import",
-  start_period = "2023-01",
-  end_period   = "2023-12",
-  details      = c("country", "ncm"),
-  filters      = list(country = c(160)),
-  month_detail = FALSE,
-  metric_fob   = TRUE,
-  metric_kg    = TRUE,
-  metric_statistic = TRUE,
-  metric_freight   = TRUE,
-  metric_insurance = TRUE,
-  metric_cif       = TRUE,
-  language     = "en"
-)
-```
+\
+`result`` ``<-`` `[`comex_query`](https://strategicprojects.github.io/comexr/reference/comex_query.md)`(`\
+`  flow         ``=`` ``"import"``,`\
+`  start_period ``=`` ``"2023-01"``,`\
+`  end_period   ``=`` ``"2023-12"``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"country"``, ``"ncm"``)``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``country ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``160``)``)``,`\
+`  month_detail ``=`` ``FALSE``,`\
+`  metric_fob   ``=`` ``TRUE``,`\
+`  metric_kg    ``=`` ``TRUE``,`\
+`  metric_statistic ``=`` ``TRUE``,`\
+`  metric_freight   ``=`` ``TRUE``,`\
+`  metric_insurance ``=`` ``TRUE``,`\
+`  metric_cif       ``=`` ``TRUE``,`\
+`  language     ``=`` ``"en"`\
+`)`
 
 ## City-level queries
 
 The city endpoint provides municipal-level detail but with a more
 limited set of grouping fields and metrics.
 
-``` r
-
-# Which details are available for city queries?
-comex_details("city")
-#> # A tibble: 7 × 2
-#>    filter        text
-#>    <chr>         <chr>
-#>  1 country       Countries
-#>  2 economicBlock Economic Blocks
-#>  3 state         States
-#>  4 city          Cities
-#>  5 heading       Headings
-#>  6 chapter       Chapters
-#>  7 section       Sections
-
-# Which metrics?
-comex_metrics("city")
-#> # A tibble: 2 × 2
-#>    id          text
-#>    <chr>       <chr>
-#>  1 metricFOB   US$ FOB
-#>  2 metricKG    Net Weight (KG)
-```
+\
+`# Which details are available for city queries?`\
+[`comex_details`](https://strategicprojects.github.io/comexr/reference/comex_details.md)`(``"city"``)`\
+`#> # A tibble: 7 × 2`\
+`#>    filter        text`\
+`#>    <chr>         <chr>`\
+`#>  1 country       Countries`\
+`#>  2 economicBlock Economic Blocks`\
+`#>  3 state         States`\
+`#>  4 city          Cities`\
+`#>  5 heading       Headings`\
+`#>  6 chapter       Chapters`\
+`#>  7 section       Sections`\
+\
+`# Which metrics?`\
+[`comex_metrics`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md)`(``"city"``)`\
+`#> # A tibble: 2 × 2`\
+`#>    id          text`\
+`#>    <chr>       <chr>`\
+`#>  1 metricFOB   US$ FOB`\
+`#>  2 metricKG    Net Weight (KG)`
 
 **Important:** The city endpoint uses `heading`, `chapter`, and
 `section` instead of `sh6`/`sh4`/`sh2`. NCM and classification details
 (CGCE, SITC, ISIC) are not available. CIF and freight metrics are not
 available either.
 
-``` r
-
-# Exports from Pernambuco (state 26) by country
-pe_exports <- comex_query_city(
-  flow         = "export",
-  start_period = "2024-01",
-  end_period   = "2024-12",
-  details      = c("state", "country"),
-  filters      = list(state = 26)
-)
-
-# Exports from Recife (city 2611606) by product section
-recife <- comex_query_city(
-  flow         = "export",
-  start_period = "2024-01",
-  end_period   = "2024-06",
-  details      = c("city", "section"),
-  filters      = list(city = 2611606)
-)
-```
+\
+`# Exports from Pernambuco (state 26) by country`\
+`pe_exports`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-12"``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"state"``, ``"country"``)``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``state ``=`` ``26``)`\
+`)`\
+\
+`# Exports from Recife (city 2611606) by product section`\
+`recife`` ``<-`` `[`comex_query_city`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-06"``,`\
+`  details      ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"city"``, ``"section"``)``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``city ``=`` ``2611606``)`\
+`)`
 
 ## Historical data (1989–1996)
 
@@ -205,34 +187,30 @@ The historical endpoint covers the period before the current NCM
 nomenclature was adopted. It uses the NBM (Nomenclatura Brasileira de
 Mercadorias) system.
 
-``` r
+\
+[`comex_available_years`](https://strategicprojects.github.io/comexr/reference/comex_available_years.md)`(``"historical"``)`\
+`#> $max`\
+`#> [1] "1996"`\
+`#> $min`\
+`#> [1] "1989"`\
+\
+[`comex_details`](https://strategicprojects.github.io/comexr/reference/comex_details.md)`(``"historical"``)`\
+`#> # A tibble: 4 × 2`\
+`#>    filter  text`\
+`#>    <chr>   <chr>`\
+`#>  1 country Countries`\
+`#>  2 state   States`\
+`#>  3 nbm     NBM`\
+`#>  4 section Sections`
 
-comex_available_years("historical")
-#> $max
-#> [1] "1996"
-#> $min
-#> [1] "1989"
-
-comex_details("historical")
-#> # A tibble: 4 × 2
-#>    filter  text
-#>    <chr>   <chr>
-#>  1 country Countries
-#>  2 state   States
-#>  3 nbm     NBM
-#>  4 section Sections
-```
-
-``` r
-
-# Historical exports by country in 1990
-hist_1990 <- comex_historical(
-  flow         = "export",
-  start_period = "1990-01",
-  end_period   = "1990-12",
-  details      = "country"
-)
-```
+\
+`# Historical exports by country in 1990`\
+`hist_1990`` ``<-`` `[`comex_historical`](https://strategicprojects.github.io/comexr/reference/comex_historical.md)`(`\
+`  flow         ``=`` ``"export"``,`\
+`  start_period ``=`` ``"1990-01"``,`\
+`  end_period   ``=`` ``"1990-12"``,`\
+`  details      ``=`` ``"country"`\
+`)`
 
 ## Working with results
 
@@ -240,28 +218,26 @@ All query functions return a data.frame (or tibble if the tibble package
 is installed). Column names come directly from the API — they are the
 same as the detail/metric names you requested.
 
-``` r
-
-library(dplyr)
-
-# Top 10 export destinations in 2024 by FOB value
-top10 <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-12",
-  details      = "country"
-) |>
-  arrange(desc(metricFOB)) |>
-  head(10)
-
-# Monthly export trend to China
-china_monthly <- comex_export(
-  start_period = "2024-01",
-  end_period   = "2024-12",
-  details      = "country",
-  filters      = list(country = 160),
-  month_detail = TRUE
-)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`dplyr`](https://dplyr.tidyverse.org)`)`\
+\
+`# Top 10 export destinations in 2024 by FOB value`\
+`top10`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-12"``,`\
+`  details      ``=`` ``"country"`\
+`)`` ``|>`\
+`  `[`arrange`](https://dplyr.tidyverse.org/reference/arrange.html)`(`[`desc`](https://dplyr.tidyverse.org/reference/desc.html)`(``metricFOB``)``)`` ``|>`\
+`  `[`head`](https://rdrr.io/r/utils/head.html)`(``10``)`\
+\
+`# Monthly export trend to China`\
+`china_monthly`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period   ``=`` ``"2024-12"``,`\
+`  details      ``=`` ``"country"``,`\
+`  filters      ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``country ``=`` ``160``)``,`\
+`  month_detail ``=`` ``TRUE`\
+`)`
 
 ## Tips and best practices
 

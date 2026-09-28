@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="index.html">comexr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@
 <li>
 <strong>Multilingual</strong>: Portuguese, English, Spanish</li>
 <li>
-<strong>SSL auto-fallback</strong>: handles ICP-Brasil certificate issues transparently</li>
+<strong>Typed results</strong>: metrics come back numeric, <code>year</code>/<code>monthNumber</code> integer</li>
 </ul>
 </div>
 <div class="section level2">
@@ -136,6 +136,16 @@
 <span>  details <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"country"</span>, <span class="st">"hs4"</span><span class="op">)</span>,</span>
 <span>  filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fl">160</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>It is fairly common for the ComexStat API to return rate limit errors (“Você excedeu o limite de solicitações. Por favor, tente novamente em 10 segundos.”) or to report timeouts. There are three package options you can adjust to work around these errors:</p>
+<ul>
+<li>
+<code>comexr.retry_time</code> - the number of seconds to wait after a failed request before trying again (default 10, increase if you get errors about exceeding request limits)</li>
+<li>
+<code>comexr.max_tries</code> - maximum number of times to repeat the same failed request before giving up (default 3, adjusting <code>comexr.retry_time</code> is generally a better approach to avoid errors without overloading ComexStat servers)</li>
+<li>
+<code>comexr.timeout</code> - maximum number of seconds to wait for the ComexStat servers to respond (default 60 for simple requests and 120 for complex requests; increase if you get errors about timeouts)</li>
+</ul>
+<p>You can set any of these using the <code>options</code> function: e.g. <code>options("comexr.retry_time" = 30)</code> to set the retry time to 30 seconds.</p>
 </div>
 <div class="section level2">
 <h2 id="discover-available-options">Discover available options<a class="anchor" aria-label="anchor" href="#discover-available-options"></a>
@@ -307,9 +317,9 @@
 <div class="section level2">
 <h2 id="ssl-certificate-issues">SSL Certificate Issues<a class="anchor" aria-label="anchor" href="#ssl-certificate-issues"></a>
 </h2>
-<p>On some systems the API’s ICP-Brasil certificate chain is not recognized. The package handles this automatically — on the first failure it retries without SSL verification and issues a warning. To suppress:</p>
+<p>On some systems the API’s ICP-Brasil certificate chain is not recognized, and requests fail with an SSL error. SSL verification is never disabled automatically; if you trust your network, opt out explicitly:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>comex.ssl_verifypeer <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>comexr.ssl_verifypeer <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -362,7 +372,7 @@
 <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a> <br><small class="roles"> Author, maintainer </small>   </li>
 <li>Marcos Wasilew <br><small class="roles"> Author </small>   </li>
 <li>Hugo Vasconcelos <br><small class="roles"> Author </small>   </li>
-<li>Carlos Amorin <br><small class="roles"> Author </small>   </li>
+<li>Carlos Amorim <br><small class="roles"> Author </small>   </li>
 <li>Diogo Bezerra <br><small class="roles"> Author </small>   </li>
 </ul>
 </div>
@@ -381,7 +391,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra.</p>
+  <p>Developed by <a href="https://github.com/StrategicProjects" class="external-link">Andre Leite</a>, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorim, Diogo Bezerra.</p>
 </div>
 
 <div class="pkgdown-footer-right">

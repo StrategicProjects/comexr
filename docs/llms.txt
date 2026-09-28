@@ -15,66 +15,80 @@ programmatic access to detailed Brazilian export and import data.
   modes, customs units
 - **Only 2 dependencies**: `httr2` + `cli`
 - **Multilingual**: Portuguese, English, Spanish
-- **SSL auto-fallback**: handles ICP-Brasil certificate issues
-  transparently
+- **Typed results**: metrics come back numeric, `year`/`monthNumber`
+  integer
 
 ## Installation
 
-``` r
-
-# Install from GitHub
-# install.packages("remotes")
-remotes::install_github("StrategicProjects/comexr")
-```
+\
+`# Install from GitHub`\
+`# install.packages("remotes")`\
+`remotes``::`[`install_github`](https://remotes.r-lib.org/reference/install_github.html)`(``"StrategicProjects/comexr"``)`
 
 ## Quick Start
 
-``` r
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`comexr`](https://strategicprojects.github.io/comexr/)`)`\
+\
+`# Exports by country in January 2024 (monthly detail by default)`\
+`exports`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period ``=`` ``"2024-01"``,`\
+`  details ``=`` ``"country"`\
+`)`\
+\
+`# Imports with CIF value`\
+`imports`` ``<-`` `[`comex_import`](https://strategicprojects.github.io/comexr/reference/comex_import.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period ``=`` ``"2024-12"``,`\
+`  details ``=`` ``"country"``,`\
+`  metric_cif ``=`` ``TRUE`\
+`)`\
+\
+`# Filter: exports to China (160), grouped by HS4`\
+`` # (the package translates "hs4" to the API's `heading`) ``\
+`soy`` ``<-`` `[`comex_export`](https://strategicprojects.github.io/comexr/reference/comex_export.md)`(`\
+`  start_period ``=`` ``"2024-01"``,`\
+`  end_period ``=`` ``"2024-12"``,`\
+`  details ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"country"``, ``"hs4"``)``,`\
+`  filters ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``country ``=`` ``160``)`\
+`)`
 
-library(comexr)
+It is fairly common for the ComexStat API to return rate limit errors
+(“Você excedeu o limite de solicitações. Por favor, tente novamente em
+10 segundos.”) or to report timeouts. There are three package options
+you can adjust to work around these errors:
 
-# Exports by country in January 2024 (monthly detail by default)
-exports <- comex_export(
-  start_period = "2024-01",
-  end_period = "2024-01",
-  details = "country"
-)
+- `comexr.retry_time` - the number of seconds to wait after a failed
+  request before trying again (default 10, increase if you get errors
+  about exceeding request limits)
+- `comexr.max_tries` - maximum number of times to repeat the same failed
+  request before giving up (default 3, adjusting `comexr.retry_time` is
+  generally a better approach to avoid errors without overloading
+  ComexStat servers)
+- `comexr.timeout` - maximum number of seconds to wait for the ComexStat
+  servers to respond (default 60 for simple requests and 120 for complex
+  requests; increase if you get errors about timeouts)
 
-# Imports with CIF value
-imports <- comex_import(
-  start_period = "2024-01",
-  end_period = "2024-12",
-  details = "country",
-  metric_cif = TRUE
-)
-
-# Filter: exports to China (160), grouped by HS4
-# (the package translates "hs4" to the API's `heading`)
-soy <- comex_export(
-  start_period = "2024-01",
-  end_period = "2024-12",
-  details = c("country", "hs4"),
-  filters = list(country = 160)
-)
-```
+You can set any of these using the `options` function:
+e.g. `options("comexr.retry_time" = 30)` to set the retry time to 30
+seconds.
 
 ## Discover available options
 
-``` r
-
-# What grouping fields are available?
-comex_details("general")
-
-# What filters can I use?
-comex_filters("general")
-
-# Look up country codes
-countries <- comex_countries()
-countries[grepl("China", countries$text, ignore.case = TRUE), ]
-
-# Economic blocs in Portuguese
-comex_blocs(language = "pt")
-```
+\
+`# What grouping fields are available?`\
+[`comex_details`](https://strategicprojects.github.io/comexr/reference/comex_details.md)`(``"general"``)`\
+\
+`# What filters can I use?`\
+[`comex_filters`](https://strategicprojects.github.io/comexr/reference/comex_filters.md)`(``"general"``)`\
+\
+`# Look up country codes`\
+`countries`` ``<-`` `[`comex_countries`](https://strategicprojects.github.io/comexr/reference/comex_countries.md)`(``)`\
+`countries``[`[`grepl`](https://rdrr.io/r/base/grep.html)`(``"China"``, ``countries``$``text``, ignore.case ``=`` ``TRUE``)``, ``]`\
+\
+`# Economic blocs in Portuguese`\
+[`comex_blocs`](https://strategicprojects.github.io/comexr/reference/comex_blocs.md)`(``language ``=`` ``"pt"``)`
 
 ## API Coverage
 
@@ -119,14 +133,12 @@ comex_blocs(language = "pt")
 ## SSL Certificate Issues
 
 On some systems the API’s ICP-Brasil certificate chain is not
-recognized. The package handles this automatically — on the first
-failure it retries without SSL verification and issues a warning. To
-suppress:
+recognized, and requests fail with an SSL error. SSL verification is
+never disabled automatically; if you trust your network, opt out
+explicitly:
 
-``` r
-
-options(comex.ssl_verifypeer = FALSE)
-```
+\
+[`options`](https://rdrr.io/r/base/options.html)`(``comexr.ssl_verifypeer ``=`` ``FALSE``)`
 
 ## References
 

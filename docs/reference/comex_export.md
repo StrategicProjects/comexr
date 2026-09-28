@@ -66,7 +66,7 @@ comex_export(
 
 - month_detail:
 
-  Logical. If `TRUE`, break down results by month. Default: `FALSE`.
+  Logical. If `TRUE`, break down results by month. Default: `TRUE`.
 
 - metric_fob:
 

@@ -15,7 +15,7 @@ The **comexr** package provides a complete R interface to the [ComexStat API](ht
 - **Auxiliary tables**: countries, economic blocs, NCM/NBM/HS product codes, CGCE/SITC/ISIC classifications, states, cities, transport modes, customs units
 - **Only 2 dependencies**: `httr2` + `cli`
 - **Multilingual**: Portuguese, English, Spanish
-- **SSL auto-fallback**: handles ICP-Brasil certificate issues transparently
+- **Typed results**: metrics come back numeric, `year`/`monthNumber` integer
 
 ## Installation
 
@@ -122,10 +122,10 @@ comex_blocs(language = "pt")
 
 ## SSL Certificate Issues
 
-On some systems the API's ICP-Brasil certificate chain is not recognized. The package handles this automatically — on the first failure it retries without SSL verification and issues a warning. To suppress:
+On some systems the API's ICP-Brasil certificate chain is not recognized, and requests fail with an SSL error. SSL verification is never disabled automatically; if you trust your network, opt out explicitly:
 
 ```r
-options(comex.ssl_verifypeer = FALSE)
+options(comexr.ssl_verifypeer = FALSE)
 ```
 
 ## References

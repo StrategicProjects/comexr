@@ -6,14 +6,18 @@ results.
 ## Usage
 
 ``` r
-comex_details(type = "general", language = "en", verbose = FALSE)
+comex_details(
+  type = c("general", "city", "historical"),
+  language = "en",
+  verbose = FALSE
+)
 ```
 
 ## Arguments
 
 - type:
 
-  Data type: `"general"`, `"city"`, or `"historical"`.
+  Data type: `"general"` (default), `"city"`, or `"historical"`.
 
 - language:
 

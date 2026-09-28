@@ -1,6 +1,88 @@
 # Changelog
 
+## comexr 0.4.0
+
+### Breaking Changes
+
+- Query results
+  ([`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md),
+  [`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md),
+  [`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md),
+  [`comex_query_city()`](https://strategicprojects.github.io/comexr/reference/comex_query_city.md),
+  [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md))
+  are now typed: `metric*` columns are numeric and `year` /
+  `monthNumber` are integer. The API returns every value as a string, so
+  previously all columns were character. Code that called
+  [`as.numeric()`](https://rdrr.io/r/base/numeric.html) on metrics keeps
+  working.
+- SSL verification is no longer disabled automatically. Previously any
+  error mentioning “SSL”, “certificate” or “peer” (which also matched
+  plain network errors such as “Connection reset by peer”) made the
+  package retry without verification and silently set a global option
+  for the rest of the session. SSL failures now raise an error
+  explaining how to opt out with
+  `options(comexr.ssl_verifypeer = FALSE)`. The old option name
+  `comex.ssl_verifypeer` is still honoured.
+
+### Bug Fixes
+
+- [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md)
+  was failing with HTTP 403: the endpoint URL had a trailing slash
+  (`/historical-data/`), which the API’s Cloudflare front now blocks. It
+  now calls `/historical-data`.
+- [`comex_historical()`](https://strategicprojects.github.io/comexr/reference/comex_historical.md)
+  returned whole years even when the period asked for specific months
+  (the API ignores months). Results are now trimmed to the requested
+  months when `month_detail = TRUE`, and a warning is issued when
+  `month_detail = FALSE` and the period is not whole years.
+- Fixed `could not find function "%||%"` on R \< 4.4.0 whenever the API
+  returned an HTTP error (e.g. the 429 rate limit).
+- `filters` must now be a named list; unnamed entries used to be dropped
+  silently, returning unfiltered data.
+- Conversion errors in API responses are no longer swallowed into an
+  empty data frame.
+- Column names from the API are kept verbatim (no
+  [`make.names()`](https://rdrr.io/r/base/make.names.html) mangling).
+- `validate_period()` rejects invalid months (e.g. `"2023-13"`) and
+  non-scalar input.
+- Documented the correct default for `month_detail` (`TRUE`) in
+  [`comex_query()`](https://strategicprojects.github.io/comexr/reference/comex_query.md),
+  [`comex_export()`](https://strategicprojects.github.io/comexr/reference/comex_export.md)
+  and
+  [`comex_import()`](https://strategicprojects.github.io/comexr/reference/comex_import.md).
+
+### Improvements
+
+- Response parsing builds columns directly instead of binding one data
+  frame per row: about 17x faster on 20,000 rows, and the gap widens
+  with larger results.
+- `type` in
+  [`comex_last_update()`](https://strategicprojects.github.io/comexr/reference/comex_last_update.md),
+  [`comex_available_years()`](https://strategicprojects.github.io/comexr/reference/comex_available_years.md),
+  [`comex_filters()`](https://strategicprojects.github.io/comexr/reference/comex_filters.md),
+  [`comex_filter_values()`](https://strategicprojects.github.io/comexr/reference/comex_filter_values.md),
+  [`comex_details()`](https://strategicprojects.github.io/comexr/reference/comex_details.md)
+  and
+  [`comex_metrics()`](https://strategicprojects.github.io/comexr/reference/comex_metrics.md)
+  is validated with
+  [`match.arg()`](https://rdrr.io/r/base/match.arg.html).
+- Added an offline test suite (no network access required).
+
+## comexr 0.3.1
+
+### New Features
+
+- Request timeout, number of retries, and retry backoff are now
+  configurable through the options `comexr.timeout`, `comexr.max_tries`
+  and `comexr.retry_time`. The default retry backoff was increased from
+  2 to 10 seconds to match the wait time the ComexStat API requests on
+  HTTP 429 rate-limit errors. Thanks to Matt Bhagat-Conway
+  1.  for the contribution
+      ([\#1](https://github.com/StrategicProjects/comexr/issues/1)).
+
 ## comexr 0.3.0
+
+CRAN release: 2026-05-21
 
 ### Breaking Changes
 
